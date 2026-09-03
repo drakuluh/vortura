@@ -1,1 +1,0 @@
-ALTER TABLE public.packages ADD COLUMN nickname text;
