@@ -1,0 +1,537 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Cyberpunk Dark Theme */
+    --background: 230 25% 0%;
+    --foreground: 210 40% 98%;
+
+    --card: 230 22% 9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 230 25% 3%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Electric Blue */
+    --primary: 200 100% 55%;
+    --primary-foreground: 230 25% 4%;
+    --primary-glow: 195 100% 65%;
+
+    /* Toxic Purple */
+    --secondary: 280 100% 65%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-glow: 285 100% 75%;
+
+    --muted: 230 20% 12%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 280 100% 65%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 230 25% 15%;
+    --input: 230 25% 12%;
+    --ring: 200 100% 55%;
+
+    --radius: 0.875rem;
+
+    /* Custom tokens */
+    --charcoal: 230 20% 5%;
+    --charcoal-light: 230 20% 10%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(200 100% 55%), hsl(280 100% 65%));
+    --gradient-glow: radial-gradient(circle at 50% 0%, hsl(200 100% 55% / 0.25), transparent 60%);
+    --gradient-purple: linear-gradient(135deg, hsl(280 100% 65%), hsl(310 100% 60%));
+    --gradient-mesh: radial-gradient(at 20% 30%, hsl(200 100% 55% / 0.15) 0px, transparent 50%),
+                     radial-gradient(at 80% 70%, hsl(280 100% 65% / 0.15) 0px, transparent 50%);
+
+    --shadow-glow-blue: 0 0 40px hsl(200 100% 55% / 0.4), 0 0 80px hsl(200 100% 55% / 0.2);
+    --shadow-glow-purple: 0 0 40px hsl(280 100% 65% / 0.4), 0 0 80px hsl(280 100% 65% / 0.2);
+    --shadow-card: 0 8px 32px hsl(230 25% 0% / 0.4);
+
+    /* Elevation system — layered shadows tuned for dark UI.
+       Each combines a soft ambient drop, a tighter contact shadow,
+       and a 1px inset top highlight to simulate light from above. */
+    --shadow-elev-1:
+      0 1px 2px hsl(230 40% 0% / 0.5),
+      0 1px 1px hsl(230 40% 0% / 0.35),
+      inset 0 1px 0 hsl(210 40% 98% / 0.04);
+    --shadow-elev-2:
+      0 4px 12px hsl(230 40% 0% / 0.45),
+      0 2px 4px hsl(230 40% 0% / 0.35),
+      inset 0 1px 0 hsl(210 40% 98% / 0.05);
+    --shadow-elev-3:
+      0 12px 28px hsl(230 40% 0% / 0.5),
+      0 4px 10px hsl(230 40% 0% / 0.35),
+      inset 0 1px 0 hsl(210 40% 98% / 0.06);
+    --shadow-elev-4:
+      0 24px 48px hsl(230 40% 0% / 0.55),
+      0 8px 16px hsl(230 40% 0% / 0.4),
+      inset 0 1px 0 hsl(210 40% 98% / 0.07);
+
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Sidebar (unused but kept for shadcn) */
+    --sidebar-background: 230 25% 3%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 200 100% 55%;
+    --sidebar-primary-foreground: 230 25% 4%;
+    --sidebar-accent: 230 25% 12%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 230 25% 15%;
+    --sidebar-ring: 200 100% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    background-image:
+      url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>"),
+      radial-gradient(at 15% 20%, hsl(200 100% 55% / 0.08) 0px, transparent 50%),
+      radial-gradient(at 85% 80%, hsl(280 100% 65% / 0.08) 0px, transparent 50%);
+    background-attachment: fixed;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Prevent iOS auto-zoom on input focus by ensuring 16px minimum */
+  @media (max-width: 767px) {
+    input, textarea, select {
+      font-size: 16px;
+    }
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+    color: hsl(var(--foreground));
+  }
+
+  /* Themed scrollbars (Firefox) */
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: hsl(230 20% 18%) hsl(var(--background));
+  }
+
+  /* Themed scrollbars (WebKit) */
+  ::-webkit-scrollbar {
+    width: 18px;
+    height: 18px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(230 20% 18%);
+    border-radius: 9999px;
+    border: 4px solid hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(230 20% 26%);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
+@layer components {
+  /* NOTE: no `will-change` here — these are static (they don't animate their
+     transform), and forcing a permanent compositor layer on every glass
+     element was spawning dozens of GPU layers per page and janking mobile. */
+  .glass {
+    @apply backdrop-blur-2xl bg-white/[0.04] border border-white/[0.10];
+    box-shadow:
+      var(--shadow-elev-2),
+      inset 0 1px 0 hsl(0 0% 100% / 0.08),
+      inset 0 -1px 0 hsl(0 0% 0% / 0.35);
+  }
+
+  .glass-strong {
+    @apply backdrop-blur-[28px] bg-white/[0.06] border border-white/[0.14];
+    box-shadow:
+      var(--shadow-elev-3),
+      inset 0 1px 0 hsl(0 0% 100% / 0.10),
+      inset 0 -1px 0 hsl(0 0% 0% / 0.4),
+      inset 0 0 0 1px hsl(0 0% 100% / 0.02);
+  }
+
+  /* Backdrop-blur is one of the most expensive things a mobile GPU does, and
+     it re-blurs whatever scrolls behind it every frame. Dial the radius way
+     down on small screens — the frosted look survives, the jank doesn't. */
+  @media (max-width: 767px) {
+    .glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    .glass-strong { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    .glass-icon { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  }
+
+  /* Off-screen looping animations are paused via IntersectionObserver
+     (useInViewPause) to keep them from burning GPU/CPU while not visible. */
+  .anim-paused,
+  .anim-paused * {
+    animation-play-state: paused !important;
+  }
+
+  /* iOS-style gradient hero button — vibrant gradient with subtle glass sheen,
+     clipped highlights, and crisp press states. */
+  .btn-hero-glass {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    contain: paint;
+    transform: translateZ(0);
+    color: white;
+    font-weight: 600;
+    background: var(--gradient-primary);
+    background-clip: padding-box;
+    border: 1px solid hsl(0 0% 100% / 0.22);
+    text-shadow: 0 1px 1px hsl(230 40% 0% / 0.25);
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.35) inset,
+      0 -1px 0 hsl(230 40% 0% / 0.3) inset,
+      0 4px 12px hsl(230 40% 0% / 0.45),
+      0 2px 4px hsl(230 40% 0% / 0.35);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  /* Subtle specular sheen — sits behind the label, never washes it out. */
+  .btn-hero-glass::before {
+    content: "";
+    position: absolute;
+    inset: 1px 1px auto 1px;
+    height: 50%;
+    border-radius: calc(var(--radius) - 4px) calc(var(--radius) - 4px) 0 0;
+    background: linear-gradient(
+      to bottom,
+      hsl(0 0% 100% / 0.14),
+      hsl(0 0% 100% / 0) 100%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+  .btn-hero-glass > * {
+    position: relative;
+    z-index: 1;
+  }
+  /* Shimmer sweep — a diagonal highlight that crosses the button every 5s. */
+  .btn-hero-glass::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 60%;
+    background: linear-gradient(
+      115deg,
+      transparent 0%,
+      hsl(0 0% 100% / 0.18) 45%,
+      hsl(0 0% 100% / 0.35) 50%,
+      hsl(0 0% 100% / 0.18) 55%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 0;
+    /* Animate transform (compositor-only) instead of `left` (which forced a
+       layout + paint every frame on every CTA, continuously). */
+    transform: translateX(-250%) skewX(-20deg);
+    animation: btn-shimmer 5s ease-in-out infinite;
+  }
+  @keyframes btn-shimmer {
+    0%, 70%, 100% { transform: translateX(-250%) skewX(-20deg); }
+    85% { transform: translateX(250%) skewX(-20deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-hero-glass::after { animation: none; }
+  }
+  .btn-hero-glass:hover {
+    filter: none;
+    background: linear-gradient(135deg, hsl(200 100% 60%), hsl(280 100% 68%));
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.4) inset,
+      0 -1px 0 hsl(230 40% 0% / 0.3) inset,
+      0 6px 16px hsl(230 40% 0% / 0.5),
+      0 2px 6px hsl(230 40% 0% / 0.4);
+  }
+  .btn-hero-glass:focus-visible {
+    outline: none;
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.4) inset,
+      0 -1px 0 hsl(230 40% 0% / 0.3) inset,
+      inset 0 0 0 2px hsl(var(--primary) / 0.65),
+      inset 0 0 0 3px hsl(0 0% 100% / 0.18),
+      0 6px 16px hsl(230 40% 0% / 0.5),
+      0 2px 6px hsl(230 40% 0% / 0.4);
+  }
+  .btn-hero-glass:active {
+    transform: translateY(1px) scale(0.99);
+    filter: none;
+    background: linear-gradient(135deg, hsl(200 100% 50%), hsl(280 100% 60%));
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.2) inset,
+      0 -1px 0 hsl(230 40% 0% / 0.45) inset,
+      0 2px 6px hsl(230 40% 0% / 0.45);
+  }
+
+  /* Headline depth — mirrors the glass/button depth language with a subtle
+     top highlight and grounded drop shadow. Works on both gradient and
+     solid foreground text. */
+  .text-depth {
+    text-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.08),
+      0 1px 2px hsl(230 40% 0% / 0.55),
+      0 3px 6px hsl(230 40% 0% / 0.45),
+      0 8px 24px hsl(230 40% 0% / 0.35);
+  }
+
+  /* Glass icon tile — small square/round container with the same depth
+     language as cards/buttons. Use for process step icons, currency chips,
+     etc. Add color via children (text-primary, bg-gradient-primary, …). */
+  .glass-icon {
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(
+      180deg,
+      hsl(0 0% 100% / 0.08),
+      hsl(0 0% 100% / 0.02)
+    );
+    border: 1px solid hsl(0 0% 100% / 0.12);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.12) inset,
+      0 -1px 0 hsl(230 40% 0% / 0.35) inset,
+      0 4px 12px hsl(230 40% 0% / 0.4),
+      0 2px 4px hsl(230 40% 0% / 0.3);
+  }
+  .glass-icon::before {
+    content: "";
+    position: absolute;
+    inset: 1px 1px auto 1px;
+    height: 50%;
+    border-radius: inherit;
+    background: linear-gradient(
+      to bottom,
+      hsl(0 0% 100% / 0.1),
+      transparent
+    );
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Ambient hover glow — faint primary tint that fades in on hover.
+     Applied to interactive cards/panels to feel "alive" without heavy motion. */
+  .hover-glow {
+    @apply transition-shadow duration-300;
+  }
+  .hover-glow:hover {
+    box-shadow:
+      var(--shadow-elev-3),
+      0 0 32px hsl(var(--primary) / 0.18),
+      0 0 64px hsl(var(--secondary) / 0.10);
+  }
+
+  /* Gradient border using a masked pseudo-layer.
+     Use on hero/pricing/feature panels for accented edges. */
+  .border-gradient {
+    position: relative;
+    background-clip: padding-box;
+    border: 1px solid transparent;
+  }
+  .border-gradient::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.6),
+      hsl(var(--secondary) / 0.4) 50%,
+      hsl(var(--border) / 0.5)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Soft horizontal divider with inner glow — separates page bands. */
+  .section-divider {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--border)) 30%,
+      hsl(var(--primary) / 0.4) 50%,
+      hsl(var(--border)) 70%,
+      transparent 100%
+    );
+    box-shadow: 0 0 24px hsl(var(--primary) / 0.15);
+  }
+
+  .glow-blue {
+    box-shadow: var(--shadow-glow-blue);
+  }
+
+  .glow-purple {
+    box-shadow: var(--shadow-glow-purple);
+  }
+
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Parent .text-depth applies text-shadow which bleeds through transparent
+       gradient glyphs and looks like a dark inner glow. Reset it here. */
+    text-shadow: none;
+    /* drop-shadow works on gradient-clipped text (text-shadow does not). */
+    filter:
+      drop-shadow(0 1px 1px hsl(230 40% 0% / 0.25))
+      drop-shadow(0 4px 12px hsl(230 40% 0% / 0.2));
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.2) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.2) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image:
+      radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 80%),
+      linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image:
+      radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 80%),
+      linear-gradient(to bottom, black 60%, transparent 100%);
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+  }
+
+  .grid-bg-page {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.2) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.2) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .grid-bg-section {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.35) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.35) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
+  }
+
+  .prose-legal {
+    @apply text-sm md:text-[15px] leading-relaxed text-muted-foreground;
+  }
+  .prose-legal h2 {
+    @apply text-lg md:text-xl font-semibold tracking-tight text-foreground mt-8 first:mt-0 mb-3;
+  }
+  .prose-legal h3 {
+    @apply text-base font-semibold tracking-tight text-foreground mt-6 mb-2;
+  }
+  .prose-legal p {
+    @apply mb-4;
+  }
+  .prose-legal ul {
+    @apply list-disc pl-5 mb-4 space-y-1.5;
+  }
+  .prose-legal a {
+    @apply text-primary hover:underline;
+  }
+  .prose-legal strong {
+    @apply text-foreground font-semibold;
+  }
+}
+
+@layer utilities {
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+}
+
+/* Make native date/time picker indicator visible on dark backgrounds */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator,
+input[type="week"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.6);
+  opacity: 0.85;
+  cursor: pointer;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* ── Task + Lead shared utilities ────────────────────────── */
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes liveRing {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+@keyframes scanLine {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-5px); }
+}
+
+@layer utilities {
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out both;
+  }
+  .animate-live-ring {
+    animation: liveRing 1.8s ease-out infinite;
+  }
+  .animate-scan-line {
+    animation: scanLine 2.2s linear infinite;
+  }
+  .animate-float-y {
+    animation: floatY 3s ease-in-out infinite;
+  }
+}

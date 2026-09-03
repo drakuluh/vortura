@@ -1,0 +1,395 @@
+/* ────────────────────────────────────────────────────────────────
+   "Print & Digital Design" animation — a cursor selects shapes
+   and colors on a design canvas, clicks the checkmark to confirm,
+   and a "Print-ready · PDF" pill appears. ~8s CSS loop; freezes
+   on the completed design under reduced-motion.
+   ──────────────────────────────────────────────────────────────── */
+
+.bm-anim {
+  --cycle: 8s;
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  margin-inline: auto;
+  aspect-ratio: 4 / 3;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  background: hsl(230 30% 6%);
+}
+.bm-anim::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, hsl(var(--primary) / 0.16), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 72% 100%, hsl(var(--secondary) / 0.14), transparent 70%);
+}
+.bm-anim::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 70px hsl(0 0% 0% / 0.4),
+    inset 0 1px 0 hsl(0 0% 100% / 0.1);
+}
+
+/* ── MacBook Pro ─────────────────────────────────────────── */
+.bm-device {
+  position: relative;
+  width: 96%;
+  aspect-ratio: 650 / 400;
+  filter: drop-shadow(0 22px 40px hsl(0 0% 0% / 0.55));
+}
+.bm-mac { display: block; width: 100%; height: 100%; }
+
+/* ── Screen overlay ──────────────────────────────────────── */
+.bm-screen {
+  position: absolute;
+  top: 5.33%;
+  left: 11.46%;
+  right: 11.42%;
+  bottom: 13.71%;
+  overflow: hidden;
+  border-radius: 0.2rem;
+  background: #1e1e2e;
+  display: flex;
+}
+
+/* ── Left toolbar ────────────────────────────────────────── */
+.bm-toolbar {
+  width: 16%;
+  background: #2a2a3d;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8% 0;
+  gap: 0.28rem;
+}
+.bm-tool {
+  width: 52%;
+  aspect-ratio: 1;
+  border-radius: 0.18rem;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.35);
+  transition: color 0.2s;
+}
+.bm-tool svg { width: 55%; height: 55%; }
+
+/* Tool highlight when cursor is on it */
+.bm-tool-rect  { animation: bm-tool-hl-rect  var(--cycle) ease infinite; }
+.bm-tool-circle { animation: bm-tool-hl-circ  var(--cycle) ease infinite; }
+.bm-tool-tri   { animation: bm-tool-hl-tri   var(--cycle) ease infinite; }
+
+/* ── Color palette (inside toolbar) ──────────────────────── */
+.bm-palette {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.18rem;
+  margin-top: 0.35rem;
+  padding: 0 6%;
+}
+.bm-swatch {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  animation: bm-swatch-hl var(--cycle) ease infinite;
+  animation-delay: calc(var(--i) * 0.08s);
+}
+
+/* ── Canvas / artboard ───────────────────────────────────── */
+.bm-canvas {
+  flex: 1;
+  position: relative;
+  margin: 4%;
+  background: #fff;
+  border-radius: 0.2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+/* ── Shapes on the canvas ────────────────────────────────── */
+.bm-shape {
+  position: absolute;
+  opacity: 0;
+  transform: scale(0.7);
+}
+.bm-shape-rect {
+  top: 12%;
+  left: 10%;
+  width: 36%;
+  height: 28%;
+  border-radius: 0.15rem;
+  background: #1AB3FF;
+  animation: bm-shape-rect-in var(--cycle) ease infinite;
+}
+.bm-shape-circle {
+  top: 18%;
+  right: 12%;
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #C44DFF;
+  animation: bm-shape-circle-in var(--cycle) ease infinite;
+}
+.bm-shape-tri {
+  bottom: 22%;
+  left: 20%;
+  width: 26%;
+  color: #FF2D78;
+  animation: bm-shape-tri-in var(--cycle) ease infinite;
+}
+
+/* Text bars */
+.bm-textbar {
+  position: absolute;
+  height: 0.22rem;
+  border-radius: 0.06rem;
+  background: #e2e8f0;
+  opacity: 0;
+}
+.bm-textbar-1 {
+  bottom: 16%;
+  right: 8%;
+  width: 34%;
+  animation: bm-text-in var(--cycle) ease infinite;
+}
+.bm-textbar-2 {
+  bottom: 10%;
+  right: 8%;
+  width: 24%;
+  animation: bm-text-in var(--cycle) ease infinite;
+  animation-delay: 0.08s;
+}
+
+/* ── Checkmark confirm button ────────────────────────────── */
+.bm-confirm {
+  position: absolute;
+  bottom: 5%;
+  right: 4%;
+  z-index: 4;
+}
+.bm-confirm-btn {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.4);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: bm-confirm-in var(--cycle) ease infinite;
+}
+.bm-confirm-ripple {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid rgba(22, 163, 74, 0.6);
+  opacity: 0;
+  animation: bm-confirm-ripple var(--cycle) ease-out infinite;
+}
+
+/* ── Cursor ──────────────────────────────────────────────── */
+.bm-cursor {
+  position: absolute;
+  z-index: 10;
+  width: 0.85rem;
+  height: 0.85rem;
+  transform-origin: 20% 12%;
+  filter: drop-shadow(0 2px 3px hsl(0 0% 0% / 0.5));
+  opacity: 0;
+  animation: bm-cursor var(--cycle) cubic-bezier(0.45, 0, 0.2, 1) infinite;
+}
+
+/* ── Export result ────────────────────────────────────────── */
+.bm-result {
+  position: absolute;
+  bottom: 18%;
+  right: 2%;
+  transform: translateY(8px);
+  z-index: 12;
+  opacity: 0;
+  animation: bm-result-in var(--cycle) ease-out infinite;
+}
+.bm-result-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.55rem 0.22rem 0.3rem;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, #16a34a, #22c55e);
+  color: #fff;
+  font-size: 0.42rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+}
+.bm-result-check {
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Keyframes — 8s cycle
+
+   Timeline:
+   0-5%     Cursor enters from off-screen
+   5-14%    Cursor → rect tool, rect appears on canvas (blue)
+   14-24%   Cursor → circle tool, circle appears (purple)
+   24-34%   Cursor → triangle tool, triangle appears (pink)
+   34-42%   Cursor → color palette, colors cycle on shapes
+   42-50%   Text bars appear, cursor rests
+   50-58%   Cursor → checkmark button
+   58-64%   Checkmark click + ripple
+   64-78%   "Print-ready · PDF" pill appears, hold
+   78-90%   Hold
+   90-100%  Everything fades, reset
+   ═══════════════════════════════════════════════════════════ */
+
+/* Cursor path — moves between toolbar items, canvas, and checkmark */
+@keyframes bm-cursor {
+  0%       { left: 90%;  top: 110%; opacity: 0; transform: scale(1); }
+  5%       { left: 90%;  top: 110%; opacity: 1; transform: scale(1); }
+  /* → rect tool */
+  10%      { left: 7%;   top: 18%;  opacity: 1; transform: scale(1); }
+  13%      { left: 7%;   top: 18%;  opacity: 1; transform: scale(0.85); }
+  15%      { left: 7%;   top: 18%;  opacity: 1; transform: scale(1); }
+  /* → circle tool */
+  20%      { left: 7%;   top: 33%;  opacity: 1; transform: scale(1); }
+  23%      { left: 7%;   top: 33%;  opacity: 1; transform: scale(0.85); }
+  25%      { left: 7%;   top: 33%;  opacity: 1; transform: scale(1); }
+  /* → triangle tool */
+  30%      { left: 7%;   top: 48%;  opacity: 1; transform: scale(1); }
+  33%      { left: 7%;   top: 48%;  opacity: 1; transform: scale(0.85); }
+  35%      { left: 7%;   top: 48%;  opacity: 1; transform: scale(1); }
+  /* → swatches (pick color) */
+  40%      { left: 7%;   top: 62%;  opacity: 1; transform: scale(1); }
+  43%      { left: 7%;   top: 62%;  opacity: 1; transform: scale(0.85); }
+  45%      { left: 7%;   top: 62%;  opacity: 1; transform: scale(1); }
+  /* → canvas center (admire) */
+  50%      { left: 55%;  top: 45%;  opacity: 1; transform: scale(1); }
+  /* → checkmark button */
+  56%      { left: 92%;  top: 89%;  opacity: 1; transform: scale(1); }
+  59%      { left: 92%;  top: 89%;  opacity: 1; transform: scale(0.8); }
+  62%      { left: 92%;  top: 89%;  opacity: 1; transform: scale(1); }
+  /* fade out */
+  68%      { left: 92%;  top: 89%;  opacity: 1; transform: scale(1); }
+  72%      { left: 95%;  top: 100%; opacity: 0; transform: scale(1); }
+  100%     { left: 95%;  top: 100%; opacity: 0; transform: scale(1); }
+}
+
+/* Tool highlight: glow when cursor is hovering */
+@keyframes bm-tool-hl-rect {
+  0%, 8%   { color: rgba(255,255,255,0.35); background: transparent; }
+  11%      { color: #1AB3FF; background: rgba(26,179,255,0.12); }
+  16%, 100% { color: rgba(255,255,255,0.35); background: transparent; }
+}
+@keyframes bm-tool-hl-circ {
+  0%, 18%  { color: rgba(255,255,255,0.35); background: transparent; }
+  21%      { color: #C44DFF; background: rgba(196,77,255,0.12); }
+  26%, 100% { color: rgba(255,255,255,0.35); background: transparent; }
+}
+@keyframes bm-tool-hl-tri {
+  0%, 28%  { color: rgba(255,255,255,0.35); background: transparent; }
+  31%      { color: #FF2D78; background: rgba(255,45,120,0.12); }
+  36%, 100% { color: rgba(255,255,255,0.35); background: transparent; }
+}
+
+/* Shapes appear on the canvas, then cycle colors after swatch click */
+@keyframes bm-shape-rect-in {
+  0%, 11%  { opacity: 0; transform: scale(0.7); background: #1AB3FF; }
+  15%      { opacity: 1; transform: scale(1);   background: #1AB3FF; }
+  /* Color cycle after swatch click (43%) */
+  44%      { background: #1AB3FF; }
+  48%      { background: #FFB057; }
+  90%      { opacity: 1; transform: scale(1);   background: #FFB057; }
+  96%, 100% { opacity: 0; transform: scale(0.9); background: #FFB057; }
+}
+@keyframes bm-shape-circle-in {
+  0%, 21%  { opacity: 0; transform: scale(0.7); background: #C44DFF; }
+  25%      { opacity: 1; transform: scale(1);   background: #C44DFF; }
+  44%      { background: #C44DFF; }
+  48%      { background: #1AB3FF; }
+  90%      { opacity: 1; transform: scale(1);   background: #1AB3FF; }
+  96%, 100% { opacity: 0; transform: scale(0.9); background: #1AB3FF; }
+}
+@keyframes bm-shape-tri-in {
+  0%, 31%  { opacity: 0; transform: scale(0.7); color: #FF2D78; }
+  35%      { opacity: 1; transform: scale(1);   color: #FF2D78; }
+  44%      { color: #FF2D78; }
+  48%      { color: #C44DFF; }
+  90%      { opacity: 1; transform: scale(1);   color: #C44DFF; }
+  96%, 100% { opacity: 0; transform: scale(0.9); color: #C44DFF; }
+}
+
+/* Text bars appear mid-animation */
+@keyframes bm-text-in {
+  0%, 42%  { opacity: 0; transform: translateX(6px); }
+  48%      { opacity: 1; transform: translateX(0); }
+  90%      { opacity: 1; transform: translateX(0); }
+  96%, 100% { opacity: 0; transform: translateX(0); }
+}
+
+/* Swatch highlight when cursor visits palette */
+@keyframes bm-swatch-hl {
+  0%, 38%  { transform: scale(1); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+  42%      { transform: scale(1.25); box-shadow: 0 0 0 1.5px #fff, 0 0 0 3px var(--c); }
+  50%      { transform: scale(1); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+  100%     { transform: scale(1); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+}
+
+/* Checkmark button appears, gets clicked */
+@keyframes bm-confirm-in {
+  0%, 48%  { opacity: 0; transform: scale(0.8); }
+  52%      { opacity: 1; transform: scale(1); }
+  58%      { transform: scale(1); }
+  60%      { transform: scale(0.88); }
+  63%      { transform: scale(1); }
+  90%      { opacity: 1; }
+  96%, 100% { opacity: 0; transform: scale(0.8); }
+}
+@keyframes bm-confirm-ripple {
+  0%, 58%  { transform: scale(1); opacity: 0; }
+  61%      { transform: scale(1); opacity: 0.7; }
+  72%      { transform: scale(1.8); opacity: 0; }
+  100%     { transform: scale(1.8); opacity: 0; }
+}
+
+/* Export pill slides up */
+@keyframes bm-result-in {
+  0%, 62%  { opacity: 0; transform: translateY(8px) scale(0.9); }
+  68%      { opacity: 1; transform: translateY(0) scale(1); }
+  88%      { opacity: 1; transform: translateY(0) scale(1); }
+  96%, 100% { opacity: 0; transform: translateY(8px) scale(0.9); }
+}
+
+/* ── Reduced motion — settle on the finished design ──────── */
+@media (prefers-reduced-motion: reduce) {
+  .bm-cursor { animation: none; opacity: 0; }
+  .bm-shape-rect  { animation: none; opacity: 1; transform: none; background: #FFB057; }
+  .bm-shape-circle { animation: none; opacity: 1; transform: none; background: #1AB3FF; }
+  .bm-shape-tri   { animation: none; opacity: 1; transform: none; color: #C44DFF; }
+  .bm-textbar     { animation: none; opacity: 1; transform: none; }
+  .bm-tool        { animation: none; }
+  .bm-swatch      { animation: none; }
+  .bm-confirm-btn { animation: none; opacity: 1; transform: none; }
+  .bm-confirm-ripple { animation: none; opacity: 0; }
+  .bm-result      { animation: none; opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,275 @@
+/* ────────────────────────────────────────────────────────────────
+   "Automated email newsletters" demonstration, shown on the MacBook (from
+   the websites animation) over the same mesh wallpaper: a branded newsletter
+   composes itself, an "Approve & Send" press launches it (paper plane), then
+   a green open-rate bar fills. ~6s CSS loop; settles opened under
+   reduced-motion.
+   ──────────────────────────────────────────────────────────────── */
+
+.news-anim {
+  --cycle: 6s;
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  margin-inline: auto;
+  aspect-ratio: 4 / 3;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  background: hsl(230 30% 6%);
+}
+.news-anim::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, hsl(var(--primary) / 0.16), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 72% 100%, hsl(var(--secondary) / 0.14), transparent 70%);
+}
+.news-anim::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 70px hsl(0 0% 0% / 0.4),
+    inset 0 1px 0 hsl(0 0% 100% / 0.1);
+}
+
+/* ── MacBook Pro (shared with the websites animation) ────── */
+.news-device {
+  position: relative;
+  width: 96%;
+  aspect-ratio: 650 / 400;
+  filter: drop-shadow(0 22px 40px hsl(0 0% 0% / 0.55));
+}
+.news-mac {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Screen: same mesh wallpaper, holding the newsletter ─── */
+.news-screen {
+  position: absolute;
+  top: 5.33%;
+  left: 11.46%;
+  right: 11.42%;
+  bottom: 13.71%;
+  overflow: hidden;
+  border-radius: 0.2rem;
+  display: grid;
+  place-items: center;
+  padding: 4% 7%;
+  background:
+    radial-gradient(58% 42% at 11% 6%, #35c6e8 0%, rgba(53, 198, 232, 0) 55%),
+    radial-gradient(44% 40% at 21% 40%, #9b2fd9 0%, rgba(155, 47, 217, 0) 55%),
+    radial-gradient(55% 46% at 51% 45%, #ff2d78 0%, rgba(255, 45, 120, 0) 60%),
+    radial-gradient(52% 55% at 93% 27%, #8083ff 0%, rgba(128, 131, 255, 0) 55%),
+    radial-gradient(50% 46% at 82% 58%, #c94dff 0%, rgba(201, 77, 255, 0) 55%),
+    radial-gradient(52% 46% at 16% 84%, #21d3c4 0%, rgba(33, 211, 196, 0) 55%),
+    radial-gradient(58% 42% at 54% 95%, #ffb057 0%, rgba(255, 176, 87, 0) 60%),
+    linear-gradient(160deg, #eaf4ff 0%, #f6ecff 45%, #fff2f7 100%);
+}
+
+/* ── The newsletter, as a light "app window" on the wallpaper ── */
+.news-card {
+  position: relative;
+  width: 86%;
+  border-radius: 0.6rem;
+  background: #ffffff;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.3);
+  overflow: hidden;
+}
+.news-topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+  padding: 0.4rem 0.5rem;
+  background: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--primary)));
+  color: #fff;
+}
+.news-brand-dot {
+  width: 0.44rem;
+  height: 0.44rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.92);
+}
+.news-topbar b {
+  font-size: 0.44rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.news-body {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.news-img {
+  height: 1.35rem;
+  border-radius: 0.34rem;
+  background:
+    radial-gradient(120% 120% at 20% 10%, hsl(var(--secondary) / 0.95), transparent 60%),
+    linear-gradient(135deg, hsl(var(--primary) / 0.85), hsl(var(--secondary) / 0.7));
+}
+.news-line {
+  height: 0.26rem;
+  border-radius: 9999px;
+  background: #d8dde8;
+}
+.news-line.w1 { width: 92%; }
+.news-line.w2 { width: 70%; }
+.news-chip {
+  align-self: flex-start;
+  margin-top: 0.04rem;
+  font-size: 0.36rem;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--primary)));
+  padding: 0.24rem 0.54rem;
+  border-radius: 0.34rem;
+}
+
+/* ── Footer: send button → open-rate stat (cross-fade) ───── */
+.news-foot {
+  position: relative;
+  height: 1.5rem;
+  margin: 0.1rem 0.5rem 0.5rem;
+}
+.news-send {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: news-send var(--cycle) ease-in-out infinite;
+}
+.news-send-btn {
+  position: relative;
+  font-size: 0.42rem;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--primary)));
+  padding: 0.36rem 0.85rem;
+  border-radius: 0.4rem;
+  box-shadow: 0 5px 12px hsl(var(--secondary) / 0.45);
+  animation: news-send-press var(--cycle) ease-in-out infinite;
+}
+.news-stat {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2rem;
+  opacity: 0;
+  animation: news-stat var(--cycle) ease-out infinite;
+}
+.news-stat-top {
+  display: flex;
+  align-items: center;
+  gap: 0.28rem;
+  font-size: 0.42rem;
+  font-weight: 800;
+  color: #15803d;
+}
+.news-stat-check {
+  width: 0.78rem;
+  height: 0.78rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #16a34a, #2fd06e);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+.news-stat-track {
+  height: 0.3rem;
+  border-radius: 9999px;
+  background: #e5e8ef;
+  overflow: hidden;
+}
+.news-stat-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #16a34a, #2fd06e);
+  animation: news-bar var(--cycle) ease-out infinite;
+}
+.news-stat-sub {
+  font-size: 0.34rem;
+  color: #8a93a8;
+  font-weight: 600;
+}
+
+/* Paper plane (send arc — continuity) */
+.news-plane {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin: -0.425rem;
+  color: hsl(var(--secondary));
+  opacity: 0;
+  animation: news-plane var(--cycle) ease-in infinite;
+  z-index: 4;
+}
+
+/* ── Keyframes ───────────────────────────────────────────── */
+/* Compose once on mount (each element staggered by --d). */
+@keyframes news-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+.news-topbar,
+.news-img,
+.news-line,
+.news-chip {
+  animation: news-in 0.7s ease-out both;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes news-send {
+  0%, 14%  { opacity: 0; }
+  20%      { opacity: 1; }
+  44%      { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes news-send-press {
+  0%, 34% { transform: scale(1); }
+  39%     { transform: scale(0.93); }
+  44%     { transform: scale(1); }
+  100%    { transform: scale(1); }
+}
+@keyframes news-plane {
+  0%, 38%  { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(0.9); }
+  43%      { opacity: 1; }
+  54%      { opacity: 0; transform: translate(150%, -170%) rotate(16deg) scale(1); }
+  100%     { opacity: 0; transform: translate(150%, -170%) rotate(16deg); }
+}
+@keyframes news-stat {
+  0%, 48%   { opacity: 0; }
+  55%       { opacity: 1; }
+  92%       { opacity: 1; }
+  97%, 100% { opacity: 0; }
+}
+@keyframes news-bar {
+  0%, 55%   { width: 0; }
+  82%       { width: 68%; }
+  100%      { width: 68%; }
+}
+
+/* ── Reduced motion — settle on the sent + opened result ── */
+@media (prefers-reduced-motion: reduce) {
+  .news-topbar, .news-img, .news-line, .news-chip { animation: none; opacity: 1; transform: none; }
+  .news-send { animation: none; opacity: 0; }
+  .news-plane { animation: none; opacity: 0; }
+  .news-stat { animation: none; opacity: 1; }
+  .news-stat-fill { animation: none; width: 68%; }
+}

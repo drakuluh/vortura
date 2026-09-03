@@ -1,0 +1,33 @@
+/* A light sheen that sweeps across the centred (active) carousel card,
+   giving the focused card a subtle sense of life. */
+.cf-sheen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.cf-sheen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 45%;
+  height: 100%;
+  transform: skewX(-18deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(0 0% 100% / 0.09),
+    transparent
+  );
+  animation: cf-sheen 5s ease-in-out infinite;
+}
+@keyframes cf-sheen {
+  0%   { left: -60%; }
+  24%  { left: 135%; }
+  100% { left: 135%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cf-sheen::before { animation: none; opacity: 0; }
+}

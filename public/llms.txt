@@ -1,0 +1,21 @@
+# VORTURA.ai
+
+> Websites and AI automations for local businesses — fast sites, missed-call text-backs, AI voice agents, review automation, and done-for-you growth systems.
+
+VORTURA.ai is a digital agency built for small, local service businesses (plumbers, med-spas, roofing crews, clinics, trades). We ship fast, mobile-first websites paired with AI automations that answer after-hours calls, text back missed callers, request reviews, and keep leads from going cold. Every package includes onboarding, ongoing site care, and real human support.
+
+## Pages
+
+- [Home](/): Overview of website and AI automation services for local businesses.
+- [Services](/services): Full list of services including website builds, AI voice agents, missed-call text-back, review automation, CRM setup, and lead routing.
+- [Process](/process): How we work — from kickoff call to live site and ongoing optimization.
+- [Contact](/contact): Reach out to start a project or ask questions.
+- [About](/about): Story and mission behind VORTURA.ai.
+- [Privacy](/privacy): Privacy policy.
+- [Terms](/terms): Terms of service.
+- [Refund](/refund): Refund policy.
+
+## Optional
+
+- [Login](/login): Client login to the dashboard.
+- [Dashboard](/dashboard): Client portal for messages, change requests, invoices, billing, and profile (requires authentication).

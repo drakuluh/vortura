@@ -1,0 +1,28 @@
+/* Infinite logo marquee for the "Trusted by" section. The track holds two
+   identical copies of the logo list; translating it by -50% scrolls exactly
+   one copy, so the loop is seamless. Edge fades mask the entry/exit. */
+
+.tb-marquee {
+  position: relative;
+  overflow: hidden;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.tb-track {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+  animation: tb-scroll 38s linear infinite;
+}
+.tb-marquee:hover .tb-track {
+  animation-play-state: paused;
+}
+
+@keyframes tb-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tb-track { animation: none; }
+}
