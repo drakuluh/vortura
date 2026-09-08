@@ -7,6 +7,7 @@ import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { TrustedBy } from "@/components/landing/TrustedBy";
 import { Seo } from "@/components/Seo";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useHeaderAnim, useRevealAnim } from "@/hooks/use-anim";
 import { cn } from "@/lib/utils";
 import { TESTIMONIALS } from "@/data/testimonials";
 
@@ -103,24 +104,8 @@ const ResultsPage = () => {
   const [activeCategory, setActiveCategory] = useState<Category>("All");
   const isMobile = useIsMobile();
 
-  const headerAnim = isMobile
-    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "blur(0px)" } }
-    : {
-        initial: { opacity: 0, y: -24, filter: "blur(8px)" },
-        whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-        viewport: { once: true, margin: "-80px" as const },
-        transition: { duration: 0.7, ease: "easeOut" as const },
-      };
-
-  const reveal = (i: number) =>
-    isMobile
-      ? { initial: false as const, animate: { opacity: 1, y: 0 } }
-      : {
-          initial: { opacity: 0, y: 20 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: "-60px" as const },
-          transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const, delay: 0.06 * i },
-        };
+  const headerAnim = useHeaderAnim();
+  const reveal = useRevealAnim(20, 0.06);
 
   const featured = CASE_STUDIES.find((c) => c.featured);
   const grid = CASE_STUDIES.filter(

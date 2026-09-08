@@ -23,8 +23,8 @@ import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { Seo } from "@/components/Seo";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { Counter } from "@/components/effects/Counter";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { FloatCard } from "@/hooks/use-tilt";
+import { useAnimProps } from "@/hooks/use-anim";
 import { PROCESS_TESTIMONIAL } from "@/data/testimonials";
 import {
   Accordion,
@@ -32,30 +32,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
-/* ── Animation helpers ──────────────────────────────────── */
-
-const useAnimProps = () => {
-  const isMobile = useIsMobile();
-  const header = isMobile
-    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "blur(0px)" } }
-    : {
-        initial: { opacity: 0, y: -24, filter: "blur(8px)" },
-        whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-        viewport: { once: true, margin: "-80px" },
-        transition: { duration: 0.7, ease: "easeOut" as const },
-      };
-  const reveal = (i = 0) =>
-    isMobile
-      ? { initial: false as const, animate: { opacity: 1, y: 0 } }
-      : {
-          initial: { opacity: 0, y: 24 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: "-60px" },
-          transition: { duration: 0.6, ease: "easeOut" as const, delay: 0.08 * i },
-        };
-  return { header, reveal, isMobile };
-};
 
 /* ── Data ───────────────────────────────────────────────── */
 

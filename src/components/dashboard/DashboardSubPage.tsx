@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useHeaderAnim, useCardAnim } from "@/hooks/use-anim";
 
 interface Props {
   eyebrow: string;
@@ -15,23 +15,8 @@ interface Props {
 }
 
 export const DashboardSubPage = ({ eyebrow, title, description, children, centered = false }: Props) => {
-  const isMobile = useIsMobile();
-  const headerAnim = isMobile
-    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "blur(0px)" } }
-    : {
-        initial: { opacity: 0, y: -24, filter: "blur(8px)" },
-        whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-        viewport: { once: true, margin: "-80px" },
-        transition: { duration: 0.7, ease: "easeOut" as const },
-      };
-  const bodyAnim = isMobile
-    ? { initial: false as const, animate: { y: 0 } }
-    : {
-        initial: { y: 24 },
-        whileInView: { y: 0 },
-        viewport: { once: true, margin: "-60px" },
-        transition: { duration: 0.6, ease: "easeOut" as const, delay: 0.1 },
-      };
+  const headerAnim = useHeaderAnim();
+  const bodyAnim = useCardAnim(24, 0.1);
 
   return (
     <PageLayout>

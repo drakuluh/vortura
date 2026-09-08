@@ -5,6 +5,7 @@ import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useHeaderAnim } from "@/hooks/use-anim";
 import { useAuth } from "@/hooks/useAuth";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -147,14 +148,7 @@ const Pricing = () => {
     });
   };
 
-  const headerAnim = isMobile
-    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "blur(0px)" } }
-    : {
-        initial: { opacity: 0, y: -24, filter: "blur(8px)" },
-        whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-        viewport: { once: true, margin: "-80px" },
-        transition: { duration: 0.7, ease: "easeOut" as const },
-      };
+  const headerAnim = useHeaderAnim();
   return (
     <PageLayout>
       <Seo

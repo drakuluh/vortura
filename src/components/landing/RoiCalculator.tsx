@@ -3,6 +3,7 @@ import { Slider } from "@/components/ui/slider";
 import { Phone, Users, DollarSign } from "lucide-react";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useHeaderAnim } from "@/hooks/use-anim";
 import { Counter } from "@/components/effects/Counter";
 import { SparklesText } from "@/components/ui/sparkles-text";
 
@@ -14,15 +15,7 @@ export const RoiCalculator = ({ headerAnim: headerAnimOverride }: { headerAnim?:
   const [missed, setMissed] = useState([20]);
   const [value, setValue] = useState([400]);
   const isMobile = useIsMobile();
-  const defaultHeaderAnim = isMobile
-    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "blur(0px)" } }
-    : {
-        initial: { opacity: 0, y: -24, filter: "blur(8px)" },
-        whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-        viewport: { once: true, margin: "-80px" },
-        transition: { duration: 0.7, ease: "easeOut" as const },
-      };
-  const headerAnim = headerAnimOverride ?? defaultHeaderAnim;
+  const headerAnim = headerAnimOverride ?? useHeaderAnim();
   const cardAnim = isMobile
     ? { initial: false as const, animate: { opacity: 1, scale: 1, rotateY: 0 } }
     : {

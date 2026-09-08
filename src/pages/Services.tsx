@@ -6,6 +6,7 @@ import { services } from "@/data/services";
 import { INDUSTRIES } from "@/data/industries";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useHeaderAnim } from "@/hooks/use-anim";
 import { ServiceCard } from "@/components/landing/ServiceCard";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { Seo } from "@/components/Seo";
@@ -28,15 +29,7 @@ const servicesJsonLd = {
 };
 
 const Services = () => {
-  const isMobile = useIsMobile();
-  const headerAnim = isMobile
-    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "blur(0px)" } }
-    : {
-        initial: { opacity: 0, y: -24, filter: "blur(8px)" },
-        whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-        viewport: { once: true, margin: "-80px" },
-        transition: { duration: 0.7, ease: "easeOut" as const },
-      };
+  const headerAnim = useHeaderAnim();
   return (
     <PageLayout>
       <Seo

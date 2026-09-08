@@ -24,6 +24,7 @@ import { Seo } from "@/components/Seo";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { Counter } from "@/components/effects/Counter";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useHeaderAnim, useRevealAnim } from "@/hooks/use-anim";
 import { NfcTapAnimation } from "@/components/landing/NfcTapAnimation";
 import {
   Accordion,
@@ -31,30 +32,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
-/* ── Animation helpers ───────────────────────────────────── */
-
-const useAnimProps = () => {
-  const isMobile = useIsMobile();
-  const header = isMobile
-    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "blur(0px)" } }
-    : {
-        initial: { opacity: 0, y: -24, filter: "blur(8px)" },
-        whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-        viewport: { once: true, margin: "-80px" as const },
-        transition: { duration: 0.7, ease: "easeOut" as const },
-      };
-  const reveal = (i: number) =>
-    isMobile
-      ? { initial: false as const, animate: { opacity: 1, y: 0 } }
-      : {
-          initial: { opacity: 0, y: 16 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: "-60px" as const },
-          transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const, delay: 0.05 * i },
-        };
-  return { header, reveal, isMobile };
-};
 
 /* ── Data ────────────────────────────────────────────────── */
 
@@ -150,7 +127,9 @@ const FAQS = [
 /* ── Page ─────────────────────────────────────────────────── */
 
 const NfcReviewCardsPage = () => {
-  const { header, reveal, isMobile } = useAnimProps();
+  const isMobile = useIsMobile();
+  const header = useHeaderAnim();
+  const reveal = useRevealAnim();
 
   const jsonLd = {
     "@context": "https://schema.org",

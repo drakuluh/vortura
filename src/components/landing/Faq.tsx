@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useHeaderAnim } from "@/hooks/use-anim";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import {
   Accordion,
@@ -10,15 +10,7 @@ import {
 import { FAQS } from "@/data/faqs";
 
 export const Faq = () => {
-  const isMobile = useIsMobile();
-  const headerAnim = isMobile
-    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "blur(0px)" } }
-    : {
-        initial: { opacity: 0, y: -24, filter: "blur(8px)" },
-        whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-        viewport: { once: true, margin: "-80px" as const },
-        transition: { duration: 0.7, ease: "easeOut" as const },
-      };
+  const headerAnim = useHeaderAnim();
 
   return (
     <section id="faq" className="relative py-12 md:py-14 lg:py-24">

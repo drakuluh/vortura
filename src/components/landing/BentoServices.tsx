@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useHeaderAnim } from "@/hooks/use-anim";
 import { CoverflowCarousel } from "@/components/ui/coverflow-carousel";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { cn } from "@/lib/utils";
@@ -11,14 +12,7 @@ import "./bento-cards.css";
 export const BentoServices = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const headerAnim = isMobile
-    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "blur(0px)" } }
-    : {
-        initial: { opacity: 0, y: -24, filter: "blur(8px)" },
-        whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-        viewport: { once: true, margin: "-80px" as const },
-        transition: { duration: 0.7, ease: "easeOut" as const },
-      };
+  const headerAnim = useHeaderAnim();
 
   const activeServices = services.filter((s) => !s.comingSoon && !s.hidden);
 

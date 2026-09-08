@@ -5,35 +5,14 @@ import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { Seo } from "@/components/Seo";
 import { SparklesText } from "@/components/ui/sparkles-text";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useHeaderAnim, useRevealAnim } from "@/hooks/use-anim";
 import { INDUSTRIES } from "@/data/industries";
-
-const useAnimProps = () => {
-  const isMobile = useIsMobile();
-  const header = isMobile
-    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "blur(0px)" } }
-    : {
-        initial: { opacity: 0, y: -24, filter: "blur(8px)" },
-        whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-        viewport: { once: true, margin: "-80px" as const },
-        transition: { duration: 0.7, ease: "easeOut" as const },
-      };
-  const reveal = (i: number) =>
-    isMobile
-      ? { initial: false as const, animate: { opacity: 1, y: 0 } }
-      : {
-          initial: { opacity: 0, y: 16 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: "-60px" as const },
-          transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const, delay: 0.05 * i },
-        };
-  return { header, reveal };
-};
 
 const IndustryPage = () => {
   const { slug } = useParams();
   const industry = INDUSTRIES.find((ind) => ind.slug === slug);
-  const { header, reveal } = useAnimProps();
+  const header = useHeaderAnim();
+  const reveal = useRevealAnim();
 
   if (!industry) return <Navigate to="/services" replace />;
 

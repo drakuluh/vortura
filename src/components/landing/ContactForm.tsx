@@ -11,7 +11,7 @@ import { ArrowRight, Check, AlertCircle, Loader2, RefreshCw } from "lucide-react
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useHeaderAnim, useCardAnim } from "@/hooks/use-anim";
 import { BookingPanel } from "@/components/landing/BookingCalendar";
 
 const contactSchema = z.object({
@@ -50,23 +50,8 @@ type Status = "idle" | "submitting" | "success" | "error";
 
 export const ContactForm = () => {
   const [status, setStatus] = useState<Status>("idle");
-  const isMobile = useIsMobile();
-  const headerAnim = isMobile
-    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "blur(0px)" } }
-    : {
-        initial: { opacity: 0, y: -24, filter: "blur(8px)" },
-        whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-        viewport: { once: true, margin: "-80px" },
-        transition: { duration: 0.7, ease: "easeOut" as const },
-      };
-  const cardAnim = isMobile
-    ? { initial: false as const, animate: { y: 0 } }
-    : {
-        initial: { y: 20 },
-        whileInView: { y: 0 },
-        viewport: { once: true, margin: "-80px" },
-        transition: { duration: 0.6, ease: "easeOut" as const, delay: 0.15 },
-      };
+  const headerAnim = useHeaderAnim();
+  const cardAnim = useCardAnim();
   const {
     register,
     handleSubmit,
