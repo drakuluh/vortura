@@ -83,14 +83,6 @@ const getInvoiceTitle = (inv: InvoiceRow): string => {
 };
 const fmtOrDash = (cents: number) => (cents > 0 ? formatCents(cents) : "/");
 
-const tone = (s: InvStatus) =>
-  s === "paid"
-    ? "success"
-    : s === "overdue"
-    ? "danger"
-    : s === "due" || s === "sent"
-    ? "warn"
-    : "muted";
 
 const NewInvoiceDialog = ({ onClose, editing }: { onClose: () => void; editing?: InvoiceRow | null }) => {
   const qc = useQueryClient();

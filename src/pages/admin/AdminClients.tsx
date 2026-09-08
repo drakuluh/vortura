@@ -152,11 +152,7 @@ const usePackagesMap = (clientIds: string[]) =>
 
 const ClientDialog = ({ row, onClose }: { row?: ClientRow; onClose: () => void }) => {
   const qc = useQueryClient();
-  const [name, setName] = useState(row?.name ?? "");
-  const [contact, setContact] = useState(row?.contact_name ?? "");
-  const [email, setEmail] = useState(row?.email ?? "");
   const [status, setStatus] = useState<ClientStatus>(row?.status ?? "onboarding");
-  const [health, setHealth] = useState<Health>(row?.health ?? "healthy");
   const [notes, setNotes] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string>("");
 

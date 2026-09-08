@@ -6,13 +6,9 @@ import {
   Clock,
   Calendar as CalendarIcon,
   User,
-  Mail,
-  MapPin,
-  FileText,
   Check,
   X,
   Trash2,
-  ExternalLink,
   PhoneIncoming,
   Video,
   List,
@@ -558,7 +554,6 @@ export default function AdminBookings() {
                   </div>
                   <div className="space-y-0.5">
                     {dayBookings.slice(0, 3).map((b) => {
-                      const st = statusMeta[b.status];
                       return (
                         <button
                           key={b.id}
@@ -812,7 +807,6 @@ export default function AdminBookings() {
           {activeBooking && (() => {
             const st = statusMeta[activeBooking.status];
             const tp = typeMeta[activeBooking.booking_type];
-            const TypeIcon = tp.icon;
             return (
               <>
                 <DialogHeader>

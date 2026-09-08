@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Paperclip, Send, Pencil, Trash2, X, Check, FileText, Download } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -368,7 +368,6 @@ const UpdateCard = ({ update, packageId }: { update: PackageUpdate; packageId: s
 
 export default function AdminPackageDetail() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const { data: pkg, isLoading } = usePackage(id);
   const { data: updates = [], isLoading: updatesLoading } = usePackageUpdates(id);
 

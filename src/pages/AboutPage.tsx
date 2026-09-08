@@ -5,7 +5,6 @@ import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { Seo } from "@/components/Seo";
 import { SparklesText } from "@/components/ui/sparkles-text";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useHeaderAnim, useRevealAnim } from "@/hooks/use-anim";
 
 const VALUES = [

@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
-import { Search, Sparkles, Flame, Globe, ExternalLink, Mail, Phone, MapPin, Briefcase, Copy, Check, Pencil, X, Plus, UserPlus, Trash2, Archive, Loader2 } from "lucide-react";
+import { Search, Sparkles, Flame, ExternalLink, Mail, MapPin, Briefcase, Copy, Check, Pencil, X, Plus, UserPlus, Trash2, Archive, Loader2 } from "lucide-react";
 import { AdminPage } from "@/components/admin/AdminPage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

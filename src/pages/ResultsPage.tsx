@@ -102,7 +102,7 @@ const CASE_STUDIES: CaseStudy[] = [
 
 const ResultsPage = () => {
   const [activeCategory, setActiveCategory] = useState<Category>("All");
-  const isMobile = useIsMobile();
+  const _isMobile = useIsMobile();
 
   const headerAnim = useHeaderAnim();
   const reveal = useRevealAnim(20, 0.06);

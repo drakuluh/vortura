@@ -18,25 +18,6 @@ const formatDate = (iso: string) =>
     day: "numeric",
   });
 
-/* ── Deterministic generative art ────────────────────────────────── */
-
-const hashStr = (str: string): number => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
-  }
-  return Math.abs(hash) || 1;
-};
-
-const makeRand = (seed: number) => {
-  let s = seed % 2147483647;
-  if (s <= 0) s += 2147483646;
-  return () => {
-    s = (s * 16807) % 2147483647;
-    return (s - 1) / 2147483646;
-  };
-};
-
 /* ── Workplace illustration art per blog post ─────────────────────── */
 
 const sceneMissedCalls = (id: string) => (

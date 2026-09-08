@@ -5,7 +5,6 @@ import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { services } from "@/data/services";
 import { INDUSTRIES } from "@/data/industries";
 import { motion } from "framer-motion";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useHeaderAnim } from "@/hooks/use-anim";
 import { ServiceCard } from "@/components/landing/ServiceCard";
 import { SparklesText } from "@/components/ui/sparkles-text";

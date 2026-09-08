@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { AdminPage } from "@/components/admin/AdminPage";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { supabase } from "@/integrations/supabase/client";
-import { formatCents, formatRelative } from "@/lib/admin/format";
+import { formatCents } from "@/lib/admin/format";
 
 const useOverview = () =>
   useQuery({

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { BadgeCheck, Globe } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 
 const SIGS = [
   { name: "Chris Evans", title: "Financial Analyst", company: "Robinhood", colors: ["#071a0a", "#0d3a14", "#155222"] as const, initials: "CE" },

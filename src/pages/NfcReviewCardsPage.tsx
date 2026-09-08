@@ -15,7 +15,6 @@ import {
   Nfc,
   Shield,
   Users,
-  BarChart3,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { PageLayout } from "@/components/landing/PageLayout";

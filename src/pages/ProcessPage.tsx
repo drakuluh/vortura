@@ -192,7 +192,7 @@ const LaunchVisual = () => (
 /* ── Component ──────────────────────────────────────────── */
 
 const ProcessPage = () => {
-  const { header, reveal, isMobile } = useAnimProps();
+  const { header, reveal, isMobile: _isMobile } = useAnimProps();
 
   return (
     <PageLayout>

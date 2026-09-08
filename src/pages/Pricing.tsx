@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Check, ArrowRight, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/landing/PageLayout";

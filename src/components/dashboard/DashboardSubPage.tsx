@@ -14,7 +14,7 @@ interface Props {
   centered?: boolean;
 }
 
-export const DashboardSubPage = ({ eyebrow, title, description, children, centered = false }: Props) => {
+export const DashboardSubPage = ({ eyebrow: _eyebrow, title, description, children, centered = false }: Props) => {
   const headerAnim = useHeaderAnim();
   const bodyAnim = useCardAnim(24, 0.1);
 

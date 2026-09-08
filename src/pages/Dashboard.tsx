@@ -3,11 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  ArrowUpRight,
   Calendar,
   Check,
   FileText,
-  LifeBuoy,
   LogOut,
   Mail,
   MessageSquare,
@@ -27,10 +25,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useCurrentClient } from "@/hooks/useCurrentClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { formatCents } from "@/lib/admin/format";
-import { formatRelative } from "@/lib/admin/format";
-import { StatusBadge } from "@/components/admin/StatusBadge";
-import { changeStatusLabel, changeStatusTone, priorityTone } from "@/lib/changeRequests";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePackageUnreadCounts } from "@/hooks/usePackageUpdates";
 

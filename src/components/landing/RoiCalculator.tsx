@@ -137,7 +137,6 @@ const SliderRow = ({
   accent,
 }: SliderRowProps) => {
   const accentRing = accent === "primary" ? "ring-primary/40 shadow-glow-blue" : "ring-secondary/40 shadow-glow-purple";
-  const accentText = accent === "primary" ? "text-primary" : "text-secondary";
   const current = sliderValue[0];
   const valueText = `${tickFormatter(current)} ${unit}`.trim();
 

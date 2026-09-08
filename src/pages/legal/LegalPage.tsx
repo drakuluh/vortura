@@ -11,7 +11,7 @@ interface LegalPageProps {
   after?: ReactNode;
 }
 
-export const LegalPage = ({ eyebrow, title, updated, children, after }: LegalPageProps) => (
+export const LegalPage = ({ eyebrow: _eyebrow, title, updated, children, after }: LegalPageProps) => (
   <PageLayout>
     <section className="relative pt-12 md:pt-14 lg:pt-24 pb-16 md:pb-20 lg:pb-28 overflow-hidden">
       <PageHeroBg />

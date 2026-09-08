@@ -57,7 +57,7 @@ const PackageDialog = ({ row, onClose }: { row?: PackageRow; onClose: () => void
   const [name, setName] = useState(row?.name ?? "");
   const [status, setStatus] = useState<PkgStatus>(row?.status ?? "in_progress");
   const [progress, setProgress] = useState(row?.progress ?? 0);
-  const [isCustom, setIsCustom] = useState<boolean>(row?.is_custom ?? true);
+  const [isCustom, _setIsCustom] = useState<boolean>(row?.is_custom ?? true);
 
   const save = useMutation({
     mutationFn: async () => {

@@ -53,7 +53,6 @@ const Invoices = () => {
   });
 
   const list = invoices ?? [];
-  const due = list.find((i) => i.status === "due" || i.status === "overdue");
   const activeStatuses = new Set(["due", "overdue", "sent"]);
   const activeInvoices = list.filter((i) => activeStatuses.has(i.status));
   const dueInvoices = list.filter((i) => i.status === "due" || i.status === "sent");
@@ -77,7 +76,6 @@ const Invoices = () => {
   };
   // amount_cents is the source of truth — it now reflects the combined
   // one-time + first-recurring-period total written by create-stripe-invoice.
-  const totalPaid = list.filter((i) => i.status === "paid").reduce((s, i) => s + (i.amount_cents ?? 0), 0);
   const dueTotal = dueInvoices.reduce((s, i) => s + (i.amount_cents ?? 0), 0);
   const overdueTotal = overdueInvoices.reduce((s, i) => s + (i.amount_cents ?? 0), 0);
   const getInvoiceTitle = (inv: any): string => {

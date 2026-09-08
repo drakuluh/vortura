@@ -10,7 +10,7 @@ interface Props {
   className?: string;
 }
 
-export const AdminPage = ({ eyebrow, title, description, actions, children, className }: Props) => {
+export const AdminPage = ({ eyebrow: _eyebrow, title, description, actions, children, className }: Props) => {
   return (
     <div className="px-4 md:px-6 lg:px-8 py-8 md:py-10">
       <div className={cn("max-w-7xl mx-auto", className)}>
