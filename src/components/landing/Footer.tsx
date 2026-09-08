@@ -25,7 +25,7 @@ const IconWithTooltip = ({ href, label, tooltip, icon: Icon, external }: {
         href={href}
         aria-label={label}
         {...(external && { target: "_blank", rel: "noopener noreferrer" })}
-        className="text-muted-foreground/70 hover:text-foreground transition-colors flex items-center justify-center"
+        className="text-muted-foreground/70 hover:text-foreground transition-colors flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/[0.05]"
         onMouseEnter={() => setShow(true)}
         onMouseLeave={() => setShow(false)}
         onFocus={() => setShow(true)}
@@ -95,20 +95,24 @@ export const Footer = () => {
           </div>
 
           {/* Nav links */}
-          <nav className="flex items-center justify-center gap-3 md:gap-5 flex-wrap text-xs text-muted-foreground/70">
-            <Link to="/about" className="hover:text-foreground transition-colors py-0.5">
+          <nav className="flex items-center justify-center gap-1 md:gap-3 flex-wrap text-xs text-muted-foreground/70">
+            <Link to="/about" className="hover:text-foreground transition-colors px-2 py-2 rounded-md hover:bg-white/[0.05]">
               About
             </Link>
-            <span aria-hidden="true" className="text-muted-foreground/30">·</span>
-            <Link to="/privacy" className="hover:text-foreground transition-colors py-0.5">
+            <span aria-hidden="true" className="text-muted-foreground/30 hidden md:inline">·</span>
+            <Link to="/blog" className="hover:text-foreground transition-colors px-2 py-2 rounded-md hover:bg-white/[0.05]">
+              Blog
+            </Link>
+            <span aria-hidden="true" className="text-muted-foreground/30 hidden md:inline">·</span>
+            <Link to="/privacy" className="hover:text-foreground transition-colors px-2 py-2 rounded-md hover:bg-white/[0.05]">
               Privacy
             </Link>
-            <span aria-hidden="true" className="text-muted-foreground/30">·</span>
-            <Link to="/terms" className="hover:text-foreground transition-colors py-0.5">
+            <span aria-hidden="true" className="text-muted-foreground/30 hidden md:inline">·</span>
+            <Link to="/terms" className="hover:text-foreground transition-colors px-2 py-2 rounded-md hover:bg-white/[0.05]">
               Terms
             </Link>
-            <span aria-hidden="true" className="text-muted-foreground/30">·</span>
-            <Link to="/refund" className="hover:text-foreground transition-colors py-0.5">
+            <span aria-hidden="true" className="text-muted-foreground/30 hidden md:inline">·</span>
+            <Link to="/refund" className="hover:text-foreground transition-colors px-2 py-2 rounded-md hover:bg-white/[0.05]">
               Refund
             </Link>
           </nav>

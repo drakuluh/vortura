@@ -127,10 +127,13 @@ const ContactFormPanel = () => {
     handleSubmit,
     reset,
     formState: { errors, isValid, touchedFields },
+    watch,
   } = useForm<ContactValues>({
     resolver: zodResolver(contactSchema),
     mode: "onTouched",
   });
+
+  const messageLength = (watch("message") ?? "").length;
 
   const onSubmit = async (values: ContactValues) => {
     setStatus("submitting");
@@ -188,7 +191,7 @@ const ContactFormPanel = () => {
   return (
     <>
       <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-4">
-        // Send a message
+        Send a message
       </p>
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4 flex-1 flex flex-col">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-4">
@@ -217,7 +220,17 @@ const ContactFormPanel = () => {
             )}
             {...register("message")}
           />
-          <FieldError id="message-error" message={errors.message?.message} />
+          <div className="flex items-center justify-between mt-1">
+            <FieldError id="message-error" message={errors.message?.message} />
+            {messageLength > 0 && (
+              <p className={cn(
+                "text-[11px] font-mono tabular-nums ml-auto",
+                messageLength > 900 ? "text-destructive/70" : "text-muted-foreground/50"
+              )}>
+                {messageLength}/1000
+              </p>
+            )}
+          </div>
         </div>
         <div className="pt-3 mt-auto">
           <Button type="submit" variant="hero" size="lg" className="w-full"

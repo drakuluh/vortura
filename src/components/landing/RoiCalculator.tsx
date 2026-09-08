@@ -54,8 +54,8 @@ export const RoiCalculator = ({ headerAnim: headerAnimOverride }: { headerAnim?:
             className="glass-strong rounded-3xl p-4 md:p-5 lg:p-6 relative overflow-hidden"
             {...cardAnim}
           >
-            <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-primary/20 blur-[100px]" />
-            <div className="absolute -bottom-32 -left-32 w-64 h-64 rounded-full bg-secondary/20 blur-[100px]" />
+            <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-primary/20 blur-[50px] md:blur-[100px]" />
+            <div className="absolute -bottom-32 -left-32 w-64 h-64 rounded-full bg-secondary/20 blur-[50px] md:blur-[100px]" />
 
             <div className="relative">
               <SliderRow

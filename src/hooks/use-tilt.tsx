@@ -75,13 +75,13 @@ export const FloatCard = ({
   duration = 6,
   ...rest
 }: React.HTMLAttributes<HTMLDivElement> & { duration?: number }) => {
-  injectStyle();
+  const isMobile = useIsMobile();
+  if (!isMobile) injectStyle();
   return (
     <div
       className={className}
       style={{
-        animation: `float-orbit ${duration}s linear infinite`,
-        willChange: "transform",
+        ...(isMobile ? {} : { animation: `float-orbit ${duration}s linear infinite`, willChange: "transform" }),
         ...rest.style,
       }}
       {...rest}

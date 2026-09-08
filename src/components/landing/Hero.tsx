@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { SparkleField } from "@/components/ui/sparkles-text";
 
-const WORDS = ["Calls", "Bookings", "Reviews", "Follow-ups", "Customers", "Leads"];
+const WORDS = ["Call", "Booking", "Review", "Lead", "Sale"];
 
 const Typewriter = () => {
   const [index, setIndex] = useState(0);
@@ -57,11 +57,11 @@ export const Hero = () => {
         className="pointer-events-none absolute inset-0 isolate overflow-hidden contain-paint"
       >
         <div
-          className="absolute top-1/3 left-1/2 sm:left-1/4 w-[min(80vw,500px)] aspect-square rounded-full bg-primary/20 blur-[80px] sm:blur-[120px]"
+          className="absolute top-1/3 left-1/2 sm:left-1/4 w-[min(80vw,500px)] aspect-square rounded-full bg-primary/20 blur-[50px] sm:blur-[120px]"
           style={{ willChange: "transform", transform: "translate3d(-50%, -50%, 0)" }}
         />
         <div
-          className="absolute bottom-1/4 right-1/2 sm:right-1/4 w-[min(80vw,500px)] aspect-square rounded-full bg-secondary/20 blur-[80px] sm:blur-[120px]"
+          className="absolute bottom-1/4 right-1/2 sm:right-1/4 w-[min(80vw,500px)] aspect-square rounded-full bg-secondary/20 blur-[50px] sm:blur-[120px]"
           style={{ willChange: "transform", transform: "translate3d(50%, 0, 0)" }}
         />
       </div>
@@ -85,13 +85,9 @@ export const Hero = () => {
           </motion.div>
 
           <h1 className="text-[2.5rem] leading-[1.05] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-bold tracking-tight text-depth mb-4 sm:mb-6 lg:mb-8">
-            Automate your
+            Never miss
             <br />
-            <Typewriter />
-            <span className="text-foreground">
-              <br className="sm:hidden" />
-              <span className="sm:ml-0"> with AI.</span>
-            </span>
+            another <Typewriter />
           </h1>
 
           <motion.p
@@ -100,8 +96,8 @@ export const Hero = () => {
             transition={{ delay: 0.5, duration: 0.6 }}
             className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto mb-7 sm:mb-9 lg:mb-12 leading-relaxed px-2 sm:px-0"
           >
-            We build websites and AI agents that answer your calls, book your appointments,
-            and bring in more customers — 24/7.
+            AI agents that answer every call, book every appointment, and collect every
+            review — 24/7, no voicemail, no missed revenue.
           </motion.p>
 
           <motion.div

@@ -25,6 +25,7 @@ import { SparklesText } from "@/components/ui/sparkles-text";
 import { Counter } from "@/components/effects/Counter";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { FloatCard } from "@/hooks/use-tilt";
+import { PROCESS_TESTIMONIAL } from "@/data/testimonials";
 import {
   Accordion,
   AccordionContent,
@@ -246,13 +247,13 @@ const ProcessPage = () => {
           <div className="container">
             <div className="max-w-4xl mx-auto">
               <motion.div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-end mb-6 md:mb-8" {...header}>
-                <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth text-center">
+                <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
                   The old way
                 </h2>
-                <span className="hidden md:block text-lg md:text-xl font-semibold text-muted-foreground px-4 pb-1">
+                <span className="hidden md:block text-base md:text-lg font-semibold text-muted-foreground px-4 pb-1">
                   Vs.
                 </span>
-                <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth text-center">
+                <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
                   <SparklesText text="The Vortura way" className="text-gradient" />
                 </h2>
               </motion.div>
@@ -504,6 +505,15 @@ const ProcessPage = () => {
               className="glass-strong border-gradient rounded-2xl p-8 md:p-10 lg:p-12 text-center"
               {...reveal(0)}
             >
+            {PROCESS_TESTIMONIAL.logo && (
+              <div className="flex justify-center mb-5">
+                <img
+                  src={PROCESS_TESTIMONIAL.logo}
+                  alt={PROCESS_TESTIMONIAL.company}
+                  className="h-12 md:h-14 max-w-[220px] object-contain opacity-70"
+                />
+              </div>
+            )}
             <div className="flex justify-center mb-6">
               {[...Array(5)].map((_, i) => (
                 <svg key={i} className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
@@ -512,11 +522,11 @@ const ProcessPage = () => {
               ))}
             </div>
             <blockquote className="text-base md:text-lg lg:text-xl text-foreground/90 leading-relaxed mb-6 italic">
-              "Vortura took us from missing half our calls to never missing one. The whole process was seamless — we were up and running in under three weeks."
+              "{PROCESS_TESTIMONIAL.quote}"
             </blockquote>
             <div>
-              <p className="text-sm font-semibold text-depth">Local Business Owner</p>
-              <p className="text-xs text-muted-foreground">Mississauga, ON</p>
+              <p className="text-sm font-semibold text-depth">{PROCESS_TESTIMONIAL.role}, {PROCESS_TESTIMONIAL.company}</p>
+              <p className="text-xs text-muted-foreground">{PROCESS_TESTIMONIAL.location}</p>
             </div>
             </motion.div>
           </FloatCard>

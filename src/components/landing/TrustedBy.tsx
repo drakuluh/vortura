@@ -1,23 +1,11 @@
-import { Image as ImageIcon } from "lucide-react";
 import { useInViewPause } from "@/hooks/useInViewPause";
 import { SparklesText } from "@/components/ui/sparkles-text";
+import { TRUSTED_BY_CLIENTS } from "@/data/testimonials";
 import "./trusted-by.css";
 
-const CLIENTS = [
-  "Client 01",
-  "Client 02",
-  "Client 03",
-  "Client 04",
-  "Client 05",
-  "Client 06",
-  "Client 07",
-  "Client 08",
-];
-
-const LogoTile = ({ label }: { label: string }) => (
-  <div className="tb-logo flex h-16 w-40 shrink-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] text-muted-foreground">
-    <ImageIcon className="h-5 w-5 opacity-60" />
-    <span className="font-mono text-[11px] uppercase tracking-widest">{label}</span>
+const LogoTile = ({ name, logo }: { name: string; logo: string }) => (
+  <div className="tb-logo flex h-16 shrink-0 items-center justify-center px-8 md:px-12 opacity-55 hover:opacity-80 transition-opacity duration-300">
+    <img src={logo} alt={name} className="h-8 md:h-10 lg:h-12 w-auto" draggable={false} />
   </div>
 );
 
@@ -33,12 +21,12 @@ export const TrustedBy = () => {
         <div className="glass-strong py-8 md:py-10 relative overflow-hidden">
           <div ref={marqueeRef} className="tb-marquee relative" aria-label="Businesses we've worked with">
             <div className="tb-track">
-              {CLIENTS.map((c) => (
-                <LogoTile key={`a-${c}`} label={c} />
+              {TRUSTED_BY_CLIENTS.map((c) => (
+                <LogoTile key={`a-${c.name}`} name={c.name} logo={c.logo} />
               ))}
-              {CLIENTS.map((c) => (
-                <div key={`b-${c}`} aria-hidden="true" className="contents">
-                  <LogoTile label={c} />
+              {TRUSTED_BY_CLIENTS.map((c) => (
+                <div key={`b-${c.name}`} aria-hidden="true" className="contents">
+                  <LogoTile name={c.name} logo={c.logo} />
                 </div>
               ))}
             </div>

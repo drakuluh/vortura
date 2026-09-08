@@ -12,7 +12,7 @@ import { RouteFallback } from "@/components/RouteFallback";
 
 export const MarketingShell = () => (
   <CurrencyProvider>
-    <div className="relative isolate min-h-screen bg-background overflow-x-hidden">
+    <div className="relative isolate min-h-screen bg-background overflow-x-clip">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 grid-bg-page -z-10"

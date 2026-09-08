@@ -18,6 +18,7 @@ import Index from "./pages/Index.tsx";
 // page. Each layout wraps its <Outlet> in its own <Suspense>, so the navbar
 // or sidebar stays visible during a route transition.
 const Services = lazy(() => import("./pages/Services.tsx"));
+const NfcReviewCardsPage = lazy(() => import("./pages/NfcReviewCardsPage.tsx"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail.tsx"));
 const ProcessPage = lazy(() => import("./pages/ProcessPage.tsx"));
 const ResultsPage = lazy(() => import("./pages/ResultsPage.tsx"));
@@ -25,6 +26,9 @@ const ResultsPage = lazy(() => import("./pages/ResultsPage.tsx"));
 // The page component is kept intact at src/pages/Pricing.tsx.
 // const Pricing = lazy(() => import("./pages/Pricing.tsx"));
 const ContactPage = lazy(() => import("./pages/ContactPage.tsx"));
+const BlogPage = lazy(() => import("./pages/BlogPage.tsx"));
+const BlogPostPage = lazy(() => import("./pages/BlogPostPage.tsx"));
+const IndustryPage = lazy(() => import("./pages/IndustryPage.tsx"));
 // ROI page removed — to restore, uncomment this and its <Route> below.
 // The page component is kept intact at src/pages/RoiPage.tsx (the ROI
 // calculator still appears as a section on the home page).
@@ -35,7 +39,7 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword.tsx"));
 const Privacy = lazy(() => import("./pages/legal/Privacy.tsx"));
 const Terms = lazy(() => import("./pages/legal/Terms.tsx"));
 const Refund = lazy(() => import("./pages/legal/Refund.tsx"));
-const About = lazy(() => import("./pages/legal/About.tsx"));
+const About = lazy(() => import("./pages/AboutPage.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
@@ -142,12 +146,16 @@ const App = () => (
             <Route element={<MarketingShell />}>
               <Route path="/" element={<Index />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/services/nfc-review-cards" element={<NfcReviewCardsPage />} />
               <Route path="/services/:slug" element={<ServiceDetail />} />
               <Route path="/process" element={<ProcessPage />} />
               <Route path="/results" element={<ResultsPage />} />
               {/* <Route path="/roi" element={<RoiPage />} /> */}
               {/* <Route path="/pricing" element={<Pricing />} /> */}
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:slug" element={<BlogPostPage />} />
+              <Route path="/industries/:slug" element={<IndustryPage />} />
               <Route path="/login" element={<Auth />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />

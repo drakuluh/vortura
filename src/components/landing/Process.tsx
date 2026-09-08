@@ -93,7 +93,7 @@ export const Process = ({ headerAnim: headerAnimOverride }: { headerAnim?: any }
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <span className="font-mono text-[11px] text-primary tracking-widest">STEP {step.num}</span>
-                      <div className="h-px flex-1 bg-white" />
+                      <div className="h-px flex-1 bg-white/10" />
                     </div>
                     <SplitReveal
                       as="h3"

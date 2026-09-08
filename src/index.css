@@ -184,9 +184,9 @@
      it re-blurs whatever scrolls behind it every frame. Dial the radius way
      down on small screens — the frosted look survives, the jank doesn't. */
   @media (max-width: 767px) {
-    .glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-    .glass-strong { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
-    .glass-icon { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .glass { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .glass-strong { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .glass-icon { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
   }
 
   /* Off-screen looping animations are paused via IntersectionObserver
@@ -194,6 +194,19 @@
   .anim-paused,
   .anim-paused * {
     animation-play-state: paused !important;
+  }
+
+  /* Pure-CSS sparkle animation — replaces per-element framer-motion RAF loops
+     with a single compositor-driven keyframe. ~300 fewer JS animation frames. */
+  @keyframes sparkle-twinkle {
+    0%, 100% { opacity: 0; transform: scale(0) rotate(75deg); }
+    50%      { opacity: 1; transform: scale(var(--sparkle-scale, 1)) rotate(150deg); }
+  }
+  .sparkle-anim {
+    animation: sparkle-twinkle 0.8s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sparkle-anim { animation: none; opacity: 0; }
   }
 
   /* iOS-style gradient hero button — vibrant gradient with subtle glass sheen,

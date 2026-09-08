@@ -57,6 +57,7 @@ export const Navbar = () => {
     { to: "/services", label: "Services", prefetch: () => import("@/pages/Services.tsx") },
     { to: "/process", label: "Process", prefetch: () => import("@/pages/ProcessPage.tsx") },
     { to: "/results", label: "Results", prefetch: () => import("@/pages/ResultsPage.tsx") },
+    { to: "/blog", label: "Blog", prefetch: () => import("@/pages/BlogPage.tsx") },
     { to: "/contact", label: "Contact", prefetch: () => import("@/pages/ContactPage.tsx") },
   ];
 

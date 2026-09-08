@@ -17,11 +17,11 @@ export const PageHeroBg = () => (
     <div className="absolute inset-x-0 top-0 h-[100svh] min-h-[100svh]">
       <div className="absolute inset-0 grid-bg" />
       <div
-        className="absolute top-1/3 left-1/2 sm:left-1/4 w-[min(80vw,500px)] aspect-square rounded-full bg-primary/20 blur-[80px] sm:blur-[120px]"
+        className="absolute top-1/3 left-1/2 sm:left-1/4 w-[min(80vw,500px)] aspect-square rounded-full bg-primary/20 blur-[50px] sm:blur-[120px]"
         style={{ willChange: "transform", transform: "translate3d(-50%, -50%, 0)" }}
       />
       <div
-        className="absolute bottom-1/4 right-1/2 sm:right-1/4 w-[min(80vw,500px)] aspect-square rounded-full bg-secondary/20 blur-[80px] sm:blur-[120px]"
+        className="absolute bottom-1/4 right-1/2 sm:right-1/4 w-[min(80vw,500px)] aspect-square rounded-full bg-secondary/20 blur-[50px] sm:blur-[120px]"
         style={{ willChange: "transform", transform: "translate3d(50%, 0, 0)" }}
       />
     </div>
