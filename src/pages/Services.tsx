@@ -6,6 +6,7 @@ import { services } from "@/data/services";
 import { INDUSTRIES } from "@/data/industries";
 import { motion } from "framer-motion";
 import { useHeaderAnim } from "@/hooks/use-anim";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { ServiceCard } from "@/components/landing/ServiceCard";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { Seo } from "@/components/Seo";
@@ -29,6 +30,7 @@ const servicesJsonLd = {
 
 const Services = () => {
   const headerAnim = useHeaderAnim();
+  const isMobile = useIsMobile();
   return (
     <PageLayout>
       <Seo
