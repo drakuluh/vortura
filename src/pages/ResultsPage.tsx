@@ -1,130 +1,89 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowDown, ArrowUp, TrendingUp, Quote, Star } from "lucide-react";
+import { ArrowRight, ArrowUp, ArrowDown, Quote, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { TrustedBy } from "@/components/landing/TrustedBy";
 import { Seo } from "@/components/Seo";
+import { SparklesText } from "@/components/ui/sparkles-text";
+import { Counter } from "@/components/effects/Counter";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useHeaderAnim, useRevealAnim } from "@/hooks/use-anim";
-import { cn } from "@/lib/utils";
 import { TESTIMONIALS } from "@/data/testimonials";
 
-const CATEGORIES = ["All", "AI Automation", "Web Design", "Workflow Automation", "E-Commerce"] as const;
-type Category = (typeof CATEGORIES)[number];
+type Metric = {
+  value: number;
+  suffix: string;
+  label: string;
+  direction: "up" | "down";
+  prefix?: string;
+};
 
 type CaseStudy = {
   title: string;
   industry: string;
-  challenge: string;
-  solution: string;
-  techStack: string[];
-  metrics: { value: string; label: string; direction: "up" | "down" }[];
-  category: Category;
-  featured?: boolean;
+  description: string;
+  metrics: Metric[];
 };
 
 const CASE_STUDIES: CaseStudy[] = [
   {
-    title: "Automated Voice Receptionist for Local Trades",
-    industry: "Residential HVAC & Plumbing Contractor",
-    challenge:
-      "High volume of missed incoming calls during active job site hours, leading to lost estimate opportunities and delayed customer response times.",
-    solution:
-      "Implemented an AI-powered voice receptionist configured to answer 24/7, capture caller job details, qualify service requests, and auto-book estimates directly into the CRM calendar.",
-    techStack: ["Retell AI", "Custom Webhooks", "Google Calendar API", "CRM"],
+    title: "AI Voice Receptionist for Local Trades",
+    industry: "HVAC & Plumbing",
+    description:
+      "AI-powered receptionist answers every call 24/7, captures job details, qualifies leads, and books estimates directly into the CRM.",
     metrics: [
-      { value: "100%", label: "Call answer rate", direction: "up" },
-      { value: "0", label: "Missed after-hours inquiries", direction: "down" },
-      { value: "<30s", label: "Automated booking flow", direction: "down" },
+      { value: 100, suffix: "%", label: "Call answer rate", direction: "up" },
+      { value: 0, suffix: "", label: "Missed after-hours inquiries", direction: "down" },
+      { value: 30, suffix: "s", label: "Avg booking time", prefix: "<", direction: "down" },
     ],
-    category: "AI Automation",
-    featured: true,
   },
   {
-    title: "Modern Web Redesign & Mobile Speed Optimization",
-    industry: "Independent Local Restaurant & Bar",
-    challenge:
-      "Outdated, slow-loading legacy website with non-responsive PDF menus, causing poor mobile user experience and high bounce rates on local search.",
-    solution:
-      "Built a modern, lightweight, mobile-first web application featuring instantly readable digital menus, streamlined table reservation links, and optimized local SEO structured data.",
-    techStack: ["React", "TypeScript", "Tailwind CSS", "Vercel"],
+    title: "Modern Website & Mobile Speed Overhaul",
+    industry: "Restaurant & Bar",
+    description:
+      "Rebuilt a slow legacy site into a lightning-fast mobile-first app with digital menus, reservations, and local SEO.",
     metrics: [
-      { value: "<0.8s", label: "Page load time", direction: "down" },
-      { value: "100", label: "Lighthouse mobile score", direction: "up" },
+      { value: 0.8, suffix: "s", label: "Page load time", prefix: "<", direction: "down" },
+      { value: 100, suffix: "", label: "Lighthouse mobile score", direction: "up" },
     ],
-    category: "Web Design",
   },
   {
-    title: "Inbound Lead Qualification & CRM Sync Pipeline",
-    industry: "Boutique Real Estate Brokerage",
-    challenge:
-      "Inbound web inquiries from property landing pages sitting unaddressed in email inboxes for hours, lowering overall lead conversion rates.",
-    solution:
-      "Designed an instant lead-capture workflow that parses web form inquiries, validates phone and email data, sends an instant SMS response, and assigns the lead to an available agent in real time.",
-    techStack: ["Custom Webhooks", "Automation Workflows", "Twilio API", "CRM Integration"],
+    title: "Instant Lead Qualification Pipeline",
+    industry: "Real Estate Brokerage",
+    description:
+      "Automated lead capture that parses web inquiries, validates data, sends instant SMS, and routes leads to agents in real time.",
     metrics: [
-      { value: "<60s", label: "Lead response time", direction: "down" },
-      { value: "100%", label: "Automated lead routing", direction: "up" },
+      { value: 60, suffix: "s", label: "Lead response time", prefix: "<", direction: "down" },
+      { value: 100, suffix: "%", label: "Automated lead routing", direction: "up" },
     ],
-    category: "Workflow Automation",
   },
   {
-    title: "E-Commerce Order Tracking & Support Automation",
-    industry: "Specialized Niche DTC Store",
-    challenge:
-      "Support inbox overwhelmed with repetitive \"Where is my order?\" tickets, delaying responses to complex customer inquiries.",
-    solution:
-      "Deployed an automated support interface connected directly to order fulfillment databases to provide instant order tracking updates and handle routine return policy inquiries.",
-    techStack: ["REST APIs", "Custom JavaScript Interface", "E-Commerce Platform API"],
+    title: "Order Tracking & Support Automation",
+    industry: "DTC E-Commerce",
+    description:
+      "Automated support interface that handles order tracking and return inquiries instantly, freeing the team for complex cases.",
     metrics: [
-      { value: "60%+", label: "Reduction in manual tickets", direction: "down" },
-      { value: "<1s", label: "Instant status retrieval", direction: "down" },
+      { value: 60, suffix: "%+", label: "Reduction in manual tickets", direction: "down" },
+      { value: 1, suffix: "s", label: "Instant status retrieval", prefix: "<", direction: "down" },
     ],
-    category: "E-Commerce",
   },
   {
-    title: "Automated Client Onboarding & Intake Workflow",
-    industry: "Professional Services & Consulting Firm",
-    challenge:
-      "Manual back-and-forth emails required to collect onboarding documents, client intake forms, and initial project deposits.",
-    solution:
-      "Built a unified, step-by-step client onboarding portal that automatically collects required documentation, generates dynamic agreements, and triggers initial team tasks upon kickoff.",
-    techStack: ["Custom Web Portal", "Stripe API", "Document Generation Workflows"],
+    title: "Client Onboarding Portal",
+    industry: "Professional Services",
+    description:
+      "Unified onboarding portal that collects documents, generates agreements, and triggers team tasks — days of back-and-forth reduced to minutes.",
     metrics: [
-      { value: "Days → Min", label: "Onboarding time", direction: "down" },
-      { value: "100%", label: "Automated doc & deposit collection", direction: "up" },
+      { value: 90, suffix: "%", label: "Faster onboarding", direction: "up" },
+      { value: 100, suffix: "%", label: "Automated doc collection", direction: "up" },
     ],
-    category: "Workflow Automation",
   },
 ];
 
 const ResultsPage = () => {
-  const [activeCategory, setActiveCategory] = useState<Category>("All");
-  const _isMobile = useIsMobile();
-
+  const isMobile = useIsMobile();
   const headerAnim = useHeaderAnim();
-  const reveal = useRevealAnim(20, 0.06);
-
-  const featured = CASE_STUDIES.find((c) => c.featured);
-  const grid = CASE_STUDIES.filter(
-    (c) => !c.featured && (activeCategory === "All" || c.category === activeCategory)
-  );
-
-  const MetricBadge = ({ m }: { m: CaseStudy["metrics"][number] }) => (
-    <div className="glass rounded-xl border border-white/10 px-4 py-3 min-w-[120px]">
-      <div className="flex items-center gap-1.5 mb-0.5">
-        {m.direction === "up" ? (
-          <ArrowUp className="w-3.5 h-3.5 text-emerald-400" />
-        ) : (
-          <ArrowDown className="w-3.5 h-3.5 text-emerald-400" />
-        )}
-        <span className="text-lg font-bold text-gradient">{m.value}</span>
-      </div>
-      <p className="text-[11px] text-muted-foreground">{m.label}</p>
-    </div>
-  );
+  const reveal = useRevealAnim();
 
   return (
     <PageLayout>
@@ -135,211 +94,165 @@ const ResultsPage = () => {
       <div className="relative overflow-hidden">
         <PageHeroBg />
 
-        <section className="relative z-10 pt-24 md:pt-24 lg:pt-32 pb-12 md:pb-16">
+        {/* ═══ HERO ═══════════════════════════════════════ */}
+        <section className="relative z-10 pt-24 md:pt-24 lg:pt-32 pb-10 md:pb-14">
           <div className="container max-w-5xl">
-            {/* Hero */}
-            <motion.div className="text-center mb-8 md:mb-10" {...headerAnim}>
+            <motion.div className="text-center mb-10 md:mb-14" {...headerAnim}>
               <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5">
                 Results that speak{" "}
-                <span className="text-gradient">for themselves.</span>
+                <SparklesText text="for themselves." className="text-gradient" />
               </h1>
-              <p className="text-sm text-muted-foreground lg:whitespace-nowrap">
+              <p className="text-sm text-muted-foreground">
                 Every engagement is measured by what moves the needle — more calls, more reviews, more revenue.
               </p>
             </motion.div>
 
-            {/* Featured case study */}
-            {featured && (
-              <motion.div className="mb-14 md:mb-20" {...reveal(0)}>
-                  <div className="glass-strong border-gradient rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 overflow-hidden">
-                      <div className="flex items-center gap-3 mb-6">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 text-[11px] font-mono uppercase tracking-widest text-primary">
-                          <TrendingUp className="w-3 h-3" />
-                          Featured
+            {/* ═══ FEATURED CASE STUDY ════════════════════════ */}
+            {CASE_STUDIES.slice(0, 1).map((study) => (
+              <motion.div
+                key={study.title}
+                className="glass-strong border-gradient rounded-2xl p-6 sm:p-8 md:p-10 mb-5"
+                {...reveal(0, isMobile)}
+              >
+                <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-3">
+                  {study.industry}
+                </p>
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight text-depth leading-snug mb-3">
+                  {study.title}
+                </h2>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-2xl">
+                  {study.description}
+                </p>
+                <div className="grid grid-cols-3 gap-3 md:gap-4">
+                  {study.metrics.map((m, j) => (
+                    <div key={j} className="glass rounded-xl p-4 md:p-5 text-center">
+                      <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                        {m.direction === "up" ? (
+                          <ArrowUp className="w-4 h-4 text-emerald-400" />
+                        ) : (
+                          <ArrowDown className="w-4 h-4 text-emerald-400" />
+                        )}
+                        <span className="text-2xl md:text-3xl font-bold text-gradient">
+                          {m.prefix ?? ""}
+                          <Counter to={m.value} suffix={m.suffix} decimals={m.value % 1 !== 0 ? 1 : 0} />
                         </span>
-                        <span className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground/50">
-                          {featured.category}
-                        </span>
                       </div>
-                      <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground/60 mb-2">
-                        {featured.industry}
-                      </p>
-                      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-depth leading-snug mb-4 max-w-3xl">
-                        {featured.title}
-                      </h2>
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-3 max-w-2xl">
-                        <span className="text-foreground/70 font-medium">Challenge:</span>{" "}
-                        {featured.challenge}
-                      </p>
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-2xl">
-                        <span className="text-foreground/70 font-medium">Solution:</span>{" "}
-                        {featured.solution}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5 mb-6">
-                        {featured.techStack.map((t) => (
-                          <span
-                            key={t}
-                            className="px-2.5 py-1 rounded-md bg-white/[0.04] border border-white/[0.08] text-[10px] font-mono text-muted-foreground/70"
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="flex flex-wrap gap-4 mb-8">
-                        {featured.metrics.map((m, i) => (
-                          <MetricBadge key={i} m={m} />
-                        ))}
-                      </div>
-                      <Link
-                        to="/contact"
-                        className="btn-hero-glass inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold"
-                      >
-                        Get started <ArrowRight className="w-4 h-4" />
-                      </Link>
-                  </div>
+                      <p className="text-xs text-muted-foreground">{m.label}</p>
+                    </div>
+                  ))}
+                </div>
               </motion.div>
-            )}
-          </div>
+            ))}
 
-          <TrustedBy />
-
-          <div className="container max-w-5xl">
-            {/* Category filter tabs */}
-            <motion.div className="flex flex-wrap justify-center gap-2 mb-10" {...reveal(1)}>
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setActiveCategory(cat)}
-                  className={cn(
-                    "px-4 py-2.5 rounded-lg text-xs font-mono uppercase tracking-wider transition-all border min-h-[44px] flex items-center",
-                    activeCategory === cat
-                      ? "border-primary bg-primary/15 text-primary"
-                      : "border-white/10 bg-white/[0.04] text-muted-foreground hover:border-white/20 hover:bg-white/[0.08]"
-                  )}
+            {/* ═══ CASE STUDY GRID ══════════════════════════════ */}
+            <div className="grid md:grid-cols-2 gap-5">
+              {CASE_STUDIES.slice(1).map((study, i) => (
+                <motion.div
+                  key={study.title}
+                  className="glass-strong border-gradient rounded-2xl p-5 sm:p-6 flex flex-col"
+                  {...reveal(i + 1, isMobile)}
                 >
-                  {cat}
-                </button>
-              ))}
-            </motion.div>
-
-            {/* Case study grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {grid.map((study, i) => (
-                <motion.div key={`${study.title}-${i}`} {...reveal(i + 2)}>
-                  <div className="h-full glass rounded-2xl border border-white/10 p-5 sm:p-6 flex flex-col">
-                    <div className="flex items-center justify-between mb-3">
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">
-                        {study.industry}
-                      </p>
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-primary/70 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-0.5">
-                        {study.category}
-                      </span>
-                    </div>
-                    <h3 className="text-[15px] font-semibold text-foreground/90 leading-snug mb-3">
-                      {study.title}
-                    </h3>
-                    <p className="text-xs text-muted-foreground/70 leading-relaxed mb-2">
-                      <span className="text-foreground/60 font-medium">Challenge:</span>{" "}
-                      {study.challenge}
-                    </p>
-                    <p className="text-xs text-muted-foreground/70 leading-relaxed mb-4 flex-1">
-                      <span className="text-foreground/60 font-medium">Solution:</span>{" "}
-                      {study.solution}
-                    </p>
-                    <div className="flex flex-wrap gap-1 mb-4">
-                      {study.techStack.map((t) => (
-                        <span
-                          key={t}
-                          className="px-2 py-0.5 rounded bg-white/[0.04] border border-white/[0.06] text-[9px] font-mono text-muted-foreground/60"
-                        >
-                          {t}
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-2">
+                    {study.industry}
+                  </p>
+                  <h2 className="text-base md:text-lg font-bold tracking-tight text-depth leading-snug mb-2">
+                    {study.title}
+                  </h2>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-1">
+                    {study.description}
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    {study.metrics.map((m, j) => (
+                      <div key={j} className="flex items-center gap-2 glass rounded-lg px-3 py-2">
+                        {m.direction === "up" ? (
+                          <ArrowUp className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        ) : (
+                          <ArrowDown className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        )}
+                        <span className="text-base md:text-lg font-bold text-gradient whitespace-nowrap">
+                          {m.prefix ?? ""}
+                          <Counter to={m.value} suffix={m.suffix} decimals={m.value % 1 !== 0 ? 1 : 0} />
                         </span>
-                      ))}
-                    </div>
-                    <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-white/[0.06]">
-                      {study.metrics.map((m, j) => (
-                        <div key={j} className="flex items-center gap-1.5">
-                          {m.direction === "up" ? (
-                            <ArrowUp className="w-3.5 h-3.5 text-emerald-400" />
-                          ) : (
-                            <ArrowDown className="w-3.5 h-3.5 text-emerald-400" />
-                          )}
-                          <span className="text-sm font-bold text-gradient">{m.value}</span>
-                          <span className="text-[10px] text-muted-foreground">{m.label}</span>
-                        </div>
-                      ))}
-                    </div>
+                        <span className="text-[11px] text-muted-foreground">{m.label}</span>
+                      </div>
+                    ))}
                   </div>
                 </motion.div>
               ))}
             </div>
+          </div>
+        </section>
 
-            {grid.length === 0 && (
-              <motion.p className="text-center text-muted-foreground/50 py-12 text-sm" {...reveal(2)}>
-                No case studies in this category yet — check back soon.
-              </motion.p>
-            )}
-
-            {/* ── Testimonials ──────────────────────────────── */}
-            <motion.div className="mt-16 md:mt-20" {...reveal(grid.length + 3)}>
-              <div className="text-center mb-8 md:mb-10">
-                <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5">
-                  What clients{" "}
-                  <span className="text-gradient">are saying.</span>
-                </h2>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-4 lg:gap-5">
-                {TESTIMONIALS.map((t, i) => (
-                  <motion.div
-                    key={i}
-                    className="glass rounded-2xl border border-white/10 p-5 md:p-6 flex flex-col"
-                    {...reveal(grid.length + 4 + i)}
-                  >
-                    {t.logo && (
-                      <div className="mb-4 flex items-center justify-center py-3 -mx-1 rounded-lg bg-white/[0.03] border border-white/[0.06]">
-                        <img
-                          src={t.logo}
-                          alt={t.company}
-                          className="h-8 md:h-10 w-auto max-w-[80%] object-contain opacity-60"
-                        />
-                      </div>
-                    )}
-                    <Quote className="w-6 h-6 text-primary/40 mb-3 shrink-0" />
-                    <p className="text-sm text-foreground/80 leading-relaxed mb-4 flex-1">
-                      "{t.quote}"
-                    </p>
-                    <div className="flex gap-0.5 mb-3">
-                      {[...Array(5)].map((_, j) => (
-                        <Star key={j} className="w-3.5 h-3.5 fill-primary text-primary" />
-                      ))}
-                    </div>
-                    <p className="text-xs font-medium text-foreground/70 mb-0.5">
-                      {t.role}, {t.company}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground mb-2">{t.location}</p>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-widest bg-primary/10 border border-primary/25 text-primary self-start">
-                      {t.service}
-                    </span>
-                  </motion.div>
-                ))}
-              </div>
+        {/* ═══ TESTIMONIALS ═══════════════════════════════ */}
+        <section className="relative z-10 py-10 md:py-14 lg:py-20">
+          <div className="container max-w-5xl">
+            <motion.div className="text-center mb-8 md:mb-12" {...headerAnim}>
+              <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5">
+                What clients{" "}
+                <SparklesText text="are saying." className="text-gradient" />
+              </h2>
             </motion.div>
 
-            {/* Bottom CTA */}
-            <motion.div className="text-center mt-16 md:mt-20" {...reveal(grid.length + 3)}>
-              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight text-depth mb-3">
-                Ready to see results like these?
+            <div className="grid md:grid-cols-3 gap-4 lg:gap-5">
+              {TESTIMONIALS.map((t, i) => (
+                <motion.div
+                  key={i}
+                  className="glass-strong border-gradient rounded-2xl p-5 md:p-6 flex flex-col"
+                  {...reveal(i, isMobile)}
+                >
+                  {t.logo && (
+                    <div className="mb-4 flex items-center justify-center py-3 -mx-1 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+                      <img
+                        src={t.logo}
+                        alt={t.company}
+                        className="h-8 md:h-10 w-auto max-w-[80%] object-contain opacity-60"
+                      />
+                    </div>
+                  )}
+                  <Quote className="w-6 h-6 text-primary/40 mb-3 shrink-0" />
+                  <p className="text-sm text-foreground/80 leading-relaxed mb-4 flex-1">
+                    "{t.quote}"
+                  </p>
+                  <div className="flex gap-0.5 mb-3">
+                    {[...Array(5)].map((_, j) => (
+                      <Star key={j} className="w-3.5 h-3.5 fill-primary text-primary" />
+                    ))}
+                  </div>
+                  <p className="text-xs font-medium text-foreground/70 mb-0.5">
+                    {t.role}, {t.company}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mb-2">{t.location}</p>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-widest bg-primary/10 border border-primary/25 text-primary self-start">
+                    {t.service}
+                  </span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ TRUSTED BY ═════════════════════════════════ */}
+        <TrustedBy />
+
+        {/* ═══ BOTTOM CTA ═════════════════════════════════ */}
+        <section className="relative z-10 py-10 md:py-14 lg:py-20">
+          <div className="container max-w-5xl">
+            <motion.div
+              className="glass-strong border-gradient rounded-3xl p-8 md:p-12 lg:p-16 text-center max-w-3xl mx-auto"
+              {...headerAnim}
+            >
+              <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-4 leading-tight">
+                Ready to see results{" "}
+                <SparklesText text="like these?" className="text-gradient" />
               </h2>
-              <p className="text-muted-foreground mb-6 text-sm max-w-md mx-auto">
+              <p className="text-sm text-muted-foreground mb-8 max-w-md mx-auto">
                 Book a free discovery call and we'll map out how automation can drive measurable growth for your business.
               </p>
               <Link
                 to="/contact"
-                className="btn-hero-glass inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-base font-semibold"
+                className="btn-hero-glass inline-flex items-center gap-2 px-10 py-4 rounded-xl text-lg font-semibold"
               >
-                Book a call <ArrowRight className="w-4 h-4" />
+                Book a call <ArrowRight className="w-5 h-5" />
               </Link>
             </motion.div>
           </div>

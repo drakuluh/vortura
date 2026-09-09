@@ -78,7 +78,7 @@ const Services = () => {
                     <Link
                       key={ind.slug}
                       to={`/industries/${ind.slug}`}
-                      className="glass rounded-2xl p-5 md:p-6 group hover:bg-white/[0.04] transition-colors"
+                      className="glass-strong border-gradient rounded-2xl p-5 md:p-6 group hover:bg-white/[0.04] transition-colors"
                     >
                       <div className="btn-hero-glass pointer-events-none w-10 h-10 rounded-xl flex items-center justify-center mb-4">
                         <Icon className="w-5 h-5 text-white" />
