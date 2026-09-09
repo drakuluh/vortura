@@ -18,178 +18,163 @@ const formatDate = (iso: string) =>
     day: "numeric",
   });
 
-/* ── Workplace illustration art per blog post ─────────────────────── */
+/* ── Generative abstract art per blog post (amber/gold palette) ───── */
 
-const sceneMissedCalls = (id: string) => (
-  <>
-    {/* Desk with phone */}
-    <rect x="60" y="140" width="280" height="8" rx="4" fill={`url(#sh1${id})`} />
-    {/* Phone body */}
-    <rect x="155" y="52" width="50" height="90" rx="8" fill={`url(#sh1${id})`} />
-    <rect x="161" y="60" width="38" height="66" rx="3" fill="#e8eaf0" />
-    {/* Missed call X marks on screen */}
-    <line x1="172" y1="76" x2="180" y2="84" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" />
-    <line x1="180" y1="76" x2="172" y2="84" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" />
-    <line x1="185" y1="90" x2="193" y2="98" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" />
-    <line x1="193" y1="90" x2="185" y2="98" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" />
-    {/* Ring waves */}
-    <path d="M220 60 Q235 50 230 35" fill="none" stroke={`url(#sh2${id})`} strokeWidth="3" strokeLinecap="round" />
-    <path d="M225 68 Q245 55 240 32" fill="none" stroke={`url(#sh2${id})`} strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
-    <path d="M230 76 Q255 60 248 30" fill="none" stroke={`url(#sh2${id})`} strokeWidth="2" strokeLinecap="round" opacity="0.4" />
-    {/* Dollar signs floating away */}
-    <text x="270" y="55" fontSize="18" fontWeight="700" fill={`url(#sh2${id})`} opacity="0.8" fontFamily="system-ui">$</text>
-    <text x="290" y="38" fontSize="14" fontWeight="700" fill={`url(#sh2${id})`} opacity="0.5" fontFamily="system-ui">$</text>
-    <text x="310" y="60" fontSize="11" fontWeight="700" fill={`url(#sh2${id})`} opacity="0.35" fontFamily="system-ui">$</text>
-    {/* Person silhouette (bust) at left */}
-    <circle cx="100" cy="80" r="18" fill={`url(#sh1${id})`} />
-    <ellipse cx="100" cy="125" rx="25" ry="20" fill={`url(#sh1${id})`} />
-    {/* Notification badge */}
-    <circle cx="208" cy="56" r="9" fill="#ef4444" />
-    <text x="208" y="60" textAnchor="middle" fontSize="11" fontWeight="700" fill="#fff" fontFamily="system-ui">3</text>
-    {/* Decorative dots */}
-    <circle cx="330" cy="100" r="4" fill="#8b5cf6" opacity="0.3" />
-    <circle cx="345" cy="85" r="3" fill="#3b82f6" opacity="0.25" />
-    <circle cx="50" cy="50" r="5" fill="#6d28d9" opacity="0.2" />
-  </>
-);
-
-const sceneNfcVsQr = (id: string) => (
-  <>
-    {/* Hand holding phone (right side) */}
-    {/* Hand shape */}
-    <path d="M280 170 Q275 130 278 100 Q280 85 290 82 Q300 80 302 95 L303 100 Q308 78 318 80 Q325 82 322 100 L320 105 Q328 88 335 92 Q340 96 334 115 L330 125 Q335 115 340 118 Q344 122 338 140 L325 170 Z" fill={`url(#sh2${id})`} />
-    {/* Phone in hand */}
-    <rect x="282" y="88" width="38" height="72" rx="6" fill={`url(#sh1${id})`} />
-    <rect x="287" y="94" width="28" height="52" rx="2" fill="#e8eaf0" />
-    {/* WiFi/NFC icon on phone screen */}
-    <path d="M295 115 Q301 108 307 115" fill="none" stroke="#6d28d9" strokeWidth="2" strokeLinecap="round" />
-    <path d="M292 120 Q301 110 310 120" fill="none" stroke="#6d28d9" strokeWidth="2" strokeLinecap="round" />
-    <path d="M289 125 Q301 112 313 125" fill="none" stroke="#6d28d9" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
-    {/* NFC card (left side) */}
-    <rect x="90" y="80" width="120" height="75" rx="8" fill={`url(#sh1${id})`} />
-    <rect x="100" y="90" width="40" height="28" rx="4" fill="#8b5cf6" opacity="0.5" />
-    {/* NFC waves between card and phone */}
-    <path d="M215 117 Q230 112 245 117" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
-    <path d="M222 110 Q235 103 248 110" fill="none" stroke="#8b5cf6" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-    <path d="M228 104 Q238 98 250 104" fill="none" stroke="#8b5cf6" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-    {/* Stars on the card */}
-    {[0, 1, 2, 3, 4].map((i) => (
-      <polygon key={`st${i}`} points={starPoints(152 + i * 12, 140, 4)} fill="#f59e0b" opacity="0.8" />
-    ))}
-    {/* Google "G" on card */}
-    <text x="115" y="108" fontSize="16" fontWeight="700" fill="#e8eaf0" fontFamily="system-ui" opacity="0.7">G</text>
-    {/* Decorative */}
-    <circle cx="60" cy="55" r="5" fill="#6d28d9" opacity="0.2" />
-    <circle cx="350" cy="50" r="4" fill="#3b82f6" opacity="0.2" />
-  </>
-);
-
-const sceneAutomations = (id: string) => (
-  <>
-    {/* Person silhouette (contractor) */}
-    <circle cx="100" cy="65" r="20" fill={`url(#sh1${id})`} />
-    <path d="M72 100 Q72 85 100 85 Q128 85 128 100 L130 145 L70 145 Z" fill={`url(#sh1${id})`} />
-    {/* Hard hat */}
-    <path d="M78 56 Q80 42 100 40 Q120 42 122 56 Z" fill={`url(#sh2${id})`} />
-    <rect x="75" y="54" width="50" height="6" rx="3" fill={`url(#sh2${id})`} />
-    {/* Gear icons floating right */}
-    <circle cx="195" cy="55" r="20" fill="none" stroke={`url(#sh1${id})`} strokeWidth="4" />
-    <circle cx="195" cy="55" r="8" fill={`url(#sh1${id})`} />
-    {/* Gear teeth */}
-    {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
-      <rect key={`t${a}`} x="193" y="33" width="4" height="8" rx="1" fill={`url(#sh1${id})`} transform={`rotate(${a} 195 55)`} />
-    ))}
-    <circle cx="250" cy="95" r="14" fill="none" stroke={`url(#sh2${id})`} strokeWidth="3" />
-    <circle cx="250" cy="95" r="5" fill={`url(#sh2${id})`} />
-    {[0, 60, 120, 180, 240, 300].map((a) => (
-      <rect key={`u${a}`} x="248.5" y="79.5" width="3" height="6" rx="1" fill={`url(#sh2${id})`} transform={`rotate(${a} 250 95)`} />
-    ))}
-    {/* Connecting lines */}
-    <line x1="215" y1="55" x2="236" y2="85" stroke="#8b5cf6" strokeWidth="1.5" opacity="0.4" strokeDasharray="4 3" />
-    {/* Checklist */}
-    <rect x="290" y="40" width="70" height="100" rx="6" fill={`url(#sh1${id})`} />
-    {[0, 1, 2, 3, 4].map((i) => (
-      <React.Fragment key={`ch${i}`}>
-        <rect x="300" y={52 + i * 18} width="10" height="10" rx="2" fill="#e8eaf0" opacity="0.7" />
-        {i < 3 && <path d={`M302 ${57 + i * 18} l3 3 l5 -5`} fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round" />}
-        <rect x="316" y={54 + i * 18} width={i < 3 ? "32" : "24"} height="5" rx="2" fill="#e8eaf0" opacity={i < 3 ? 0.5 : 0.3} />
-      </React.Fragment>
-    ))}
-    {/* "5" badge */}
-    <circle cx="285" cy="38" r="14" fill="#8b5cf6" />
-    <text x="285" y="43" textAnchor="middle" fontSize="15" fontWeight="800" fill="#fff" fontFamily="system-ui">5</text>
-    {/* Decorative */}
-    <circle cx="50" cy="170" r="5" fill="#6d28d9" opacity="0.2" />
-    <circle cx="175" cy="150" r="3" fill="#3b82f6" opacity="0.15" />
-  </>
-);
-
-const sceneDefault = (id: string) => (
-  <>
-    {/* Laptop */}
-    <rect x="120" y="60" width="160" height="100" rx="8" fill={`url(#sh1${id})`} />
-    <rect x="130" y="68" width="140" height="78" rx="3" fill="#e8eaf0" />
-    {/* Screen content - chart bars */}
-    {[0, 1, 2, 3, 4].map((i) => (
-      <rect key={`bar${i}`} x={145 + i * 22} y={120 - [30, 45, 35, 55, 40][i]} width="14" height={[30, 45, 35, 55, 40][i]} rx="2" fill={i % 2 === 0 ? "#6d28d9" : "#3b82f6"} opacity="0.7" />
-    ))}
-    {/* Laptop base */}
-    <path d="M100 160 L110 155 L290 155 L300 160 Z" fill={`url(#sh1${id})`} />
-    {/* Lightning bolt (automation) */}
-    <path d="M310 50 L295 90 L310 90 L290 130 L305 90 L290 90 Z" fill={`url(#sh2${id})`} opacity="0.8" />
-    {/* Floating notification dots */}
-    <circle cx="80" cy="80" r="8" fill="#8b5cf6" opacity="0.3" />
-    <circle cx="90" cy="65" r="5" fill="#3b82f6" opacity="0.25" />
-    <circle cx="340" cy="100" r="6" fill="#6d28d9" opacity="0.2" />
-    <circle cx="65" cy="140" r="4" fill="#3b82f6" opacity="0.15" />
-  </>
-);
-
-const starPoints = (cx: number, cy: number, r: number) => {
-  const pts: string[] = [];
-  for (let i = 0; i < 5; i++) {
-    const outerA = (Math.PI / 2) * -1 + (i * 2 * Math.PI) / 5;
-    const innerA = outerA + Math.PI / 5;
-    pts.push(`${cx + r * Math.cos(outerA)},${cy + r * Math.sin(outerA)}`);
-    pts.push(`${cx + r * 0.4 * Math.cos(innerA)},${cy + r * 0.4 * Math.sin(innerA)}`);
+function hashStr(str: string): number {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h + str.charCodeAt(i)) | 0;
   }
-  return pts.join(" ");
-};
+  return Math.abs(h);
+}
 
-const detectScene = (title: string): string => {
-  const t = title.toLowerCase();
-  if (/call|phone|voice|miss|answer/.test(t)) return "calls";
-  if (/nfc|tap|review card/.test(t)) return "nfc";
-  if (/automat|contractor|trade/.test(t)) return "automations";
-  return "default";
-};
+function seededRandom(seed: number) {
+  let s = seed;
+  return () => {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
 
-const scenes: Record<string, (id: string) => React.ReactNode> = {
-  calls: sceneMissedCalls,
-  nfc: sceneNfcVsQr,
-  automations: sceneAutomations,
-  default: sceneDefault,
-};
+const AMBER_PALETTE = ["#f59e0b", "#d97706", "#fbbf24", "#b45309", "#fcd34d", "#e8a317", "#ca8a04"];
+const ACCENT_PALETTE = ["#6d28d9", "#3b82f6", "#8b5cf6"];
 
-const BlogArt = ({ slug, title }: { slug: string; title: string }) => {
+const BlogArt = ({ slug }: { slug: string; title?: string }) => {
+  const W = 400;
+  const H = 225;
+  const seed = hashStr(slug);
+  const rand = seededRandom(seed);
+  const pick = (arr: string[]) => arr[Math.floor(rand() * arr.length)];
   const id = slug.replace(/[^a-z0-9]/g, "");
-  const scene = detectScene(title);
-  const render = scenes[scene] ?? scenes.default;
+
+  const blobs: React.ReactNode[] = [];
+  for (let i = 0; i < 3; i++) {
+    const cx = rand() * W;
+    const cy = rand() * H;
+    const r = 80 + rand() * 160;
+    blobs.push(
+      <circle key={`b${i}`} cx={cx} cy={cy} r={r} fill={`url(#blob${id}${i})`} />
+    );
+  }
+
+  const accentCx = rand() * W;
+  const accentCy = rand() * H;
+  const accentR = 100 + rand() * 100;
+
+  const shapes: React.ReactNode[] = [];
+  const shapeCount = 5 + Math.floor(rand() * 4);
+  for (let i = 0; i < shapeCount; i++) {
+    const type = Math.floor(rand() * 5);
+    const color = pick(AMBER_PALETTE);
+    const opacity = 0.15 + rand() * 0.35;
+    const x = rand() * W;
+    const y = rand() * H;
+
+    if (type === 0) {
+      const r = 20 + rand() * 60;
+      shapes.push(<circle key={`s${i}`} cx={x} cy={y} r={r} fill="none" stroke={color} strokeWidth={0.8 + rand() * 1.2} opacity={opacity} />);
+    } else if (type === 1) {
+      const r = 3 + rand() * 10;
+      shapes.push(<circle key={`s${i}`} cx={x} cy={y} r={r} fill={color} opacity={opacity + 0.1} />);
+    } else if (type === 2) {
+      const r = 30 + rand() * 50;
+      const sa = rand() * Math.PI * 2;
+      const ea = sa + Math.PI * (0.5 + rand());
+      const x1 = x + Math.cos(sa) * r;
+      const y1 = y + Math.sin(sa) * r;
+      const x2 = x + Math.cos(ea) * r;
+      const y2 = y + Math.sin(ea) * r;
+      shapes.push(<path key={`s${i}`} d={`M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`} fill="none" stroke={color} strokeWidth={0.8 + rand() * 1.5} strokeLinecap="round" opacity={opacity} />);
+    } else if (type === 3) {
+      const len = 40 + rand() * 120;
+      const angle = rand() * Math.PI * 2;
+      const x2 = x + Math.cos(angle) * len;
+      const y2 = y + Math.sin(angle) * len;
+      shapes.push(<line key={`s${i}`} x1={x} y1={y} x2={x2} y2={y2} stroke={color} strokeWidth="0.8" strokeDasharray={`${3 + rand() * 4} ${4 + rand() * 6}`} opacity={opacity} strokeLinecap="round" />);
+    } else {
+      const sz = 6 + rand() * 10;
+      shapes.push(
+        <g key={`s${i}`} opacity={opacity}>
+          <line x1={x - sz} y1={y} x2={x + sz} y2={y} stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+          <line x1={x} y1={y - sz} x2={x} y2={y + sz} stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+        </g>
+      );
+    }
+  }
+
+  const dots: { x: number; y: number }[] = [];
+  const dotCount = 6 + Math.floor(rand() * 5);
+  for (let i = 0; i < dotCount; i++) {
+    dots.push({ x: rand() * W, y: rand() * H });
+  }
+
+  const lines: React.ReactNode[] = [];
+  for (let i = 0; i < dots.length; i++) {
+    for (let j = i + 1; j < dots.length; j++) {
+      const dist = Math.hypot(dots[i].x - dots[j].x, dots[i].y - dots[j].y);
+      if (dist < 140) {
+        lines.push(<line key={`l${i}-${j}`} x1={dots[i].x} y1={dots[i].y} x2={dots[j].x} y2={dots[j].y} stroke={pick(AMBER_PALETTE)} strokeWidth="0.5" opacity={0.15 + rand() * 0.15} />);
+      }
+    }
+  }
+
+  const dotNodes = dots.map((d, i) => {
+    const color = pick(AMBER_PALETTE);
+    const r = 2 + rand() * 3;
+    return (
+      <g key={`d${i}`}>
+        <circle cx={d.x} cy={d.y} r={r} fill={color} opacity={0.4 + rand() * 0.35} />
+        <circle cx={d.x} cy={d.y} r={r + 3} fill="none" stroke={color} strokeWidth="0.5" opacity={0.15} />
+      </g>
+    );
+  });
+
+  const diamonds: React.ReactNode[] = [];
+  for (let i = 0; i < 4; i++) {
+    const x = rand() * W;
+    const y = rand() * H;
+    const sz = 2 + rand() * 4;
+    const color = pick(AMBER_PALETTE);
+    diamonds.push(<rect key={`dm${i}`} x={x - sz} y={y - sz} width={sz * 2} height={sz * 2} rx="1" fill={color} opacity={0.2 + rand() * 0.25} transform={`rotate(45 ${x} ${y})`} />);
+  }
+
+  const blobDefs = Array.from({ length: 3 }, (_, i) => {
+    const color = pick(AMBER_PALETTE);
+    return (
+      <radialGradient key={`bg${i}`} id={`blob${id}${i}`} cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stopColor={color} stopOpacity={0.2 + rand() * 0.2} />
+        <stop offset="100%" stopColor={color} stopOpacity={0} />
+      </radialGradient>
+    );
+  });
+
+  const accentColor = pick(ACCENT_PALETTE);
 
   return (
-    <svg viewBox="0 0 400 225" className="w-full h-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
-        <linearGradient id={`sh1${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#6d28d9" />
-          <stop offset="100%" stopColor="#0f0520" />
-        </linearGradient>
-        <linearGradient id={`sh2${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#3b82f6" />
-          <stop offset="100%" stopColor="#0a1628" />
-        </linearGradient>
+        {blobDefs}
+        <radialGradient id={`acc${id}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={accentColor} stopOpacity={0.12} />
+          <stop offset="100%" stopColor={accentColor} stopOpacity={0} />
+        </radialGradient>
+        <radialGradient id={`vig${id}`} cx="50%" cy="50%" r="70%">
+          <stop offset="0%" stopColor="transparent" />
+          <stop offset="100%" stopColor="#0a0a1a" />
+        </radialGradient>
+        <pattern id={`grid${id}`} width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(245,158,11,0.05)" strokeWidth="0.5" />
+        </pattern>
       </defs>
-      <rect width="400" height="225" fill="#eef0f5" rx="0" />
-      {render(id)}
+      <rect width={W} height={H} fill="#0a0a1a" />
+      <rect width={W} height={H} fill={`url(#grid${id})`} />
+      {blobs}
+      <circle cx={accentCx} cy={accentCy} r={accentR} fill={`url(#acc${id})`} />
+      {shapes}
+      {lines}
+      {dotNodes}
+      {diamonds}
+      <rect width={W} height={H} fill={`url(#vig${id})`} opacity={0.5} />
     </svg>
   );
 };

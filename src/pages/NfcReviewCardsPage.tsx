@@ -15,6 +15,7 @@ import {
   Nfc,
   Shield,
   Users,
+  X,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { PageLayout } from "@/components/landing/PageLayout";
@@ -22,6 +23,7 @@ import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { Seo } from "@/components/Seo";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { Counter } from "@/components/effects/Counter";
+import { services } from "@/data/services";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useHeaderAnim, useRevealAnim } from "@/hooks/use-anim";
 import { NfcTapAnimation } from "@/components/landing/NfcTapAnimation";
@@ -66,21 +68,25 @@ const STEPS = [
     num: "01",
     title: "Customer finishes their visit",
     desc: "A great meal, a clean cut, a finished repair — the moment a customer is happiest with your service.",
+    icon: Users,
   },
   {
     num: "02",
     title: "They tap the card",
     desc: "The card sits on the counter, table, or checkout area. One tap with any modern iPhone or Android — no app needed.",
+    icon: Smartphone,
   },
   {
     num: "03",
     title: "Google review page opens instantly",
     desc: "Your Google Business Profile review form loads in their browser, ready to go. No searching, no typing your business name.",
+    icon: Zap,
   },
   {
     num: "04",
     title: "Review posted in seconds",
     desc: "The customer taps a star rating, writes a quick note, and hits submit. The whole thing takes under 30 seconds.",
+    icon: Star,
   },
 ];
 
@@ -129,6 +135,7 @@ const NfcReviewCardsPage = () => {
   const isMobile = useIsMobile();
   const header = useHeaderAnim();
   const reveal = useRevealAnim();
+  const nfcService = services.find((s) => s.slug === "nfc-review-cards")!;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -150,102 +157,122 @@ const NfcReviewCardsPage = () => {
       <div className="relative overflow-hidden">
         <PageHeroBg />
 
-        {/* ── Hero ──────────────────────────────────────────── */}
-        <section className="relative z-10 pt-12 md:pt-14 lg:pt-24 pb-10 md:pb-14 lg:pb-20">
-          <div className="container max-w-5xl">
-            <div className="flex justify-center mb-8">
-              <Link
-                to="/services"
-                className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors py-2 px-3 -ml-3 rounded-lg hover:bg-white/[0.05]"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" /> All services
-              </Link>
-            </div>
+        {/* ── Back link ──────────────────────────────────── */}
+        <div className="relative z-10 container max-w-5xl">
+          <div className="pt-12 md:pt-14 lg:pt-24 mt-12 md:mt-10 lg:mt-8">
+            <Link
+              to="/services"
+              className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors py-2 px-3 -ml-3 rounded-lg hover:bg-white/[0.05]"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" /> All services
+            </Link>
+          </div>
+        </div>
 
-            <motion.div className="max-w-3xl mx-auto text-center" {...header}>
-              <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-4">
-                TAP &middot; REVIEW &middot; RANK
-              </p>
-              <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-4 leading-tight">
-                Turn every visit into a{" "}
-                <SparklesText text="5-star review." className="text-gradient" />
-              </h1>
-              <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto mb-8">
-                Customers don't leave reviews because it's awkward to ask and
-                too many steps to follow through. NFC cards fix both — one
-                tap and they're writing a review.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link
-                  to="/contact"
-                  className="btn-hero-glass inline-flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold"
-                >
-                  Get your cards <ArrowRight className="w-4 h-4" />
-                </Link>
-                <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-                  From $49
+        {/* ── Hero ──────────────────────────────────────────── */}
+        <section className="relative z-10 pt-6 md:pt-8 pb-10 md:pb-12 lg:pb-16">
+          <div className="container max-w-5xl">
+            <motion.div className="mx-auto text-center mb-6 md:mb-8" {...header}>
+              <div className="flex items-center justify-center gap-3 mb-5">
+                <div className="btn-hero-glass pointer-events-none w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
+                  <Nfc className="w-6 h-6 text-white" />
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 text-[11px] font-mono uppercase tracking-widest text-primary">
+                  <Clock className="w-3 h-3" />
+                  Installed in days
                 </span>
               </div>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-depth leading-[1.08] lg:whitespace-nowrap">
+                Turn happy customers into{" "}
+                <SparklesText text="5-star reviews." className="text-gradient" />
+              </h1>
             </motion.div>
 
-            <motion.div className="mt-10 max-w-md mx-auto" {...reveal(2)}>
-              <NfcTapAnimation />
-            </motion.div>
+            <div className="lg:grid lg:grid-cols-[1fr_380px] lg:gap-10 xl:gap-14 lg:items-end">
+              <motion.div className="mb-8 lg:mb-0 flex flex-col" {...reveal(1)}>
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8 max-w-xl mx-auto text-center lg:text-left lg:mx-0">
+                  Customers don't leave reviews because it's awkward to ask and
+                  too many steps to follow through. NFC cards fix both — one
+                  tap on a card at your counter or table and their phone opens
+                  your Google review page instantly. No app, no QR scanning, no
+                  searching for your business name. The whole process takes under
+                  30 seconds, right when satisfaction is highest.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Link
+                    to="/contact"
+                    className="btn-hero-glass inline-flex items-center justify-center gap-2.5 px-10 py-4 rounded-xl text-lg font-semibold w-full sm:w-auto"
+                  >
+                    Get your cards <ArrowRight className="w-5 h-5" />
+                  </Link>
+                  <div className="flex items-center gap-1.5 px-6 py-4 rounded-xl glass-strong border-gradient">
+                    <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">From</span>
+                    <span className="text-2xl font-bold text-gradient">$49</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="glass-strong border-gradient rounded-2xl p-5"
+                {...reveal(2)}
+              >
+                <NfcTapAnimation />
+              </motion.div>
+            </div>
           </div>
         </section>
 
-        {/* ── Why Google Reviews Matter ─────────────────────── */}
-        <section className="relative z-10 py-10 md:py-14 lg:py-20">
+        {/* ── Problem / Approach ─────────────────────────────── */}
+        <section className="relative z-10 py-10 md:py-12 lg:py-16">
           <div className="container max-w-5xl">
-            <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...header}>
-              <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                Google reviews are your{" "}
-                <SparklesText text="growth engine." className="text-gradient" />
+            <motion.div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-end mb-6 md:mb-8" {...reveal(0)}>
+              <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
+                The <SparklesText text="problem." className="text-gradient-danger" colors={{ first: "#FF4444", second: "#FF8C00" }} sparklesCount={6} />
               </h2>
-              <p className="text-sm text-muted-foreground">
-                The data is clear — reviews drive rankings, trust, and revenue.
-              </p>
+              <span className="hidden md:block text-base md:text-lg font-semibold text-muted-foreground px-4 pb-1">
+                Vs.
+              </span>
+              <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
+                Our <SparklesText text="approach." className="text-gradient-success" colors={{ first: "#2ECC71", second: "#27AE60" }} sparklesCount={6} />
+              </h2>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-4 lg:gap-5 max-w-4xl mx-auto">
-              {[
-                {
-                  icon: Star,
-                  title: "Buyers check reviews first",
-                  body: "Industry research consistently shows that roughly 9 in 10 consumers read Google reviews before choosing a local business. Google is the first place most people look — ahead of Yelp, Facebook, and TripAdvisor.",
-                },
-                {
-                  icon: MapPin,
-                  title: "Reviews control your local ranking",
-                  body: "Star rating and review count are key factors in Google's local map-pack algorithm. Businesses with 40 or more reviews typically see around 3× more clicks and are significantly more likely to appear in local search results.",
-                },
-                {
-                  icon: Clock,
-                  title: "Freshness matters as much as volume",
-                  body: "Both Google and consumers weight recent reviews heavily. Most studies find that reviews older than a month or two carry significantly less influence — a steady stream of new reviews outperforms a one-time burst.",
-                },
-                {
-                  icon: TrendingUp,
-                  title: "Higher stars, higher revenue",
-                  body: "Commonly cited research, including studies from Harvard Business School, links each additional star to a 5–9% increase in revenue. And the bar keeps rising — a growing share of consumers now won't consider businesses rated below 4.5 stars.",
-                },
-              ].map((item, i) => (
-                <motion.div
-                  key={item.title}
-                  className="glass rounded-2xl p-5 md:p-6"
-                  {...reveal(i)}
-                >
-                  <div className="btn-hero-glass pointer-events-none w-10 h-10 rounded-xl flex items-center justify-center mb-4">
-                    <item.icon className="w-5 h-5 text-white" />
-                  </div>
-                  <h3 className="text-base md:text-lg font-bold tracking-tight text-depth mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {item.body}
-                  </p>
-                </motion.div>
-              ))}
+            <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+              <motion.div className="glass rounded-2xl p-6 md:p-8 border-gradient-danger" {...reveal(1)}>
+                <ul className="space-y-4">
+                  {[
+                    "Happy customers rarely leave reviews — too many steps",
+                    "They forget, get distracted, or can't find your listing",
+                    "One unhappy customer always finds the time",
+                    "Your star rating stays flat while competitors climb",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <span className="mt-0.5 w-5 h-5 rounded-md bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
+                        <X className="w-3 h-3 text-red-400" />
+                      </span>
+                      <span className="text-sm text-muted-foreground leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              <motion.div className="glass-strong rounded-2xl p-6 md:p-8 border-gradient-success" {...reveal(2)}>
+                <ul className="space-y-4">
+                  {[
+                    "One tap on an NFC card opens your Google review page",
+                    "No searching, no app, no QR scanning required",
+                    "The moment of delight becomes a 5-star review",
+                    "Reviews stack up week after week, automatically",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <span className="mt-0.5 w-5 h-5 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                        <Check className="w-3 h-3 text-emerald-400" />
+                      </span>
+                      <span className="text-sm text-foreground/85 leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
             </div>
           </div>
         </section>
@@ -360,33 +387,19 @@ const NfcReviewCardsPage = () => {
         {/* ── How It Works ──────────────────────────────────── */}
         <section className="relative z-10 py-10 md:py-14 lg:py-20">
           <div className="container max-w-5xl">
-            <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...header}>
+            <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...reveal(0)}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                From tap to{" "}
-                <SparklesText text="5 stars." className="text-gradient" />
+                How it <SparklesText text="works." className="text-gradient" />
               </h2>
               <p className="text-sm text-muted-foreground">
-                The entire process takes under 30 seconds.
+                A clear, proven process from start to finish.
               </p>
             </motion.div>
 
             <div className="max-w-2xl mx-auto relative">
-              {/* Vertical timeline line */}
               <div className="absolute left-5 md:left-6 top-3 bottom-3 w-px">
-                <div
-                  className="absolute inset-0 opacity-60"
-                  style={{
-                    background:
-                      "linear-gradient(to bottom, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--primary)) 90%, transparent 100%)",
-                  }}
-                />
-                <div
-                  className="absolute inset-0 blur-md"
-                  style={{
-                    background:
-                      "linear-gradient(to bottom, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--primary)) 90%, transparent 100%)",
-                  }}
-                />
+                <div className="absolute inset-0 opacity-60" style={{ background: "linear-gradient(to bottom, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--primary)) 90%, transparent 100%)" }} />
+                <div className="absolute inset-0 blur-md" style={{ background: "linear-gradient(to bottom, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--primary)) 90%, transparent 100%)" }} />
               </div>
 
               <div className="space-y-5 md:space-y-6">
@@ -398,34 +411,22 @@ const NfcReviewCardsPage = () => {
                         initial={isMobile ? false : { y: 80, opacity: 0, scale: 0.5 }}
                         {...(isMobile
                           ? { animate: { y: 0, opacity: 1, scale: 1 } }
-                          : {
-                              whileInView: { y: 0, opacity: 1, scale: 1 },
-                              viewport: { once: true, margin: "-100px" },
-                            })}
-                        transition={{
-                          type: "spring",
-                          stiffness: 260,
-                          damping: 14,
-                          delay: i * 0.18,
-                        }}
+                          : { whileInView: { y: 0, opacity: 1, scale: 1 }, viewport: { once: true, margin: "-100px" } })}
+                        transition={{ type: "spring", stiffness: 260, damping: 14, delay: i * 0.18 }}
                       >
-                        <Zap className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                        <step.icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
                       </motion.div>
                     </div>
 
                     <motion.div className="glass rounded-2xl p-4 md:p-5 flex-1" {...reveal(i)}>
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="font-mono text-[11px] text-primary tracking-widest">
-                          STEP {step.num}
-                        </span>
+                        <span className="font-mono text-[11px] text-primary tracking-widest">STEP {step.num}</span>
                         <div className="h-px flex-1 bg-white/[0.07]" />
                       </div>
                       <h3 className="text-base md:text-lg font-bold tracking-tight text-depth mb-1.5">
                         {step.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {step.desc}
-                      </p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
                     </motion.div>
                   </div>
                 ))}
@@ -434,37 +435,33 @@ const NfcReviewCardsPage = () => {
           </div>
         </section>
 
-        {/* ── Expected Impact ───────────────────────────────── */}
+        {/* ── Results ──────────────────────────────────────── */}
         <section className="relative z-10 py-10 md:py-14 lg:py-20">
           <div className="container max-w-5xl">
-            <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...header}>
+            <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...reveal(0)}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                Typical{" "}
-                <SparklesText text="results." className="text-gradient" />
+                Results you can <SparklesText text="expect." className="text-gradient" />
               </h2>
               <p className="text-sm text-muted-foreground">
-                Illustrative ranges based on general industry data for local businesses using NFC review cards.
+                What our clients typically see after setup.
               </p>
             </motion.div>
-
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              {IMPACT_STATS.map((stat, i) => (
+            <div className="max-w-4xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              {nfcService.stats.map((stat, i) => (
                 <motion.div
                   key={stat.label}
-                  className="glass rounded-2xl p-5 md:p-6 aspect-square flex flex-col items-center justify-center text-center"
+                  className="glass-strong rounded-2xl p-5 md:p-6 text-center flex flex-col items-center justify-between aspect-square"
                   {...reveal(i)}
                 >
-                  <div className="flex-1" />
-                  <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient leading-none">
+                  <div />
+                  <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient">
                     <Counter
                       to={stat.value}
                       suffix={stat.suffix}
                       decimals={stat.decimals ?? 0}
                     />
                   </p>
-                  <div className="flex-1 flex items-end pb-1">
-                    <p className="text-xs text-muted-foreground leading-snug">{stat.label}</p>
-                  </div>
+                  <p className="text-xs md:text-sm text-muted-foreground">{stat.label}</p>
                 </motion.div>
               ))}
             </div>
@@ -474,142 +471,86 @@ const NfcReviewCardsPage = () => {
         {/* ── What's Included ───────────────────────────────── */}
         <section className="relative z-10 py-10 md:py-14 lg:py-20">
           <div className="container max-w-5xl">
-            <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...header}>
+            <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...reveal(0)}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                Everything{" "}
-                <SparklesText text="included." className="text-gradient" />
+                Everything <SparklesText text="included." className="text-gradient" />
               </h2>
               <p className="text-sm text-muted-foreground">
                 Cards, stand, setup, and training — ready to collect reviews from day one.
               </p>
             </motion.div>
-
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
               {INCLUDED.map((item, i) => (
                 <motion.div
                   key={item.text}
-                  className="glass rounded-2xl p-5 flex items-start gap-4"
+                  className="glass rounded-2xl p-5 flex items-center gap-4"
                   {...reveal(i)}
                 >
                   <div className="btn-hero-glass pointer-events-none w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
                     <item.icon className="w-5 h-5 text-white" />
                   </div>
-                  <p className="text-sm text-foreground/85 leading-relaxed pt-2">{item.text}</p>
+                  <p className="text-sm text-foreground/85 leading-relaxed">{item.text}</p>
                 </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── Pricing ───────────────────────────────────────── */}
+        {/* ── FAQ ────────────────────────────────────────────── */}
+        <section className="relative z-10 py-10 md:py-12 lg:py-16">
+          <div className="container max-w-2xl">
+            <motion.div className="text-center mb-6 md:mb-8" {...reveal(0)}>
+              <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth mb-2.5">
+                Common <SparklesText text="questions." className="text-gradient" />
+              </h2>
+              <p className="text-sm md:text-[15px] text-muted-foreground">
+                Everything you need to know before getting started.
+              </p>
+            </motion.div>
+            <Accordion type="single" collapsible className="space-y-3">
+              {FAQS.map((item, i) => (
+                <AccordionItem
+                  key={item.q}
+                  value={`faq-${i}`}
+                  className="glass rounded-2xl border border-white/10 px-5 md:px-6 overflow-hidden"
+                >
+                  <AccordionTrigger className="py-4 md:py-5 text-left text-[15px] md:text-base font-semibold tracking-tight hover:no-underline">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-5 text-sm md:text-[15px] leading-relaxed text-muted-foreground">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </section>
+
+        {/* ── Final CTA ─────────────────────────────────────── */}
         <section className="relative z-10 py-10 md:py-14 lg:py-20">
-          <div className="container max-w-5xl">
-            <motion.div className="max-w-md mx-auto" {...reveal(0)}>
-              <div className="glass-strong border-gradient rounded-2xl p-6 md:p-8 text-center relative overflow-hidden">
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-primary opacity-[0.05]"
-                />
-                <div className="relative">
-                  <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-3">
-                    One-time purchase
-                  </p>
-                  <p className="flex items-baseline justify-center gap-1 leading-none mb-2">
-                    <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground mr-1">
-                      From
-                    </span>
-                    <span className="text-5xl md:text-6xl font-bold text-gradient">$49</span>
-                  </p>
-                  <p className="text-sm text-muted-foreground mb-6">
-                    No subscriptions. No monthly fees. Cards are yours forever.
-                  </p>
-
-                  <ul className="text-left space-y-3 mb-8 max-w-xs mx-auto">
-                    {[
-                      "Custom-branded NFC cards",
-                      "Branded counter stand",
-                      "QR code fallback included",
-                      "On-site setup + staff training",
-                      "Installed in days",
-                    ].map((item) => (
-                      <li key={item} className="flex items-start gap-3">
-                        <span className="mt-0.5 w-5 h-5 rounded-md bg-primary/15 border border-primary/30 flex items-center justify-center shrink-0">
-                          <Check className="w-3 h-3 text-primary" />
-                        </span>
-                        <span className="text-sm text-foreground/85">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    to="/contact"
-                    className="btn-hero-glass inline-flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold w-full justify-center"
-                  >
-                    Get your cards <ArrowRight className="w-4 h-4" />
-                  </Link>
-
-                  <p className="text-center mt-4">
-                    <Link
-                      to="/contact"
-                      className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      Have questions? Book a call
-                    </Link>
-                  </p>
+          <div className="container max-w-3xl">
+            <motion.div
+              className="glass-strong border-gradient rounded-3xl p-8 md:p-12 lg:p-16 text-center"
+              {...reveal(0)}
+            >
+              <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth mb-3">
+                Ready to get <SparklesText text="started?" className="text-gradient" />
+              </h2>
+              <p className="text-sm md:text-base text-muted-foreground mb-8 max-w-md mx-auto">
+                Order now and we'll have everything set up within days.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  to="/contact"
+                  className="btn-hero-glass inline-flex items-center justify-center gap-2.5 px-10 py-4 rounded-xl text-lg font-semibold w-full sm:w-auto"
+                >
+                  Get your cards <ArrowRight className="w-5 h-5" />
+                </Link>
+                <div className="flex items-center gap-1.5 px-6 py-4 rounded-xl glass-strong border-gradient">
+                  <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">From</span>
+                  <span className="text-2xl font-bold text-gradient">$49</span>
                 </div>
               </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* ── FAQ ────────────────────────────────────────────── */}
-        <section className="relative z-10 py-10 md:py-14 lg:py-20">
-          <div className="container max-w-5xl">
-            <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...header}>
-              <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                Common{" "}
-                <SparklesText text="questions." className="text-gradient" />
-              </h2>
-            </motion.div>
-
-            <div className="max-w-2xl mx-auto">
-              <Accordion type="single" collapsible className="space-y-3">
-                {FAQS.map((item, i) => (
-                  <AccordionItem
-                    key={item.q}
-                    value={`faq-${i}`}
-                    className="glass rounded-2xl border border-white/10 px-5 md:px-6 overflow-hidden"
-                  >
-                    <AccordionTrigger className="py-4 md:py-5 text-left text-[15px] md:text-base font-semibold tracking-tight hover:no-underline">
-                      {item.q}
-                    </AccordionTrigger>
-                    <AccordionContent className="pb-5 text-sm md:text-[15px] leading-relaxed text-muted-foreground">
-                      {item.a}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
-          </div>
-        </section>
-
-        {/* ── CTA ───────────────────────────────────────────── */}
-        <section className="relative z-10 py-10 md:py-14 lg:py-20">
-          <div className="container max-w-5xl">
-            <motion.div className="max-w-2xl mx-auto text-center" {...header}>
-              <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-4 leading-tight">
-                Ready to stack{" "}
-                <SparklesText text="5-star reviews?" className="text-gradient" />
-              </h2>
-              <p className="text-sm text-muted-foreground mb-8">
-                Most businesses are set up and collecting new reviews within a week.
-              </p>
-              <Link
-                to="/contact"
-                className="btn-hero-glass inline-flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold"
-              >
-                Book a call <ArrowRight className="w-4 h-4" />
-              </Link>
             </motion.div>
           </div>
         </section>

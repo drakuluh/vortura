@@ -11,6 +11,7 @@ const PARTNERS = [
   { name: "Google", src: "/logos/google.png" },
   { name: "Supabase", src: "/logos/supabase.png" },
   { name: "Lovable", src: "/logos/lovable.png" },
+  { name: "Higgsfield", src: "/logos/higgsfield.png" },
 ];
 
 const LogoTile = ({ name, src }: { name: string; src: string }) => (

@@ -204,9 +204,9 @@ const ProcessPage = () => {
         <PageHeroBg />
 
         {/* ── Hero ──────────────────────────────────────── */}
-        <section className="relative z-10 pt-16 md:pt-20 lg:pt-28 pb-12 md:pb-16 lg:pb-20">
+        <section className="relative z-10 pt-12 md:pt-14 lg:pt-24 pb-12 md:pb-16 lg:pb-20">
           <div className="container">
-            <motion.div className="max-w-3xl mx-auto text-center" {...header}>
+            <motion.div className="max-w-3xl mx-auto text-center mt-12 md:mt-10 lg:mt-8" {...header}>
               <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth mb-2.5 whitespace-nowrap">
                 From first call to{" "}
                 <SparklesText text="full automation." className="text-gradient" />
@@ -224,20 +224,20 @@ const ProcessPage = () => {
             <div className="max-w-4xl mx-auto">
               <motion.div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-end mb-6 md:mb-8" {...header}>
                 <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
-                  The old way
+                  The <SparklesText text="old way" className="text-gradient-danger" colors={{ first: "#FF4444", second: "#FF8C00" }} sparklesCount={6} />
                 </h2>
                 <span className="hidden md:block text-base md:text-lg font-semibold text-muted-foreground px-4 pb-1">
                   Vs.
                 </span>
                 <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
-                  <SparklesText text="The Vortura way" className="text-gradient" />
+                  The <SparklesText text="Vortura way" className="text-gradient" />
                 </h2>
               </motion.div>
 
               <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                 {/* Old way */}
                 <motion.div
-                  className="glass rounded-2xl p-6 md:p-8 border border-white/[0.06]"
+                  className="glass rounded-2xl p-6 md:p-8 border-gradient-danger"
                   {...reveal(0)}
                 >
                   <ul className="space-y-4">

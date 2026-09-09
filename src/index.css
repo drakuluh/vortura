@@ -395,6 +395,46 @@
     pointer-events: none;
   }
 
+  .border-gradient-danger {
+    position: relative;
+    background-clip: padding-box;
+    border: 1px solid transparent;
+  }
+  .border-gradient-danger::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, hsl(0 85% 58% / 0.6), hsl(25 100% 55% / 0.4) 50%, hsl(var(--border) / 0.5));
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .border-gradient-success {
+    position: relative;
+    background-clip: padding-box;
+    border: 1px solid transparent;
+  }
+  .border-gradient-success::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, hsl(145 70% 45% / 0.6), hsl(160 60% 40% / 0.4) 50%, hsl(var(--border) / 0.5));
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
   /* Soft horizontal divider with inner glow — separates page bands. */
   .section-divider {
     height: 1px;
@@ -430,6 +470,28 @@
     filter:
       drop-shadow(0 1px 1px hsl(230 40% 0% / 0.25))
       drop-shadow(0 4px 12px hsl(230 40% 0% / 0.2));
+  }
+
+  .text-gradient-danger {
+    background: linear-gradient(135deg, hsl(0 85% 58%), hsl(25 100% 55%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter:
+      drop-shadow(0 1px 1px hsl(0 60% 10% / 0.3))
+      drop-shadow(0 4px 14px hsl(0 80% 40% / 0.25));
+  }
+
+  .text-gradient-success {
+    background: linear-gradient(135deg, hsl(145 70% 45%), hsl(160 60% 40%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter:
+      drop-shadow(0 1px 1px hsl(145 50% 10% / 0.3))
+      drop-shadow(0 4px 14px hsl(145 60% 35% / 0.25));
   }
 
   .grid-bg {

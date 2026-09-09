@@ -5,6 +5,9 @@ import {
   Nfc,
   Mail,
   Database,
+  UtensilsCrossed,
+  Wrench,
+  Building2,
   type LucideIcon,
 } from "lucide-react";
 
@@ -15,15 +18,24 @@ export type IndustryService = {
   slug: string;
 };
 
+export type IndustryStat = {
+  value: number;
+  suffix: string;
+  label: string;
+  decimals?: number;
+};
+
 export type Industry = {
   slug: string;
   name: string;
+  icon: LucideIcon;
   headline: string;
   accentWord: string;
   subtext: string;
   painPoints: string[];
+  solutions: string[];
   services: IndustryService[];
-  stats: { value: string; label: string }[];
+  stats: IndustryStat[];
   ctaHeadline: string;
   ctaAccent: string;
 };
@@ -32,6 +44,7 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "restaurants",
     name: "Restaurants",
+    icon: UtensilsCrossed,
     headline: "Fill every seat, answer every",
     accentWord: "call.",
     subtext:
@@ -41,6 +54,12 @@ export const INDUSTRIES: Industry[] = [
       "Empty Google review pages while competitors stack up 5-star ratings",
       "Menus that cost thousands to reprint every time prices change",
       "No follow-up system to bring one-time diners back for a second visit",
+    ],
+    solutions: [
+      "AI answers every call — during the rush, after hours, holidays — and books the reservation",
+      "NFC cards at every table turn happy diners into 5-star Google reviews automatically",
+      "Digital QR menus you update instantly — no reprinting, no developer",
+      "Automated email campaigns bring one-time diners back for seconds",
     ],
     services: [
       {
@@ -69,9 +88,9 @@ export const INDUSTRIES: Industry[] = [
       },
     ],
     stats: [
-      { value: "40–60%", label: "of restaurant calls go unanswered during peak hours" },
-      { value: "70%+", label: "tap-to-review conversion with NFC cards at the table" },
-      { value: "$6,000+", label: "saved annually by switching to digital QR menus" },
+      { value: 60, suffix: "%", label: "Of restaurant calls go unanswered during peak hours" },
+      { value: 70, suffix: "%+", label: "Tap-to-review conversion with NFC cards at the table" },
+      { value: 6, suffix: "k+", label: "Saved annually by switching to digital QR menus" },
     ],
     ctaHeadline: "Ready to fill more",
     ctaAccent: "seats?",
@@ -79,6 +98,7 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "trades",
     name: "Trades & Contractors",
+    icon: Wrench,
     headline: "Book more jobs, miss",
     accentWord: "nothing.",
     subtext:
@@ -88,6 +108,12 @@ export const INDUSTRIES: Industry[] = [
       "Quotes sent and never followed up on, leaving revenue on the table",
       "A list of past customers collecting dust instead of generating repeat business",
       "A basic website that doesn't rank on Google or generate any leads",
+    ],
+    solutions: [
+      "AI answers every call — even at 9 PM on a Saturday — books the job and texts the customer",
+      "Automated follow-up sequences recover 15–25% of cold quotes",
+      "Database reactivation turns past customers into repeat revenue with seasonal reminders",
+      "A fast, mobile-first website with click-to-call that ranks and generates leads weekly",
     ],
     services: [
       {
@@ -116,9 +142,9 @@ export const INDUSTRIES: Industry[] = [
       },
     ],
     stats: [
-      { value: "80%", label: "of callers who hit voicemail hang up without leaving a message" },
-      { value: "15–25%", label: "of cold quotes recovered with automated follow-up sequences" },
-      { value: "3×", label: "more Google clicks for businesses with 40+ reviews vs. a handful" },
+      { value: 80, suffix: "%", label: "Of callers who hit voicemail hang up without leaving a message" },
+      { value: 25, suffix: "%", label: "Of cold quotes recovered with automated follow-up sequences" },
+      { value: 3, suffix: "×", label: "More Google clicks for businesses with 40+ reviews" },
     ],
     ctaHeadline: "Ready to book more",
     ctaAccent: "jobs?",
@@ -126,6 +152,7 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "real-estate",
     name: "Real Estate",
+    icon: Building2,
     headline: "Capture every lead, close",
     accentWord: "faster.",
     subtext:
@@ -135,6 +162,12 @@ export const INDUSTRIES: Industry[] = [
       "Spending hours on the phone with unqualified buyers instead of closing deals",
       "No systematic follow-up for past clients who could send referrals",
       "A website that looks like every other agent's IDX template",
+    ],
+    solutions: [
+      "AI qualifies inbound leads instantly — asks budget, timeline, and preferences — then routes hot leads to you",
+      "Automated sequences nurture cold leads so you focus on closings, not chasing",
+      "Monthly newsletters keep you top-of-mind for referrals from past clients",
+      "A distinctive website that showcases listings and ranks for local searches",
     ],
     services: [
       {
@@ -163,9 +196,9 @@ export const INDUSTRIES: Industry[] = [
       },
     ],
     stats: [
-      { value: "78%", label: "of buyers go with the first agent who responds" },
-      { value: "5–9%", label: "revenue increase per additional Google star (Harvard Business School)" },
-      { value: "12×", label: "more likely to get a referral from a client you stay in touch with" },
+      { value: 78, suffix: "%", label: "Of buyers go with the first agent who responds" },
+      { value: 5, suffix: "-9%", label: "Revenue increase per additional Google star" },
+      { value: 12, suffix: "×", label: "More likely to get a referral from a client you stay in touch with" },
     ],
     ctaHeadline: "Ready to close",
     ctaAccent: "faster?",
