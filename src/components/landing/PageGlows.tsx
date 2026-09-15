@@ -16,33 +16,33 @@ type Blob = {
 };
 
 const BLOBS: Blob[] = [
-  { color: "primary",   top: "110vh", side: "left",   size: "md", opacity: 0.18, mobile: true },
-  { color: "secondary", top: "130vh", side: "center", size: "lg", opacity: 0.20 },
-  { color: "secondary", top: "150vh", side: "right",  size: "lg", opacity: 0.16 },
+  { color: "primary",   top: "110vh", side: "left",   size: "md", opacity: 0.30, mobile: true },
+  { color: "secondary", top: "130vh", side: "center", size: "lg", opacity: 0.33 },
+  { color: "secondary", top: "150vh", side: "right",  size: "lg", opacity: 0.28 },
 
-  { color: "secondary", top: "220vh", side: "left",   size: "md", opacity: 0.18 },
-  { color: "primary",   top: "240vh", side: "center", size: "lg", opacity: 0.22, mobile: true },
-  { color: "primary",   top: "260vh", side: "right",  size: "md", opacity: 0.16 },
+  { color: "secondary", top: "220vh", side: "left",   size: "md", opacity: 0.30 },
+  { color: "primary",   top: "240vh", side: "center", size: "lg", opacity: 0.35, mobile: true },
+  { color: "primary",   top: "260vh", side: "right",  size: "md", opacity: 0.28 },
 
-  { color: "primary",   top: "320vh", side: "right",  size: "lg", opacity: 0.18, mobile: true },
-  { color: "secondary", top: "345vh", side: "center", size: "lg", opacity: 0.20 },
-  { color: "secondary", top: "370vh", side: "left",   size: "md", opacity: 0.16 },
+  { color: "primary",   top: "320vh", side: "right",  size: "lg", opacity: 0.30, mobile: true },
+  { color: "secondary", top: "345vh", side: "center", size: "lg", opacity: 0.33 },
+  { color: "secondary", top: "370vh", side: "left",   size: "md", opacity: 0.28 },
 
-  { color: "secondary", top: "440vh", side: "right",  size: "md", opacity: 0.18 },
-  { color: "primary",   top: "460vh", side: "center", size: "lg", opacity: 0.20, mobile: true },
-  { color: "primary",   top: "480vh", side: "left",   size: "lg", opacity: 0.14 },
+  { color: "secondary", top: "440vh", side: "right",  size: "md", opacity: 0.30 },
+  { color: "primary",   top: "460vh", side: "center", size: "lg", opacity: 0.33, mobile: true },
+  { color: "primary",   top: "480vh", side: "left",   size: "lg", opacity: 0.25 },
 
-  { color: "secondary", top: "550vh", side: "right",  size: "lg", opacity: 0.18 },
-  { color: "primary",   top: "580vh", side: "left",   size: "md", opacity: 0.20 },
-  { color: "primary",   top: "610vh", side: "center", size: "lg", opacity: 0.16 },
+  { color: "secondary", top: "550vh", side: "right",  size: "lg", opacity: 0.30 },
+  { color: "primary",   top: "580vh", side: "left",   size: "md", opacity: 0.33 },
+  { color: "primary",   top: "610vh", side: "center", size: "lg", opacity: 0.28 },
 
-  { color: "secondary", top: "680vh", side: "left",   size: "lg", opacity: 0.18 },
-  { color: "primary",   top: "710vh", side: "right",  size: "md", opacity: 0.20 },
-  { color: "secondary", top: "740vh", side: "center", size: "lg", opacity: 0.16 },
+  { color: "secondary", top: "680vh", side: "left",   size: "lg", opacity: 0.30 },
+  { color: "primary",   top: "710vh", side: "right",  size: "md", opacity: 0.33 },
+  { color: "secondary", top: "740vh", side: "center", size: "lg", opacity: 0.28 },
 
-  { color: "primary",   top: "810vh", side: "right",  size: "md", opacity: 0.18 },
-  { color: "secondary", top: "840vh", side: "left",   size: "lg", opacity: 0.20 },
-  { color: "primary",   top: "870vh", side: "center", size: "lg", opacity: 0.14 },
+  { color: "primary",   top: "810vh", side: "right",  size: "md", opacity: 0.30 },
+  { color: "secondary", top: "840vh", side: "left",   size: "lg", opacity: 0.33 },
+  { color: "primary",   top: "870vh", side: "center", size: "lg", opacity: 0.25 },
 ];
 
 const sizeClass: Record<Blob["size"], string> = {
@@ -60,7 +60,7 @@ const sideStyle = (side: Blob["side"]): React.CSSProperties => {
 export const PageGlows = () => (
   <div
     aria-hidden="true"
-    className="pointer-events-none absolute inset-0 overflow-hidden -z-10"
+    className="print:hidden pointer-events-none absolute inset-0 overflow-hidden -z-10"
   >
     {BLOBS.map((b, i) => {
       const colorClass =

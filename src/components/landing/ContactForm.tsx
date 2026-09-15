@@ -1,8 +1,8 @@
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { motion } from "framer-motion";
 import { useHeaderAnim, useCardAnim } from "@/hooks/use-anim";
-import { BookingPanel } from "@/components/landing/BookingCalendar";
-import { ContactFormPanel } from "@/components/landing/contact-form-shared";
+import { ContactOrMessagePanel, LazyBookingPanel } from "@/components/landing/LazyContactPanels";
+import { BookingSelectionProvider } from "@/components/landing/booking-selection";
 
 export const ContactForm = () => {
   const headerAnim = useHeaderAnim();
@@ -28,16 +28,19 @@ export const ContactForm = () => {
             />
             <div className="group relative glass-strong rounded-3xl p-5 md:p-6 lg:p-8 border-2 border-white/15 overflow-hidden transition-colors duration-500">
               <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_50%_0%,hsl(var(--secondary)/0.14),transparent_70%)]" />
+              {/* One booking: the form's details plus the calendar's time. */}
+              <BookingSelectionProvider>
               <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-0 lg:items-stretch">
                 {/* Left — Contact form */}
                 <div className="lg:pr-8 lg:border-r lg:border-white/[0.06] flex flex-col">
-                  <ContactFormPanel idPrefix="hp-" />
+                  <ContactOrMessagePanel idPrefix="hp-" />
                 </div>
                 {/* Right — Booking calendar */}
                 <div className="lg:pl-8 border-t border-white/[0.06] pt-6 lg:border-t-0 lg:pt-0 flex flex-col">
-                  <BookingPanel />
+                  <LazyBookingPanel />
                 </div>
               </div>
+              </BookingSelectionProvider>
             </div>
           </motion.div>
         </div>

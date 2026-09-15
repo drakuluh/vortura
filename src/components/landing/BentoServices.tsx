@@ -5,7 +5,7 @@ import { ArrowRight, Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useHeaderAnim } from "@/hooks/use-anim";
 import { CoverflowCarousel } from "@/components/ui/coverflow-carousel";
-import { SparklesText } from "@/components/ui/sparkles-text";
+import { SERVICE_ANIMATIONS } from "@/components/landing/service-animations";
 import { cn } from "@/lib/utils";
 import "./bento-cards.css";
 
@@ -20,19 +20,25 @@ export const BentoServices = () => {
     <section id="services" className="relative py-12 md:py-14 lg:py-24">
       <div className="container relative z-10 flex flex-col items-center">
         <div className="w-full max-w-xl md:max-w-3xl lg:max-w-6xl mx-auto flex flex-col items-center">
-          <motion.div className="max-w-lg mx-auto text-center mb-1 md:mb-8 lg:mb-12" {...headerAnim}>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5">
-              Built for <SparklesText text="scale." className="text-gradient" />
+          <motion.div className="mx-auto text-center mb-1 md:mb-8 lg:mb-12" {...headerAnim}>
+            {/* Fluid size + nowrap so it holds one line at every width; the
+                old max-w-lg wrapper was what forced it to wrap. */}
+            <h2 className="whitespace-nowrap text-[clamp(0.95rem,4.2vw,3rem)] font-bold tracking-tight text-depth mb-2.5">
+              Start with what's costing you the most.
             </h2>
             <p className="text-sm text-muted-foreground">
               Each automation is custom-built for your stack and goals.
             </p>
           </motion.div>
 
+          {/* Portrait cards: the ratio lives in bento-cards.css as
+              --bento-aspect because it has to change with viewport width to
+              keep the timeline and Learn more button from being clipped. */}
           <CoverflowCarousel
             label="Services"
             slides={activeServices.map((s) => ({ src: "", alt: s.title, title: s.title }))}
             cardWidth={isMobile ? "clamp(232px, 64vw, 266px)" : "clamp(320px, 30vw, 380px)"}
+            cardAspect="var(--bento-aspect)"
             visibleNeighbors={1}
             edgeFade
             autoplay
@@ -41,9 +47,10 @@ export const BentoServices = () => {
             showPagination
             cardClassName="border border-white/10"
             onCardClick={(index) => navigate(`/services/${activeServices[index].slug}`)}
-            renderCard={(_slide, index, isActive) => {
+            renderCard={(_slide, index, isActive, distance) => {
               const s = activeServices[index];
               const Icon = s.icon;
+              const Animation = SERVICE_ANIMATIONS[s.slug];
               // Per-service accent (blue for `primary`, purple for `secondary`)
               // gives the deck rhythm and ties each card to its service.
               const accent = s.accent === "secondary" ? "var(--secondary)" : "var(--primary)";
@@ -67,6 +74,26 @@ export const BentoServices = () => {
                     )}
                   />
                   {isActive && <span className="cf-sheen" aria-hidden="true" />}
+
+                  {/* Product demo, unframed: the box is exactly the animation's
+                      own 4:3 so it sits directly on the card. It plays on the
+                      centred card; the two visible neighbours show it frozen
+                      (.anim-paused on the wrapper stops every descendant
+                      animation — it goes on the wrapper because each demo's own
+                      useInViewPause rewrites that class on its root). Cards
+                      further out stay empty so off-screen demos never load. */}
+                  {Animation && (
+                    <div
+                      className={cn(
+                        "relative shrink-0 mb-3.5 md:mb-4 aspect-[4/3]",
+                        !isActive && "anim-paused",
+                      )}
+                    >
+                      {distance <= 1 && (
+                        <Animation className="absolute inset-0 !w-full !max-w-full" />
+                      )}
+                    </div>
+                  )}
 
                   {/* Icon + price */}
                   <div className="relative flex items-start justify-between gap-2">

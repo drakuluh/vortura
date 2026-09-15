@@ -30,3 +30,7 @@ project_id = "sckvyofhssgjlsefjoik"
   [functions.handle-email-suppression]
     verify_jwt = false
 
+  [functions.submit-contact]
+    verify_jwt = false
+  [functions.book-call]
+    verify_jwt = false

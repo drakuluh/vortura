@@ -6,9 +6,8 @@ const SITE_NAME = "Vortura Agency";
 const DEFAULT_TITLE =
   "Vortura Agency | AI Automation & Websites for Local Businesses";
 const DEFAULT_DESCRIPTION =
-  "Vortura Agency builds AI-powered websites and automation tools for local businesses. Recover missed calls, book more appointments, and grow — 24/7.";
-const DEFAULT_IMAGE =
-  "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e002d447-2faa-44c6-ae3e-55217efe8dc4/id-preview-9c647130--8d528547-130d-431b-8bf5-62b16565f98b.lovable.app-1776830193613.png";
+  "Vortura Agency builds websites and AI automation tools for local businesses that answer missed calls and book appointments 24/7.";
+const DEFAULT_IMAGE = "/og-image.png";
 
 export type SeoProps = {
   /** Page title. Appended with " | Vortura Agency" unless `titleFull` is set. */
@@ -20,9 +19,46 @@ export type SeoProps = {
   image?: string;
   /** Discourage indexing (auth-gated app pages). */
   noindex?: boolean;
+  /** "article" for blog posts; everything else is a "website". */
+  type?: "website" | "article";
+  /** ISO date, for articles. */
+  publishedTime?: string;
   /** Optional JSON-LD structured data object for this page. */
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 };
+
+export type ResolvedSeo = {
+  title: string;
+  description: string;
+  image: string;
+  url: string;
+  robots: string;
+  type: "website" | "article";
+  publishedTime?: string;
+  jsonLd?: SeoProps["jsonLd"];
+};
+
+/** Turns page props into final tag values. Shared with the prerenderer. */
+export function resolveSeo(props: SeoProps, pathname: string): ResolvedSeo {
+  const { title, titleFull, description = DEFAULT_DESCRIPTION, image = DEFAULT_IMAGE, noindex = false } = props;
+  return {
+    title: titleFull ?? (title ? `${title} | ${SITE_NAME}` : DEFAULT_TITLE),
+    description,
+    image: image.startsWith("http") ? image : `${SITE_ORIGIN}${image}`,
+    url: `${SITE_ORIGIN}${pathname === "/" ? "/" : pathname.replace(/\/+$/, "")}`,
+    robots: noindex ? "noindex, nofollow" : "index, follow",
+    type: props.type ?? "website",
+    publishedTime: props.publishedTime,
+    jsonLd: props.jsonLd,
+  };
+}
+
+/**
+ * During the build-time prerender, effects never run, so the page's <Seo>
+ * records what it would have set here instead. The prerenderer resets this
+ * before each route and reads it afterwards.
+ */
+export const ssrHead: { current: ResolvedSeo | null } = { current: null };
 
 /** Find-or-create a <meta> tag and set its content. */
 function setMeta(attr: "name" | "property", key: string, content: string) {
@@ -44,41 +80,36 @@ function setMeta(attr: "name" | "property", key: string, content: string) {
  * are handled globally by <Canonical>. Dependency-free to match the app's
  * existing hand-rolled head components.
  */
-export const Seo = ({
-  title,
-  titleFull,
-  description = DEFAULT_DESCRIPTION,
-  image = DEFAULT_IMAGE,
-  noindex = false,
-  jsonLd,
-}: SeoProps) => {
+export const Seo = (props: SeoProps) => {
   const { pathname } = useLocation();
+  const seo = resolveSeo(props, pathname);
+  const { title: resolvedTitle, description, image: resolvedImage, url, robots, type, publishedTime } = seo;
+  const { jsonLd } = props;
 
-  const resolvedTitle =
-    titleFull ?? (title ? `${title} | ${SITE_NAME}` : DEFAULT_TITLE);
-  const resolvedImage = image.startsWith("http")
-    ? image
-    : `${SITE_ORIGIN}${image}`;
-  const url = `${SITE_ORIGIN}${pathname === "/" ? "/" : pathname.replace(/\/+$/, "")}`;
+  if (import.meta.env.SSR) ssrHead.current = seo;
 
   useEffect(() => {
     document.title = resolvedTitle;
 
     setMeta("name", "description", description);
-    setMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow");
+    setMeta("name", "robots", robots);
 
     setMeta("property", "og:title", resolvedTitle);
     setMeta("property", "og:description", description);
     setMeta("property", "og:url", url);
     setMeta("property", "og:image", resolvedImage);
     setMeta("property", "og:site_name", SITE_NAME);
-    setMeta("property", "og:type", "website");
+    setMeta("property", "og:type", type);
+    // Only articles carry a publish date; clear it when leaving a post.
+    const published = document.head.querySelector('meta[property="article:published_time"]');
+    if (publishedTime) setMeta("property", "article:published_time", publishedTime);
+    else published?.remove();
 
     setMeta("name", "twitter:title", resolvedTitle);
     setMeta("name", "twitter:description", description);
     setMeta("name", "twitter:image", resolvedImage);
     setMeta("name", "twitter:card", "summary_large_image");
-  }, [resolvedTitle, description, resolvedImage, url, noindex]);
+  }, [resolvedTitle, description, resolvedImage, url, robots, type, publishedTime]);
 
   useEffect(() => {
     if (!jsonLd) return;

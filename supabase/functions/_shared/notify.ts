@@ -21,14 +21,21 @@ export interface NotifyOptions {
     | "messages"
     | "change_requests"
     | "invoices"
-    | "payments";
+    | "payments"
+    | "inquiries"
+    | "bookings";
   /**
    * Optional Slack Block Kit payload. When present, Slack renders the rich
    * blocks instead of the plain text body. `body` / `subject` are still used
    * as the email body and as Slack's notification fallback text.
    */
   blocks?: Array<Record<string, unknown>>;
+  /** Link to the item in the control room; shown as a button in the email. */
+  url?: string;
 }
+
+// Where team emails go when workspace_settings has no support_email.
+const FALLBACK_SUPPORT_EMAIL = "support@vortura.ai";
 
 export async function notifyTeam(opts: NotifyOptions): Promise<void> {
   const { data: settings } = await supabase
@@ -91,25 +98,25 @@ export async function notifyTeam(opts: NotifyOptions): Promise<void> {
     }
   }
 
-  // Email via Lovable email gateway (best-effort; falls through if not configured)
-  if (settings?.support_email && lovableKey) {
-    try {
-      await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
-        },
-        body: JSON.stringify({
-          to: settings.support_email,
-          subject: opts.subject,
-          html: `<p>${opts.body.replace(/\n/g, "<br>")}</p>`,
-          purpose: "transactional",
-        }),
-      });
-    } catch (e) {
-      console.error("Email notify failed (email infra may not be set up):", e);
-    }
+  // Email the team inbox (best-effort). send-transactional-email only renders
+  // registered templates; the earlier raw to/subject/html payload was
+  // rejected with "templateName is required", so team emails never went out.
+  try {
+    const res = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+      },
+      body: JSON.stringify({
+        templateName: "team-notification",
+        recipientEmail: settings?.support_email || FALLBACK_SUPPORT_EMAIL,
+        templateData: { subject: opts.subject, body: opts.body, url: opts.url },
+      }),
+    });
+    if (!res.ok) console.error("Team email failed:", res.status, await res.text());
+  } catch (e) {
+    console.error("Email notify failed (email infra may not be set up):", e);
   }
 
   console.log(`[notify-team] ${opts.subject}: ${opts.body}`);

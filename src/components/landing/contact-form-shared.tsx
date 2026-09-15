@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,6 +9,9 @@ import { Label } from "@/components/ui/label";
 import { ArrowRight, Check, AlertCircle, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { ApiError, callFunction } from "@/lib/public-api";
+import { slotStart } from "@/lib/booking-time";
+import { describeSelection, useBookingSelection } from "@/components/landing/booking-selection";
 
 export const contactSchema = z.object({
   firstName: z
@@ -44,30 +47,38 @@ export type ContactValues = z.infer<typeof contactSchema>;
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
-export const SuccessState = ({ onReset }: { onReset: () => void }) => (
-  <div className="text-center py-9">
+export const SuccessState = ({
+  onReset,
+  title = "Message received.",
+  detail = "We'll reply to your email within 24 hours.",
+  resetLabel = "Send another",
+}: {
+  onReset: () => void;
+  title?: string;
+  detail?: string;
+  resetLabel?: string;
+}) => (
+  <div className="flex flex-1 flex-col items-center justify-center text-center py-9" role="status">
     <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 border border-primary/40 flex items-center justify-center shadow-glow-blue">
       <Check className="w-5 h-5 text-primary" />
     </div>
-    <h3 className="text-lg font-semibold mb-1.5 text-depth">Request received.</h3>
-    <p className="text-sm text-muted-foreground mb-4">
-      Check your inbox — we'll be in touch within 24 hours.
-    </p>
+    <h3 className="text-lg font-semibold mb-1.5 text-depth">{title}</h3>
+    <p className="text-sm text-muted-foreground mb-4">{detail}</p>
     <Button variant="glass" size="sm" onClick={onReset}>
       <RefreshCw className="w-3.5 h-3.5" />
-      Send another
+      {resetLabel}
     </Button>
   </div>
 );
 
-export const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
-  <div className="text-center py-9">
+export const ErrorState = ({ onRetry, detail }: { onRetry: () => void; detail?: string }) => (
+  <div className="flex flex-1 flex-col items-center justify-center text-center py-9" role="alert">
     <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-destructive/10 border border-destructive/40 flex items-center justify-center">
       <AlertCircle className="w-5 h-5 text-destructive" />
     </div>
     <h3 className="text-lg font-semibold mb-1.5 text-depth">Something went wrong.</h3>
     <p className="text-sm text-muted-foreground mb-4">
-      We couldn't submit your request. Please try again — your details are still saved.
+      {detail ?? "We couldn't send your message. Please try again. Your details are still saved."}
     </p>
     <Button variant="hero" size="sm" onClick={onRetry}>
       <RefreshCw className="w-3.5 h-3.5" />
@@ -124,6 +135,19 @@ export const FieldError = ({ id, message }: { id: string; message?: string }) =>
 
 export const ContactFormPanel = ({ idPrefix = "" }: { idPrefix?: string }) => {
   const [status, setStatus] = useState<FormStatus>("idle");
+  const [errorDetail, setErrorDetail] = useState<string>();
+  // Honeypot value: hidden from people, filled in by bots.
+  const [website, setWebsite] = useState("");
+  // The time picked in the booking calendar beside this form. With a
+  // calendar present, this form's button books the call.
+  const booking = useBookingSelection();
+  const [timeError, setTimeError] = useState<string>();
+  const [bookedFor, setBookedFor] = useState<{ when: string; email: string }>();
+  const pickedTime = booking?.selection;
+  // A newly picked time answers the "pick a time" prompt.
+  useEffect(() => {
+    if (pickedTime) setTimeError(undefined);
+  }, [pickedTime]);
   const {
     register,
     handleSubmit,
@@ -138,30 +162,102 @@ export const ContactFormPanel = ({ idPrefix = "" }: { idPrefix?: string }) => {
   const messageLength = (watch("message") ?? "").length;
 
   const onSubmit = async (values: ContactValues) => {
+    const name = `${values.firstName} ${values.lastName}`.trim();
+    setErrorDetail(undefined);
+    setTimeError(undefined);
+
+    // Booking: details from this form, time from the calendar.
+    if (booking) {
+      const picked = booking.selection;
+      if (!picked) {
+        setTimeError("Pick a date and time for your call.");
+        return;
+      }
+      setStatus("submitting");
+      try {
+        await callFunction("book-call", {
+          scheduled_at: slotStart(picked.day, picked.slot).toISOString(),
+          name,
+          email: values.email,
+          company: values.company ?? "",
+          message: values.message,
+          website,
+        });
+        setBookedFor({ when: describeSelection(picked), email: values.email });
+        booking.select(null);
+        booking.refreshAvailability();
+        setStatus("success");
+        toast.success("Call booked. We'll confirm the time by email.");
+      } catch (err) {
+        if (err instanceof ApiError && err.code === "slot_taken") {
+          // Keep everything they typed; just ask for another time.
+          setStatus("idle");
+          booking.select(null);
+          booking.refreshAvailability();
+          setTimeError("That time was just booked by someone else. Pick another time.");
+          return;
+        }
+        if (err instanceof ApiError && err.fields?.scheduled_at) {
+          setStatus("idle");
+          booking.select(null);
+          setTimeError(err.fields.scheduled_at);
+          return;
+        }
+        if (err instanceof ApiError && err.code === "rate_limited") {
+          setErrorDetail("Too many bookings from this connection today. Email support@vortura.ai and we'll set it up.");
+        }
+        setStatus("error");
+        toast.error("Your booking didn't go through. Please try again.");
+      }
+      return;
+    }
+
+    // No calendar beside the form: send it as a message.
     setStatus("submitting");
     try {
-      await new Promise<void>((resolve, reject) => {
-        setTimeout(() => {
-          if (values.email.endsWith("@example.com")) reject(new Error("Email rejected"));
-          else resolve();
-        }, 900);
+      await callFunction("submit-contact", {
+        name,
+        email: values.email,
+        company: values.company ?? "",
+        message: values.message,
+        website,
+        page: window.location.pathname,
       });
       setStatus("success");
-      toast.success("Request received. We'll be in touch within 24 hours.");
-    } catch {
+      toast.success("Message received. We'll reply within 24 hours.");
+    } catch (err) {
+      if (err instanceof ApiError && err.code === "rate_limited") {
+        setErrorDetail("You've sent several messages in the last hour. Try again later, or email support@vortura.ai.");
+      }
       setStatus("error");
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Your message didn't send. Please try again.");
     }
   };
 
   const p = idPrefix;
 
+
   if (status === "success") {
-    return <SuccessState onReset={() => { reset(); setStatus("idle"); }} />;
+    const onReset = () => { reset(); setBookedFor(undefined); setStatus("idle"); };
+    return bookedFor ? (
+      <SuccessState
+        onReset={onReset}
+        title="You're booked."
+        detail={`${bookedFor.when}. We'll confirm the time by email at ${bookedFor.email}.`}
+        resetLabel="Book another call"
+      />
+    ) : (
+      <SuccessState onReset={onReset} />
+    );
   }
 
   if (status === "error") {
-    return <ErrorState onRetry={() => setStatus("idle")} />;
+    return (
+      <ErrorState
+        detail={errorDetail ?? (booking ? "We couldn't book your call. Please try again. Your details are still saved." : undefined)}
+        onRetry={() => setStatus("idle")}
+      />
+    );
   }
 
   return (
@@ -169,17 +265,17 @@ export const ContactFormPanel = ({ idPrefix = "" }: { idPrefix?: string }) => {
       <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-4">
         Send a message
       </p>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4 flex-1 flex flex-col">
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative space-y-4 flex-1 flex flex-col">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-4">
-          <Field label="First name" id={`${p}firstName`} placeholder="Jane" autoComplete="given-name" required
+          <Field label="First name" id={`${p}firstName`} placeholder="Maria" autoComplete="given-name" required
             register={register("firstName")} error={errors.firstName?.message} touched={!!touchedFields.firstName} />
-          <Field label="Last name" id={`${p}lastName`} placeholder="Doe" autoComplete="family-name"
+          <Field label="Last name" id={`${p}lastName`} placeholder="Santos" autoComplete="family-name"
             register={register("lastName")} error={errors.lastName?.message} touched={!!touchedFields.lastName} />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-4">
-          <Field label="Company" id={`${p}company`} placeholder="Acme Inc" autoComplete="organization"
+          <Field label="Company" id={`${p}company`} placeholder="Santos Plumbing" autoComplete="organization"
             register={register("company")} error={errors.company?.message} touched={!!touchedFields.company} />
-          <Field label="Email" id={`${p}email`} type="email" placeholder="jane@company.com" autoComplete="email" required
+          <Field label="Email" id={`${p}email`} type="email" placeholder="maria@santosplumbing.com" autoComplete="email" required
             register={register("email")} error={errors.email?.message} touched={!!touchedFields.email} />
         </div>
         <div>
@@ -214,12 +310,24 @@ export const ContactFormPanel = ({ idPrefix = "" }: { idPrefix?: string }) => {
           <Button type="submit" variant="hero" size="lg" className="w-full"
             disabled={status === "submitting" || (!isValid && Object.keys(touchedFields).length > 0)}>
             {status === "submitting" ? (
-              <><Loader2 className="w-3.5 h-3.5 animate-spin" />Booking...</>
+              <><Loader2 className="w-3.5 h-3.5 animate-spin" />{booking ? "Booking…" : "Sending…"}</>
             ) : (
-              <>Book Call<ArrowRight className="w-3.5 h-3.5" /></>
+              <>{booking ? "Confirm Booking" : "Send message"}<ArrowRight className="w-3.5 h-3.5" /></>
             )}
           </Button>
+          {timeError && <FieldError id={`${p}booking-time-error`} message={timeError} />}
         </div>
+        {/* Honeypot, last so it doesn't shift the spacing of real fields. */}
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+          className="absolute -left-[9999px] h-0 w-0 opacity-0"
+        />
       </form>
     </>
   );

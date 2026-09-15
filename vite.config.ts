@@ -2,9 +2,10 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
+import { prerender } from "./scripts/prerender-plugin";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode, isSsrBuild }) => ({
   server: {
     host: "::",
     port: 8080,
@@ -12,7 +13,7 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [react(), mode === "development" && componentTagger(), prerender()].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -20,7 +21,10 @@ export default defineConfig(({ mode }) => ({
     dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime", "@tanstack/react-query", "@tanstack/query-core"],
   },
   build: {
-    rollupOptions: {
+    // Read by the prerender plugin to preload each page's chunk; removed after.
+    manifest: !isSsrBuild,
+    // The prerender SSR build runs in Node and needs no vendor splitting.
+    rollupOptions: isSsrBuild ? {} : {
       output: {
         // Split heavy third-party deps into their own chunks so the landing
         // bundle stays small and cached vendor code is shared across routes.
@@ -46,7 +50,9 @@ export default defineConfig(({ mode }) => ({
             id.includes("/unified/")
           ) return "vendor-markdown";
           if (id.includes("framer-motion")) return "vendor-motion";
-          if (id.includes("@radix-ui")) return "vendor-radix";
+          // No shared Radix chunk: grouping every primitive together made the
+          // home page download admin-only widgets (Select, Slider, ScrollArea).
+          // Left alone, Rollup puts each primitive with the code that uses it.
           if (id.includes("recharts") || id.includes("d3-")) return "vendor-charts";
           if (id.includes("lucide-react")) return "vendor-icons";
           if (id.includes("react-icons")) return "vendor-react-icons";

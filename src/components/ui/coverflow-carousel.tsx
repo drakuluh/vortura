@@ -28,6 +28,9 @@ export interface CoverflowCarouselProps {
   fade?: number;
   /** Any CSS length. Everything else is derived from it, so the rake scales. */
   cardWidth?: string;
+  /** Card width:height, as a CSS aspect-ratio. Defaults to square. Use a
+      portrait ratio when cards need room for a visual above their text. */
+  cardAspect?: string;
   /** Space between cards, as a fraction of card width. */
   gap?: number;
   loop?: boolean;
@@ -40,7 +43,13 @@ export interface CoverflowCarouselProps {
   cardClassName?: string;
   /** Render custom card content instead of the default <img>. `isActive` is
       true for the centred slide, so cards can emphasise the focused one. */
-  renderCard?: (slide: CoverflowSlide, index: number, isActive: boolean) => React.ReactNode;
+  renderCard?: (
+    slide: CoverflowSlide,
+    index: number,
+    isActive: boolean,
+    /** Whole steps from the centred card, taking the short way round when looping. */
+    distance: number,
+  ) => React.ReactNode;
   /** Blur (px) added per step from the centre; side cards sharpen as they
       approach the middle. 0 disables. */
   blur?: number;
@@ -66,6 +75,7 @@ export function CoverflowCarousel({
   falloff = 0.56,
   fade = 0.1,
   cardWidth = "clamp(148px, 22vw, 260px)",
+  cardAspect = "1 / 1",
   gap = 0.05,
   loop = true,
   showCaption = false,
@@ -330,6 +340,14 @@ export function CoverflowCarousel({
   }, []);
 
   const active = slides[selected];
+  const stepsFromSelected = (index: number) => {
+    let d = index - selected;
+    if (loop) {
+      d = ((d % count) + count) % count;
+      if (d > count / 2) d -= count;
+    }
+    return Math.abs(d);
+  };
 
   return (
     <div
@@ -382,7 +400,8 @@ export function CoverflowCarousel({
           <div
             className="relative select-none"
             style={{
-              height: "var(--cf-card)",
+              // Track height follows the card aspect so taller cards aren't clipped.
+              height: `calc(var(--cf-card) / (${cardAspect}))`,
               transformStyle: "preserve-3d",
             }}
           >
@@ -397,13 +416,13 @@ export function CoverflowCarousel({
                 aria-label={`${index + 1} of ${count}`}
                 data-slide-index={index}
                 className={cn(
-                  "absolute left-1/2 top-0 aspect-square overflow-hidden rounded-2xl bg-muted shadow-xl will-change-transform",
+                  "absolute left-1/2 top-0 overflow-hidden rounded-2xl bg-muted shadow-xl will-change-transform",
                   cardClassName,
                 )}
-                style={{ width: "var(--cf-card)" }}
+                style={{ width: "var(--cf-card)", aspectRatio: cardAspect }}
               >
                 {renderCard ? (
-                  renderCard(slide, index, selected === index)
+                  renderCard(slide, index, selected === index, stepsFromSelected(index))
                 ) : (
                   <img
                     src={slide.src}

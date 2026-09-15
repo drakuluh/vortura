@@ -17,7 +17,7 @@ export const TESTIMONIALS: Testimonial[] = [
     company: "Dear Delhi",
     location: "Mississauga, ON",
     service: "Website + AI Automation",
-    logo: "/logos/dear.png",
+    logo: "/logos/dear.webp",
   },
   {
     quote:
@@ -27,7 +27,7 @@ export const TESTIMONIALS: Testimonial[] = [
     company: "SweetsNOW",
     location: "Brampton, ON",
     service: "AI Call Answering + NFC Reviews",
-    logo: "/logos/sweets.png",
+    logo: "/logos/sweets.webp",
   },
   {
     quote:
@@ -37,7 +37,7 @@ export const TESTIMONIALS: Testimonial[] = [
     company: "Brunson & Brunson Law",
     location: "Toronto, ON",
     service: "Website + Workflow Automation",
-    logo: "/logos/brunson.png",
+    logo: "/logos/brunson.webp",
   },
 ];
 
@@ -49,16 +49,16 @@ export const PROCESS_TESTIMONIAL: Testimonial = {
   company: "SaugaJunk",
   location: "Mississauga, ON",
   service: "AI Call Answering",
-  logo: "/logos/junk.png",
+  logo: "/logos/junk.webp",
 };
 
 export const TRUSTED_BY_CLIENTS = [
-  { name: "Dear Delhi", logo: "/logos/dear.png" },
-  { name: "SweetsNOW", logo: "/logos/sweets.png" },
-  { name: "Brunson & Brunson Law", logo: "/logos/brunson.png" },
-  { name: "SaugaJunk", logo: "/logos/junk.png" },
-  { name: "Gamelaser", logo: "/logos/gamelaser.png" },
-  { name: "Hutchinson's Painting", logo: "/logos/h painting.png" },
-  { name: "Mississauga Investment Group", logo: "/logos/invest.png" },
-  { name: "Mishree", logo: "/logos/mishrea.png" },
+  { name: "Dear Delhi", logo: "/logos/dear.webp" },
+  { name: "SweetsNOW", logo: "/logos/sweets.webp" },
+  { name: "Brunson & Brunson Law", logo: "/logos/brunson.webp" },
+  { name: "SaugaJunk", logo: "/logos/junk.webp" },
+  { name: "Gamelaser", logo: "/logos/gamelaser.webp" },
+  { name: "Hutchinson's Painting", logo: "/logos/h painting.webp" },
+  { name: "Mississauga Investment Group", logo: "/logos/invest.webp" },
+  { name: "Mishree", logo: "/logos/mishrea.webp" },
 ];

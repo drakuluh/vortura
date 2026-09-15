@@ -1,94 +1,22 @@
-import { useState, useMemo } from "react";
-import { Check } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { ApiError, callFunction, callRpc, currentAccessToken } from "@/lib/public-api";
+import { MIN_LEAD_MS, SLOT_MINUTES, TIME_SLOTS, formatSlot, slotStart, torontoZoneLabel } from "@/lib/booking-time";
 import { cn } from "@/lib/utils";
-
-/* ── Booking helpers ─────────────────────────────────────────── */
-
-function generateTimeSlots(): string[] {
-  const slots: string[] = [];
-  for (let h = 9; h < 21; h++) {
-    slots.push(`${h}:00`);
-    slots.push(`${h}:30`);
-  }
-  return slots;
-}
-
-function formatTime(slot: string): string {
-  const [h, m] = slot.split(":").map(Number);
-  const suffix = h >= 12 ? "PM" : "AM";
-  const hour = h > 12 ? h - 12 : h === 0 ? 12 : h;
-  return `${hour}:${m.toString().padStart(2, "0")} ${suffix}`;
-}
-
-function toEST(date: Date, timeSlot: string): Date {
-  const [h, m] = timeSlot.split(":").map(Number);
-  const estString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}T${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:00`;
-  return new Date(estString + "-05:00");
-}
-
-const TIME_SLOTS = generateTimeSlots();
-
-/* ── Deterministic fake availability ─────────────────────────── */
-
-function seededRandom(seed: number): number {
-  let s = seed;
-  s = ((s >>> 0) * 2654435761) >>> 0;
-  s = ((s >>> 0) * 2246822519) >>> 0;
-  s = ((s ^ (s >>> 13)) * 3266489917) >>> 0;
-  return (s >>> 0) / 4294967296;
-}
-
-function isSlotTaken(date: Date, slotIndex: number, today: Date): boolean {
-  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const daysOut = Math.floor((date.getTime() - todayStart.getTime()) / 86400000);
-  if (daysOut > 10 || daysOut < 0) return false;
-
-  let dayWeight: number;
-  if (daysOut <= 1) dayWeight = 0.75;
-  else if (daysOut <= 3) dayWeight = 0.65;
-  else if (daysOut <= 6) dayWeight = 0.50;
-  else dayWeight = 0.30;
-
-  const [h] = TIME_SLOTS[slotIndex].split(":").map(Number);
-  let timeWeight: number;
-  if (h >= 10 && h < 14) timeWeight = 0.85;
-  else if (h >= 9 && h < 10) timeWeight = 0.60;
-  else if (h >= 14 && h < 17) timeWeight = 0.65;
-  else timeWeight = 0.40;
-
-  const threshold = dayWeight * timeWeight;
-  const dateSeed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
-  const seed = dateSeed * 100 + slotIndex;
-  const roll = seededRandom(seed);
-
-  if (slotIndex > 0) {
-    const prevSeed = dateSeed * 100 + (slotIndex - 1);
-    const prevRoll = seededRandom(prevSeed);
-    const prevThreshold = dayWeight * ((() => {
-      const [ph] = TIME_SLOTS[slotIndex - 1].split(":").map(Number);
-      if (ph >= 10 && ph < 14) return 0.85;
-      if (ph >= 9 && ph < 10) return 0.60;
-      if (ph >= 14 && ph < 17) return 0.65;
-      return 0.40;
-    })());
-    const prevTaken = prevRoll < prevThreshold;
-    if (prevTaken) {
-      return seededRandom(seed + 9999) < 0.70 || roll < threshold;
-    }
-  }
-
-  return roll < threshold;
-}
+import { useBookingSelection } from "@/components/landing/booking-selection";
 
 /* ── Booking Panel ───────────────────────────────────────────── */
 
 type BookingStatus = "idle" | "submitting" | "success";
+type BookedRange = { starts_at: string; ends_at: string };
+
+export const UPCOMING_CALLS_QUERY_KEY = "my-upcoming-calls";
 
 export const BookingPanel = () => {
   return (
@@ -103,64 +31,120 @@ export const BookingPanel = () => {
 
 const CalendarPicker = () => {
   const { user } = useAuth();
-  const today = new Date();
+  const queryClient = useQueryClient();
+  const today = useMemo(() => new Date(), []);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(today);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [status, setStatus] = useState<BookingStatus>("idle");
+  const [booked, setBooked] = useState<BookedRange[] | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const availableSlots = useMemo(() => {
-    if (!selectedDate) return [];
-    return TIME_SLOTS.map((slot, idx) => ({
-      slot,
-      label: formatTime(slot),
-      taken: isSlotTaken(selectedDate, idx, today),
-    }));
-  }, [selectedDate, today]);
+  // Signed-out: the time is shared with the contact form, whose "Confirm
+  // Booking" button books it. Signed-in users have no form, so they always
+  // confirm right here, even where a provider is present (home page).
+  const sharedContext = useBookingSelection();
+  const shared = user ? null : sharedContext;
+  const [localTime, setLocalTime] = useState<string | null>(null);
+  const selectedTime = shared
+    ? shared.selection && selectedDate && shared.selection.day.toDateString() === selectedDate.toDateString()
+      ? shared.selection.slot
+      : null
+    : localTime;
+  const setSelectedTime = (slot: string | null) => {
+    if (shared) shared.select(slot && selectedDate ? { day: selectedDate, slot } : null);
+    else setLocalTime(slot);
+  };
 
-  const handleBook = async (time: string) => {
+  const memberName = user
+    ? [user.user_metadata?.first_name, user.user_metadata?.last_name].filter(Boolean).join(" ") ||
+      user.user_metadata?.display_name ||
+      user.email
+    : null;
+
+  // Real availability for the selected day. Only start/end times come back,
+  // never who booked.
+  useEffect(() => {
     if (!selectedDate) return;
-    setSelectedTime(time);
+    let cancelled = false;
+    setBooked(null);
+    const next = new Date(selectedDate);
+    next.setDate(next.getDate() + 1);
+    callRpc<BookedRange[]>("booked_slots", {
+      range_start: slotStart(selectedDate, "0:00").toISOString(),
+      range_end: slotStart(next, "0:00").toISOString(),
+    })
+      .then((rows) => !cancelled && setBooked(rows))
+      .catch((err) => {
+        // Still bookable if this fails; book-call rejects clashes anyway.
+        console.error("Could not load availability", err);
+        if (!cancelled) setBooked([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedDate, refreshKey, shared?.availabilityVersion]);
+
+  const slots = useMemo(() => {
+    if (!selectedDate) return [];
+    const earliest = Date.now() + MIN_LEAD_MS;
+    return TIME_SLOTS.map((slot) => {
+      const start = slotStart(selectedDate, slot).getTime();
+      const end = start + SLOT_MINUTES * 60000;
+      const clash = (booked ?? []).some((b) => new Date(b.starts_at).getTime() < end && new Date(b.ends_at).getTime() > start);
+      return { slot, label: formatSlot(slot), unavailable: start < earliest || clash };
+    });
+  }, [selectedDate, booked]);
+
+  const zone = selectedDate ? torontoZoneLabel(slotStart(selectedDate, "12:00")) : "ET";
+  const whenLabel =
+    selectedDate && selectedTime
+      ? `${formatSlot(selectedTime)} ${zone} · ${selectedDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}`
+      : "";
+
+  const confirm = async () => {
+    if (!selectedDate || !selectedTime || !user) return;
     setStatus("submitting");
     try {
-      const scheduledAt = toEST(selectedDate, time);
-      const callerName = user
-        ? ([user.user_metadata?.first_name, user.user_metadata?.last_name].filter(Boolean).join(" ") ||
-           user.user_metadata?.display_name || user.email || "Guest")
-        : "Guest";
-      const { error } = await supabase.from("bookings").insert({
-        caller_name: callerName,
-        caller_email: user?.email ?? null,
-        booking_type: "discovery",
-        scheduled_at: scheduledAt.toISOString(),
-        duration_minutes: 30,
-        status: "pending",
-        source: "website",
-      });
-      if (error) throw error;
+      const token = await currentAccessToken();
+      await callFunction("book-call", { scheduled_at: slotStart(selectedDate, selectedTime).toISOString() }, token);
       setStatus("success");
-      toast.success("Call booked! We'll confirm your time shortly.");
-    } catch {
+      queryClient.invalidateQueries({ queryKey: [UPCOMING_CALLS_QUERY_KEY] });
+    } catch (err) {
       setStatus("idle");
-      toast.error("Could not book the call. Please try again.");
+      if (err instanceof ApiError && err.code === "slot_taken") {
+        toast.error("Someone just booked that time. Pick another one.");
+        setSelectedTime(null);
+        setRefreshKey((k) => k + 1);
+      } else if (err instanceof ApiError && err.code === "rate_limited") {
+        toast.error("Too many bookings from this connection today. Email support@vortura.ai and we'll set it up.");
+      } else if (err instanceof ApiError && err.fields?.scheduled_at) {
+        toast.error(err.fields.scheduled_at);
+        setSelectedTime(null);
+      } else {
+        toast.error("Could not book the call. Please try again.");
+      }
     }
   };
 
   if (status === "success") {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-center py-6 lg:py-0">
+      <div className="flex flex-col items-center justify-center h-full text-center py-6 lg:py-0" role="status">
         <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 border border-primary/40 flex items-center justify-center shadow-glow-blue">
-          <Check className="w-5 h-5 text-primary" />
+          <Check className="w-5 h-5 text-primary" aria-hidden="true" />
         </div>
         <h3 className="text-lg font-semibold mb-1.5 text-depth">You're on the calendar.</h3>
-        <p className="text-sm text-muted-foreground mb-1">
-          {formatTime(selectedTime!)} EST · {selectedDate?.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
-        </p>
+        <p className="text-sm text-muted-foreground mb-1">{whenLabel}</p>
         <p className="text-sm text-muted-foreground mb-5">
-          We'll confirm your time shortly.
+          We'll confirm the time by email{user?.email ? ` at ${user.email}` : ""}.
         </p>
-        <Button variant="glass" size="sm" onClick={() => {
-          setStatus("idle"); setSelectedDate(today); setSelectedTime(null);
-        }}>
+        <Button
+          variant="glass"
+          size="sm"
+          onClick={() => {
+            setStatus("idle");
+            setSelectedTime(null);
+            setRefreshKey((k) => k + 1);
+          }}
+        >
           Book another call
         </Button>
       </div>
@@ -170,30 +154,36 @@ const CalendarPicker = () => {
   return (
     <div className="flex flex-col flex-1">
       <p className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-3.5">
-        Select a date & time<span className="text-primary ml-0.5">*</span>
+        Select a date & time ({zone})<span className="text-primary ml-0.5">*</span>
       </p>
       <div className="flex flex-col sm:flex-row sm:divide-x sm:divide-white/[0.06] rounded-xl glass !bg-white/[0.10] overflow-hidden flex-1">
         <Calendar
           mode="single"
           selected={selectedDate}
-          onSelect={(d) => { setSelectedDate(d); setSelectedTime(null); }}
+          onSelect={(d) => {
+            // Clicking the selected date again would clear it and empty the
+            // time list; keep the current date instead.
+            if (!d) return;
+            setSelectedDate(d);
+            setSelectedTime(null);
+          }}
           disabled={{ before: today }}
-          className="px-4 pt-1 pb-3 flex-1 flex flex-col justify-center"
+          className="px-2 sm:px-4 pt-1 pb-3 flex-1 flex flex-col justify-center"
           classNames={{
             months: "flex flex-col space-y-2",
             month: "space-y-2",
             caption: "flex justify-center relative items-center pb-1",
             caption_label: "text-sm font-medium font-mono uppercase tracking-wider",
             nav: "space-x-1 flex items-center",
-            nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 inline-flex items-center justify-center rounded-md border border-white/10 hover:bg-white/[0.06] transition-colors",
+            nav_button: "h-11 w-11 sm:h-8 sm:w-8 bg-transparent p-0 opacity-50 hover:opacity-100 inline-flex items-center justify-center rounded-md border border-white/10 hover:bg-white/[0.06] transition-colors",
             nav_button_previous: "absolute left-1",
             nav_button_next: "absolute right-1",
             table: "w-full border-collapse space-y-1",
             head_row: "flex",
-            head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem] font-mono",
+            head_cell: "text-muted-foreground rounded-md w-10 sm:w-9 font-normal text-[0.8rem] font-mono",
             row: "flex w-full mt-2",
-            cell: "h-9 w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
-            day: "h-9 w-9 p-0 font-normal inline-flex items-center justify-center rounded-md transition-colors hover:bg-white/[0.06] aria-selected:opacity-100",
+            cell: "h-10 w-10 sm:h-9 sm:w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
+            day: "h-10 w-10 sm:h-9 sm:w-9 p-0 font-normal inline-flex items-center justify-center rounded-md transition-colors hover:bg-white/[0.06] aria-selected:opacity-100",
             day_selected: "btn-hero-glass !border-0 text-white hover:text-white focus:text-white",
             day_today: "ring-1 ring-primary/40",
             day_outside: "text-muted-foreground opacity-30",
@@ -211,31 +201,64 @@ const CalendarPicker = () => {
               </p>
             </div>
             <ScrollArea className="h-full overflow-y-auto">
-              <div className="grid grid-cols-2 sm:grid-cols-1 gap-1 px-2 pb-2">
-                {availableSlots.map(({ slot, label, taken }) => {
-                  const active = selectedTime === slot;
-                  return (
-                    <Button
-                      key={slot}
-                      onClick={() => handleBook(slot)}
-                      disabled={taken || status === "submitting"}
-                      variant={active ? "default" : "outline"}
-                      className={cn(
-                        "font-mono text-[11px] tracking-wide h-7 px-2",
-                        taken && "opacity-25 line-through",
-                        !taken && !active && "border-primary/20 bg-primary/[0.06] hover:bg-primary/15 hover:border-primary/40 text-foreground/80 hover:text-foreground",
-                        !taken && active && "btn-hero-glass !border-0 text-white"
-                      )}
-                    >
-                      {label}
-                    </Button>
-                  );
-                })}
-              </div>
+              {booked === null && selectedDate ? (
+                <p className="flex items-center justify-center gap-1.5 py-6 text-[11px] font-mono uppercase tracking-widest text-muted-foreground" role="status">
+                  <Loader2 className="w-3 h-3 animate-spin" aria-hidden="true" />
+                  Checking
+                </p>
+              ) : slots.every((s) => s.unavailable) && selectedDate ? (
+                <p className="px-3 py-6 text-center text-[11px] text-muted-foreground">No times left this day. Try another date.</p>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-1 gap-1 px-2 pb-2">
+                  {slots.map(({ slot, label, unavailable }) => {
+                    const active = selectedTime === slot;
+                    return (
+                      <Button
+                        key={slot}
+                        onClick={() => setSelectedTime(slot)}
+                        disabled={unavailable || status === "submitting"}
+                        aria-pressed={active}
+                        aria-label={unavailable ? `${label}, unavailable` : label}
+                        variant={active ? "default" : "outline"}
+                        className={cn(
+                          "font-mono text-[11px] tracking-wide h-11 sm:h-7 px-2",
+                          unavailable && "opacity-25 line-through",
+                          !unavailable && !active && "border-primary/20 bg-primary/[0.06] hover:bg-primary/15 hover:border-primary/40 text-foreground/80 hover:text-foreground",
+                          !unavailable && active && "btn-hero-glass !border-0 text-white",
+                        )}
+                      >
+                        {label}
+                      </Button>
+                    );
+                  })}
+                </div>
+              )}
             </ScrollArea>
           </div>
         </div>
       </div>
+
+      {/* Signed-in only. Signed-out visitors confirm with the contact form's
+          "Confirm Booking" button, which already has their details. */}
+      {!shared && user && selectedTime && (
+        <div className="mt-3 rounded-xl border border-primary/25 bg-primary/[0.06] p-3.5">
+          <p className="text-sm font-medium text-depth">{whenLabel}</p>
+          <p className="mt-0.5 text-[12px] text-muted-foreground">
+            Booking as {memberName}
+            {user.email && memberName !== user.email ? ` (${user.email})` : ""}
+          </p>
+          <Button variant="hero" size="sm" className="mt-3 w-full" onClick={() => void confirm()} disabled={status === "submitting"}>
+            {status === "submitting" ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
+                Booking…
+              </>
+            ) : (
+              "Confirm booking"
+            )}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

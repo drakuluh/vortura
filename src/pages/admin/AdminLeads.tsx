@@ -569,7 +569,7 @@ export default function AdminLeads() {
                               href={l.website}
                               target="_blank"
                               rel="noopener noreferrer"
-                              aria-label={`Open ${l.name ?? "lead"} website in a new tab`}
+                              aria-label={`Open ${l.business || "lead"} website in a new tab`}
                               className="inline-flex items-center gap-1 text-primary hover:underline"
                             >
                               <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />

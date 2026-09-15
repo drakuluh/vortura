@@ -15,7 +15,9 @@ import { formatCents } from "@/lib/admin/format";
 import { logActivity } from "@/lib/admin/activity";
 import { useDeepLinkOpen } from "@/hooks/useDeepLinkOpen";
 
-type ClientStatus = "active" | "onboarding" | "paused" | "churned";
+// "prospect": signed up and messaged the team but hasn't bought yet
+// (created automatically by ensure_my_client).
+type ClientStatus = "active" | "onboarding" | "paused" | "churned" | "prospect";
 type Health = "healthy" | "watch" | "at_risk";
 
 interface ClientRow {
@@ -40,7 +42,7 @@ interface ClientRow {
 }
 
 const statusTone = (s: ClientStatus) =>
-  s === "active" ? "success" : s === "onboarding" ? "primary" : s === "paused" ? "warn" : "danger";
+  s === "active" ? "success" : s === "onboarding" ? "primary" : s === "prospect" ? "secondary" : s === "paused" ? "warn" : "danger";
 
 // Per-package recurring monthly fee in cents. Keyed by tier (preferred) or
 // normalized package name. Used to compute MRR from owned packages, not from
@@ -435,6 +437,7 @@ const ClientDialog = ({ row, onClose }: { row?: ClientRow; onClose: () => void }
               <SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {[
+                  { v: "prospect", l: "Prospect" },
                   { v: "active", l: "Active" },
                   { v: "onboarding", l: "Onboarding" },
                   { v: "paused", l: "Paused" },
@@ -548,6 +551,7 @@ export default function AdminClients() {
           <SelectTrigger className="md:w-48"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All statuses</SelectItem>
+            <SelectItem value="prospect">Prospect</SelectItem>
             <SelectItem value="active">Active</SelectItem>
             <SelectItem value="onboarding">Onboarding</SelectItem>
             <SelectItem value="paused">Paused</SelectItem>

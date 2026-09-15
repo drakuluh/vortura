@@ -5,13 +5,14 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { ArrowRight, KeyRound, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Seo } from "@/components/Seo";
 import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { supabase } from "@/integrations/supabase/client";
+import { ensureAuthListener } from "@/hooks/useAuth";
 
 const passwordSchema = z
   .string()
@@ -29,6 +30,9 @@ const ResetPassword = () => {
 
   // Supabase parses the recovery hash automatically and emits PASSWORD_RECOVERY.
   // We listen for it (or an existing recovery session) so the user can set a new password.
+  // The recovery session this page creates must reach the shared auth state.
+  useEffect(ensureAuthListener, []);
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
@@ -109,7 +113,7 @@ const ResetPassword = () => {
                     Set a new <span className="text-gradient">password.</span>
                   </h1>
                   <p className="text-sm text-muted-foreground">
-                    Choose something strong — at least 8 characters.
+                    Use at least 8 characters.
                   </p>
                 </motion.div>
 
@@ -153,9 +157,8 @@ const ResetPassword = () => {
                           <Label htmlFor="new-password" className={labelClass}>
                             New password
                           </Label>
-                          <Input
+                          <PasswordInput
                             id="new-password"
-                            type="password"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -173,9 +176,8 @@ const ResetPassword = () => {
                           <Label htmlFor="confirm-password" className={labelClass}>
                             Confirm password
                           </Label>
-                          <Input
+                          <PasswordInput
                             id="confirm-password"
-                            type="password"
                             placeholder="••••••••"
                             value={confirm}
                             onChange={(e) => setConfirm(e.target.value)}

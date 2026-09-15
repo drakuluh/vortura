@@ -8,7 +8,6 @@ import { motion } from "framer-motion";
 import { useHeaderAnim } from "@/hooks/use-anim";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ServiceCard } from "@/components/landing/ServiceCard";
-import { SparklesText } from "@/components/ui/sparkles-text";
 import { Seo } from "@/components/Seo";
 
 const servicesJsonLd = {
@@ -35,7 +34,7 @@ const Services = () => {
     <PageLayout>
       <Seo
         title="AI Automation & Website Services"
-        description="Website builds, AI voice agents, missed-call text-back, review automation, CRM setup, and lead routing — every automation custom-built for local service businesses."
+        description="Website builds, AI voice agents, missed-call text-back, review automation, CRM setup, and lead routing, each built for local service businesses."
         jsonLd={servicesJsonLd}
       />
       <div className="relative overflow-hidden">
@@ -43,11 +42,11 @@ const Services = () => {
         <section className="relative z-10 pt-12 md:pt-14 lg:pt-24 pb-12 md:pb-16 lg:pb-24">
           <div className="container">
             <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12 lg:mb-16 mt-12 md:mt-10 lg:mt-8" {...headerAnim}>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-depth mb-3">
-              Built for <SparklesText text="scale." className="text-gradient" />
+              <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-3">
+              Built for <span className="text-gradient">scale.</span>
             </h1>
               <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto lg:whitespace-nowrap">
-              Websites, automations, and AI — custom-built to grow your local business.
+              Websites, automations, and AI built to grow your local business.
             </p>
           </motion.div>
 

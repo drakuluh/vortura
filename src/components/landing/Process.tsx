@@ -2,26 +2,25 @@ import { Search, Wrench, Rocket } from "lucide-react";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SplitReveal } from "@/components/effects/SplitReveal";
-import { SparklesText } from "@/components/ui/sparkles-text";
 
 const steps = [
   {
     icon: Search,
     num: "01",
     title: "Discovery & Audit",
-    desc: "We map your workflows, identify the highest-leverage automation opportunities, and ship a custom blueprint within 7 days.",
+    desc: "We map your workflows, find the automations that will make the biggest difference, and deliver a custom blueprint within 7 days.",
   },
   {
     icon: Wrench,
     num: "02",
     title: "Build & Integrate",
-    desc: "Our team builds, tests, and integrates AI agents directly into your stack. Zero disruption to current operations.",
+    desc: "We build and test AI agents and connect them to the tools you already use, while your business keeps running normally.",
   },
   {
     icon: Rocket,
     num: "03",
     title: "Launch & Scale",
-    desc: "Go live with full training and documentation. We monitor performance 24/7 and refine your automations as your business grows.",
+    desc: "You go live with full training and documentation. We monitor performance 24/7 and adjust your automations as your business grows.",
   },
 ];
 
@@ -41,7 +40,7 @@ export const Process = ({ headerAnim: headerAnimOverride }: { headerAnim?: any }
       <div className="container relative z-10">
         <motion.div className="max-w-2xl mx-auto text-center mb-7 md:mb-9 lg:mb-14" {...animProps}>
           <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 whitespace-nowrap">
-            From audit to <SparklesText text="automation." className="text-gradient" />
+            From audit to automation
           </h2>
           <p className="text-sm text-muted-foreground">
             A proven 3-step process. Most clients see ROI within 30 days.

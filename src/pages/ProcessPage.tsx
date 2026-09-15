@@ -20,8 +20,8 @@ import {
 import { motion } from "framer-motion";
 import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
+import { StepConnector } from "@/components/landing/StepConnector";
 import { Seo } from "@/components/Seo";
-import { SparklesText } from "@/components/ui/sparkles-text";
 import { Counter } from "@/components/effects/Counter";
 import { FloatCard } from "@/hooks/use-tilt";
 import { useAnimProps } from "@/hooks/use-anim";
@@ -37,7 +37,7 @@ import {
 
 const OLD_VS_NEW = {
   old: [
-    "Missed calls go to voicemail — leads lost",
+    "Missed calls go to voicemail and the lead is gone",
     "Manual follow-ups forgotten or delayed",
     "Hours wasted on repetitive admin tasks",
     "No data on what's working and what isn't",
@@ -48,7 +48,7 @@ const OLD_VS_NEW = {
     "Instant, automated follow-ups every time",
     "Admin tasks handled while you sleep",
     "Real-time dashboards and performance data",
-    "Scaling means turning a dial, not posting a job",
+    "Growing means changing a setting instead of hiring someone",
   ],
 };
 
@@ -62,23 +62,23 @@ const STATS = [
 const PROCESS_FAQS = [
   {
     q: "What if I'm not technical?",
-    a: "You don't need to be. We handle everything — from setup to training. If you can use a smartphone, you can use our systems. Every client gets a walkthrough and documentation written in plain English.",
+    a: "You don't need to be. We handle everything from setup to training, and if you can use a smartphone, you can use what we build. Every client gets a walkthrough and documentation written in plain English.",
   },
   {
     q: "How long until I see results?",
-    a: "Most clients see measurable ROI within 30 days of launch. During the build phase, we prioritize the automations that will have the fastest impact on your bottom line.",
+    a: "Most clients see a measurable return within 30 days of launch. During the build, we start with the automations that will pay off fastest.",
   },
   {
     q: "What happens after launch?",
-    a: "We don't disappear. Your systems are monitored 24/7, and you get monthly performance reports. We proactively optimize based on real data and roll out improvements as AI technology evolves.",
+    a: "We stay involved. We monitor your systems 24/7 and send you monthly performance reports. We make improvements based on how the systems are actually performing, and add new capabilities as AI technology improves.",
   },
   {
     q: "Can I cancel anytime?",
-    a: "Yes. We don't lock you into long-term contracts. We keep clients because we deliver results, not because of fine print. You own everything we build for you.",
+    a: "Yes. There are no long-term contracts, and you own everything we build for you. Clients stay with us because the work pays for itself.",
   },
   {
     q: "Do you work with businesses outside the GTA?",
-    a: "Absolutely. While many of our clients are in Mississauga, Brampton, and Toronto, everything we build works remotely. We serve businesses across Canada and the US.",
+    a: "Yes. Many of our clients are in Mississauga, Brampton, and Toronto, but everything we build works remotely, and we work with businesses across Canada and the US.",
   },
 ];
 
@@ -198,7 +198,7 @@ const ProcessPage = () => {
     <PageLayout>
       <Seo
         title="Our Process"
-        description="From discovery call to launch in 30 days. See exactly how Vortura builds, integrates, and scales AI automations for your business."
+        description="From discovery call to launch in 30 days. See how Vortura plans, builds, and runs AI automations for your business."
       />
       <div className="relative overflow-hidden">
         <PageHeroBg />
@@ -209,10 +209,10 @@ const ProcessPage = () => {
             <motion.div className="max-w-3xl mx-auto text-center mt-12 md:mt-10 lg:mt-8" {...header}>
               <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth mb-2.5 whitespace-nowrap">
                 From first call to{" "}
-                <SparklesText text="full automation." className="text-gradient" />
+                <span className="text-gradient">full automation.</span>
               </h1>
               <p className="text-sm text-muted-foreground lg:whitespace-nowrap">
-                A proven process built around speed, transparency, and measurable results. Most clients see ROI within 30 days.
+                A fast process where you can see what's happening at each step. Most clients see a return within 30 days.
               </p>
             </motion.div>
           </div>
@@ -224,13 +224,13 @@ const ProcessPage = () => {
             <div className="max-w-4xl mx-auto">
               <motion.div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-end mb-6 md:mb-8" {...header}>
                 <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
-                  The <SparklesText text="old way" className="text-gradient-danger" colors={{ first: "#FF4444", second: "#FF8C00" }} sparklesCount={6} />
+                  The <span className="text-gradient-danger">old way</span>
                 </h2>
                 <span className="hidden md:block text-base md:text-lg font-semibold text-muted-foreground px-4 pb-1">
                   Vs.
                 </span>
                 <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
-                  The <SparklesText text="Vortura way" className="text-gradient" />
+                  The Vortura way
                 </h2>
               </motion.div>
 
@@ -284,10 +284,10 @@ const ProcessPage = () => {
                   <Search className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <span className="font-mono text-[11px] text-primary tracking-widest">STEP 01 — WEEK 1</span>
+                  <span className="font-mono text-[11px] text-primary tracking-widest">STEP 01 · WEEK 1</span>
                   <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth">
                     Discovery &{" "}
-                    <SparklesText text="audit." className="text-gradient" />
+                    audit
                   </h2>
                 </div>
               </div>
@@ -296,10 +296,10 @@ const ProcessPage = () => {
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
               <motion.div {...reveal(0)}>
                 <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-6">
-                  Every engagement starts with a free 30-minute discovery call. We learn your business, your pain points, and your goals. Then we go deep — auditing your workflows, mapping every process that touches your revenue, and quantifying exactly where time and money are being lost.
+                  Every project starts with a free 30-minute discovery call about your business, what's going wrong, and what you want to achieve. Then we audit your workflows, map every process that affects your revenue, and work out where you're losing time and money.
                 </p>
                 <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
-                  By day 7, you receive a custom automation blueprint — a detailed roadmap of what to build, in what order, and why. No jargon, no fluff. Just a clear plan with deliverables, milestones, and pricing.
+                  By day 7 you get a custom automation blueprint: a plain-English plan of what to build, in what order, and why, with deliverables, milestones, and pricing.
                 </p>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {[
@@ -331,6 +331,8 @@ const ProcessPage = () => {
         </div>
       </section>
 
+      <StepConnector />
+
       {/* ── Step 2: Build & Integrate ─────────────────── */}
       <section className="relative py-10 md:py-12 lg:py-16">
         <div className="container">
@@ -341,10 +343,10 @@ const ProcessPage = () => {
                   <Wrench className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <span className="font-mono text-[11px] text-primary tracking-widest">STEP 02 — WEEKS 2–3</span>
+                  <span className="font-mono text-[11px] text-primary tracking-widest">STEP 02 · WEEKS 2-3</span>
                   <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth">
                     Build &{" "}
-                    <SparklesText text="integrate." className="text-gradient" />
+                    integrate
                   </h2>
                 </div>
               </div>
@@ -359,10 +361,10 @@ const ProcessPage = () => {
 
               <motion.div {...reveal(0)}>
                 <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-6">
-                  This is where the blueprint comes to life. Our team builds your custom AI agents and wires them directly into your existing tools — your CRM, phone system, calendar, and anything else in your stack. Zero disruption to your current operations.
+                  Next we build your custom AI agents and connect them to the tools you already use, like your CRM, phone system, and calendar. Your business keeps running normally while we work.
                 </p>
                 <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
-                  Every integration is rigorously tested before anything goes live. You get a private dashboard where you can track build progress in real time, and we check in with you regularly so there are never any surprises.
+                  We test every integration before anything goes live. A private dashboard shows you how the build is progressing, and we check in with you regularly along the way.
                 </p>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {[
@@ -388,6 +390,8 @@ const ProcessPage = () => {
         </div>
       </section>
 
+      <StepConnector flip />
+
       {/* ── Step 3: Launch & Scale ─────────────────────── */}
       <section className="relative py-10 md:py-12 lg:py-16">
         <div className="container">
@@ -398,10 +402,10 @@ const ProcessPage = () => {
                   <Rocket className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <span className="font-mono text-[11px] text-primary tracking-widest">STEP 03 — WEEK 4 & BEYOND</span>
+                  <span className="font-mono text-[11px] text-primary tracking-widest">STEP 03 · WEEK 4 & BEYOND</span>
                   <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth">
                     Launch &{" "}
-                    <SparklesText text="scale." className="text-gradient" />
+                    scale
                   </h2>
                 </div>
               </div>
@@ -410,10 +414,10 @@ const ProcessPage = () => {
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
               <motion.div {...reveal(0)}>
                 <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-6">
-                  We flip the switch together. Your team gets hands-on training, full documentation, and video walkthroughs so everyone knows exactly how the new systems work. Launch day is guided — we monitor everything in real time to catch and resolve any issues instantly.
+                  We launch together. Your team gets hands-on training, documentation, and video walkthroughs so everyone knows how the new systems work. On launch day we watch everything live and fix any problems as they come up.
                 </p>
                 <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
-                  But we don't disappear after launch. Your systems are monitored 24/7, and you get monthly performance reports with actionable insights. We proactively optimize based on real data, roll out improvements as AI technology evolves, and you get priority support whenever you need it.
+                  After launch, we monitor your systems 24/7 and send you monthly performance reports showing what to improve. We keep adjusting based on the results, add new capabilities as AI technology improves, and give you priority support whenever you need it.
                 </p>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {[
@@ -451,7 +455,7 @@ const ProcessPage = () => {
           <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...header}>
             <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth mb-2.5">
               By the{" "}
-              <SparklesText text="numbers." className="text-gradient" />
+              numbers
             </h2>
           </motion.div>
 
@@ -515,7 +519,7 @@ const ProcessPage = () => {
           <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...header}>
             <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth mb-2.5">
               Common{" "}
-              <SparklesText text="questions." className="text-gradient" />
+              questions
             </h2>
             <p className="text-sm text-muted-foreground">
               Everything you need to know before getting started.
@@ -523,17 +527,17 @@ const ProcessPage = () => {
           </motion.div>
 
           <div className="max-w-2xl mx-auto">
-            <Accordion type="single" collapsible className="space-y-3">
+            <Accordion type="single" collapsible className="space-y-3.5">
               {PROCESS_FAQS.map((item, i) => (
                 <AccordionItem
                   key={item.q}
                   value={`item-${i}`}
-                  className="glass rounded-2xl border border-white/10 px-5 md:px-6 overflow-hidden"
+                  className="glass rounded-2xl border border-white/10 px-5 md:px-6 overflow-hidden transition-colors hover:bg-white/[0.03]"
                 >
-                  <AccordionTrigger className="py-4 md:py-5 text-left text-[15px] md:text-base font-semibold tracking-tight hover:no-underline">
+                  <AccordionTrigger className="py-5 md:py-6 text-left text-[15px] md:text-base font-semibold tracking-tight hover:no-underline">
                     {item.q}
                   </AccordionTrigger>
-                  <AccordionContent className="pb-5 text-sm md:text-[15px] leading-relaxed text-muted-foreground">
+                  <AccordionContent className="pb-6 text-sm md:text-[15px] leading-relaxed text-muted-foreground">
                     {item.a}
                   </AccordionContent>
                 </AccordionItem>
@@ -551,11 +555,10 @@ const ProcessPage = () => {
             {...reveal(0)}
           >
             <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth mb-3">
-              Ready to{" "}
-              <SparklesText text="automate?" className="text-gradient" />
+              Let's map your first automation
             </h2>
             <p className="text-sm md:text-base text-muted-foreground mb-8 max-w-md mx-auto">
-              Book a free discovery call. We'll map your workflows, identify the biggest opportunities, and show you exactly what's possible.
+              Book a free discovery call. We'll look at how your business runs and show you where automation would help most.
             </p>
             <Link
               to="/contact"

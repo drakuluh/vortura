@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { Seo } from "@/components/Seo";
-import { SparklesText } from "@/components/ui/sparkles-text";
+import { ORGANIZATION_REF, SITE_ORIGIN, breadcrumbJsonLd } from "@/lib/structured-data";
 import { services } from "@/data/services";
+import { SERVICE_ANIMATIONS } from "@/components/landing/service-animations";
 import { Counter } from "@/components/effects/Counter";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -16,27 +17,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { NfcTapAnimation } from "@/components/landing/NfcTapAnimation";
-import { WebsiteAnimation } from "@/components/landing/WebsiteAnimation";
-import { AiCallAnimation } from "@/components/landing/AiCallAnimation";
-import { DatabaseReactivationAnimation } from "@/components/landing/DatabaseReactivationAnimation";
-import { QrMenuAnimation } from "@/components/landing/QrMenuAnimation";
-import { EmailNewsletterAnimation } from "@/components/landing/EmailNewsletterAnimation";
-import { BusinessMediaAnimation } from "@/components/landing/BusinessMediaAnimation";
-import { EmailSignatureAnimation } from "@/components/landing/EmailSignatureAnimation";
 import { EmailSignatureBuilder } from "@/components/landing/EmailSignatureBuilder";
 import { RoiCalculator } from "@/components/landing/RoiCalculator";
-
-const ANIMATION_MAP: Record<string, React.FC<{ className?: string }>> = {
-  "nfc-review-cards": NfcTapAnimation,
-  "websites-local-business": WebsiteAnimation,
-  "ai-call-answering": AiCallAnimation,
-  "database-reactivation": DatabaseReactivationAnimation,
-  "qr-code-menus": QrMenuAnimation,
-  "email-newsletters": EmailNewsletterAnimation,
-  "print-digital-design": BusinessMediaAnimation,
-  "email-signatures": EmailSignatureAnimation,
-};
+import { RelatedPosts } from "@/components/landing/RelatedPosts";
+import { postsForService } from "@/data/blog-links";
 
 const STEP_ICON_MAP: Record<string, LucideIcon> = {
   phone: Phone, "pencil-ruler": PencilRuler, rocket: Rocket, wrench: Wrench,
@@ -82,22 +66,30 @@ const ServiceDetail = () => {
     });
   };
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    name: service.title,
-    description: service.desc,
-    provider: { "@type": "Organization", name: "Vortura Agency" },
-    ...(service.priceFrom && {
-      offers: {
-        "@type": "Offer",
-        price: service.priceFrom.replace(/[^0-9.]/g, ""),
-        priceCurrency: "USD",
-      },
-    }),
-  };
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: service.title,
+      description: service.desc,
+      url: `${SITE_ORIGIN}/services/${service.slug}`,
+      provider: ORGANIZATION_REF,
+      ...(service.priceFrom && {
+        offers: {
+          "@type": "Offer",
+          price: service.priceFrom.replace(/[^0-9.]/g, ""),
+          // Prices in the data are Canadian dollars (the currency switcher's base).
+          priceCurrency: "CAD",
+        },
+      }),
+    },
+    breadcrumbJsonLd([
+      { name: "Services", path: "/services" },
+      { name: service.title, path: `/services/${service.slug}` },
+    ]),
+  ];
 
-  const AnimationComponent = ANIMATION_MAP[service.slug];
+  const AnimationComponent = SERVICE_ANIMATIONS[service.slug];
 
   const ctaButton = canBuy ? (
     <button
@@ -136,14 +128,14 @@ const ServiceDetail = () => {
 
         {/* ── Back link ──────────────────────────────────── */}
         <div className="relative z-10 container max-w-5xl">
-          <div className="pt-12 md:pt-14 lg:pt-24 mt-12 md:mt-10 lg:mt-8">
+          <nav aria-label="Breadcrumb" className="pt-12 md:pt-14 lg:pt-24 mt-12 md:mt-10 lg:mt-8 flex justify-center">
             <Link
               to="/services"
-              className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors py-2 px-3 -ml-3 rounded-lg hover:bg-white/[0.05]"
+              className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-white/[0.05]"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> All services
             </Link>
-          </div>
+          </nav>
         </div>
 
         {service.slug === "email-signatures" ? (
@@ -166,6 +158,11 @@ const ServiceDetail = () => {
                 <EmailSignatureBuilder />
                 <div className="mt-10">{ctaButton}</div>
               </motion.div>
+              <RelatedPosts
+                heading="From the blog"
+                posts={postsForService(service.slug)}
+                className="mt-16 md:mt-20"
+              />
             </div>
           </section>
         ) : (
@@ -186,7 +183,7 @@ const ServiceDetail = () => {
                   <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-depth leading-[1.08] lg:whitespace-nowrap">
                     {service.headline}{" "}
                     {service.headlineAccent && (
-                      <SparklesText text={service.headlineAccent} className="text-gradient" />
+                      <span className="text-gradient">{service.headlineAccent}</span>
                     )}
                   </h1>
                 </motion.div>
@@ -219,13 +216,13 @@ const ServiceDetail = () => {
               <div className="container max-w-5xl">
                 <motion.div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-end mb-6 md:mb-8" {...reveal(0, isMobile)}>
                   <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
-                    The <SparklesText text="problem." className="text-gradient-danger" colors={{ first: "#FF4444", second: "#FF8C00" }} sparklesCount={6} />
+                    The <span className="text-gradient-danger">problem</span>
                   </h2>
                   <span className="hidden md:block text-base md:text-lg font-semibold text-muted-foreground px-4 pb-1">
                     Vs.
                   </span>
                   <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
-                    Our <SparklesText text="approach." className="text-gradient-success" colors={{ first: "#2ECC71", second: "#27AE60" }} sparklesCount={6} />
+                    Our <span className="text-gradient-success">approach</span>
                   </h2>
                 </motion.div>
 
@@ -264,7 +261,7 @@ const ServiceDetail = () => {
               <div className="container max-w-5xl">
                 <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...reveal(0, isMobile)}>
                   <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                    How it <SparklesText text="works." className="text-gradient" />
+                    How it works
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     A clear, proven process from start to finish.
@@ -318,7 +315,7 @@ const ServiceDetail = () => {
               <div className="container max-w-5xl">
                 <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...reveal(0, isMobile)}>
                   <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                    Results you can <SparklesText text="expect." className="text-gradient" />
+                    Results you can expect
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     What our clients typically see after launch.
@@ -351,7 +348,7 @@ const ServiceDetail = () => {
               <div className="container max-w-5xl">
                 <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...reveal(0, isMobile)}>
                   <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                    Everything <SparklesText text="included." className="text-gradient" />
+                    Everything included
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     Everything you need to get started and see results.
@@ -380,23 +377,23 @@ const ServiceDetail = () => {
                 <div className="container max-w-2xl">
                   <motion.div className="text-center mb-6 md:mb-8" {...reveal(0, isMobile)}>
                     <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth mb-2.5">
-                      Common <SparklesText text="questions." className="text-gradient" />
+                      Common questions
                     </h2>
                     <p className="text-sm md:text-[15px] text-muted-foreground">
                       Everything you need to know before getting started.
                     </p>
                   </motion.div>
-                  <Accordion type="single" collapsible className="space-y-3">
+                  <Accordion type="single" collapsible className="space-y-3.5">
                     {service.faq.map((item, i) => (
                       <AccordionItem
                         key={item.q}
                         value={`item-${i}`}
-                        className="glass rounded-2xl border border-white/10 px-5 md:px-6 overflow-hidden"
+                        className="glass rounded-2xl border border-white/10 px-5 md:px-6 overflow-hidden transition-colors hover:bg-white/[0.03]"
                       >
-                        <AccordionTrigger className="py-4 md:py-5 text-left text-[15px] md:text-base font-semibold tracking-tight hover:no-underline">
+                        <AccordionTrigger className="py-5 md:py-6 text-left text-[15px] md:text-base font-semibold tracking-tight hover:no-underline">
                           {item.q}
                         </AccordionTrigger>
-                        <AccordionContent className="pb-5 text-sm md:text-[15px] leading-relaxed text-muted-foreground">
+                        <AccordionContent className="pb-6 text-sm md:text-[15px] leading-relaxed text-muted-foreground">
                           {item.a}
                         </AccordionContent>
                       </AccordionItem>
@@ -406,6 +403,13 @@ const ServiceDetail = () => {
               </section>
             )}
 
+            {/* ═══ FROM THE BLOG ══════════════════════════ */}
+            <section className="relative z-10 py-10 md:py-12 lg:py-16">
+              <div className="container max-w-5xl">
+                <RelatedPosts heading="From the blog" posts={postsForService(service.slug)} />
+              </div>
+            </section>
+
             {/* ═══ SECTION 7 — FINAL CTA ═════════════════ */}
             <section className="relative z-10 py-10 md:py-14 lg:py-20">
               <div className="container max-w-3xl">
@@ -414,12 +418,12 @@ const ServiceDetail = () => {
                   {...reveal(0, isMobile)}
                 >
                   <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth mb-3">
-                    Ready to get <SparklesText text="started?" className="text-gradient" />
+                    Ready to get started?
                   </h2>
                   <p className="text-sm md:text-base text-muted-foreground mb-8 max-w-md mx-auto">
                     {canBuy
                       ? "Order now and we'll have everything set up within your timeline."
-                      : "Book a free call and we'll build a plan tailored to your business."}
+                      : "Book a free call and we'll put together a plan for your business."}
                   </p>
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     {ctaButton}

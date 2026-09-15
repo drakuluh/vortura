@@ -6,17 +6,44 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useUnreadTeamReplies } from "@/hooks/useUnreadTeamReplies";
 import vorturaLogo from "@/assets/vortura-logo.png";
+import { scrollToTopIfHome } from "@/lib/scroll-to-top-on-home";
+
+// The "Services (Test)" dropdown is parked, not deleted — see
+// ServicesTestDropdown.tsx for the markup and how to re-add it. The marketing
+// pages, data and /marketing routes are all still live.
 
 // Module-level flag so the entry animation only plays on the very first mount,
 // not when the Navbar remounts due to route changes.
 let hasAnimatedNavbar = false;
 
+// React 18 only knows the lowercase DOM attribute and its types don't include
+// it, so it goes in through a spread.
+const LOGO_FETCH_PRIORITY = { fetchpriority: "high" } as Record<string, string>;
+
 export const Navbar = () => {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
-  const { isAdmin, isSupport } = useUserRole();
+  const { isAdmin, isSupport, loading: rolesLoading } = useUserRole();
+  // Unread replies from the team, shown on "Contact" where the conversation
+  // lives. Not for team members, who can see every thread.
+  const unreadReplies = useUnreadTeamReplies(!rolesLoading && !isAdmin && !isSupport);
+  const badgeFor = (to: string) =>
+    to === "/contact" && unreadReplies > 0 ? (
+      <>
+        <span
+          aria-hidden="true"
+          className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold leading-none text-primary-foreground shadow-glow-blue"
+        >
+          {unreadReplies > 9 ? "9+" : unreadReplies}
+        </span>
+        <span className="sr-only">
+          , {unreadReplies} unread {unreadReplies === 1 ? "reply" : "replies"} from the team
+        </span>
+      </>
+    ) : null;
   const showAdminGear = !!user && (isAdmin || isSupport);
   const shouldAnimate = useRef(!hasAnimatedNavbar);
   useEffect(() => {
@@ -73,11 +100,11 @@ export const Navbar = () => {
       initial={shouldAnimate.current ? { y: -20, opacity: 0 } : false}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="fixed top-0 left-0 right-0 z-50"
+      className="fixed top-0 left-0 right-0 z-50 print:hidden"
     >
       <div className="container mt-3">
         <nav className="glass rounded-2xl px-4 py-2 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-1.5 group">
+          <Link to="/" onClick={scrollToTopIfHome(pathname)} className="flex items-center gap-1.5 group min-h-[44px] md:min-h-0">
             <div className="relative isolate">
               <div
                 aria-hidden="true"
@@ -90,7 +117,7 @@ export const Navbar = () => {
                 height={28}
                 loading="eager"
                 decoding="sync"
-                fetchpriority="high"
+                {...LOGO_FETCH_PRIORITY}
                 className="relative w-7 h-7 rounded-md transform-gpu [image-rendering:auto]"
                 style={{ willChange: "transform", backfaceVisibility: "hidden" }}
               />
@@ -105,9 +132,10 @@ export const Navbar = () => {
                 to={l.to}
                 onMouseEnter={() => void l.prefetch()}
                 onFocus={() => void l.prefetch()}
-                className={linkClass(isActive(l.to))}
+                className={cn(linkClass(isActive(l.to)), "inline-flex items-center")}
               >
                 {l.label}
+                {badgeFor(l.to)}
               </Link>
             ))}
           </div>
@@ -179,7 +207,7 @@ export const Navbar = () => {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -16, opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="absolute top-0 left-0 right-0 pt-[68px]"
+              className="absolute top-0 left-0 right-0 pt-[68px] max-h-screen overflow-y-auto"
             >
               <div className="container">
                 <div className="glass-strong rounded-2xl border border-white/10 p-5 flex flex-col gap-1">
@@ -187,7 +215,10 @@ export const Navbar = () => {
                   <div className="flex items-center justify-between mb-3">
                     <Link
                       to="/"
-                      onClick={() => setOpen(false)}
+                      onClick={(e) => {
+                        setOpen(false);
+                        scrollToTopIfHome(pathname)(e);
+                      }}
                       className="flex items-center gap-1.5 group"
                     >
                       <div className="relative">
@@ -232,9 +263,11 @@ export const Navbar = () => {
                           )}
                         >
                           {l.label}
+                          {badgeFor(l.to)}
                         </Link>
                       );
                     })}
+
                     <Link
                       to="/dashboard"
                       onClick={() => setOpen(false)}

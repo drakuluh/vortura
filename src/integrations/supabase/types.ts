@@ -161,6 +161,8 @@ export type Database = {
           notes: string | null
           source: Database["public"]["Enums"]["booking_source"]
           retell_call_id: string | null
+          user_id: string | null
+          ip_hash: string | null
           created_at: string
           updated_at: string
         }
@@ -176,6 +178,8 @@ export type Database = {
           notes?: string | null
           source?: Database["public"]["Enums"]["booking_source"]
           retell_call_id?: string | null
+          user_id?: string | null
+          ip_hash?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -191,6 +195,8 @@ export type Database = {
           notes?: string | null
           source?: Database["public"]["Enums"]["booking_source"]
           retell_call_id?: string | null
+          user_id?: string | null
+          ip_hash?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -241,6 +247,45 @@ export type Database = {
           status?: Database["public"]["Enums"]["client_status"]
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      contact_submissions: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          ip_hash: string | null
+          message: string
+          name: string
+          page_path: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          ip_hash?: string | null
+          message: string
+          name: string
+          page_path?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          ip_hash?: string | null
+          message?: string
+          name?: string
+          page_path?: string | null
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -917,6 +962,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      booked_slots: {
+        Args: { range_end: string; range_start: string }
+        Returns: {
+          ends_at: string
+          starts_at: string
+        }[]
+      }
       change_request_belongs_to_user: {
         Args: { _change_request_id: string; _user_id: string }
         Returns: boolean
@@ -930,6 +982,7 @@ export type Database = {
         Returns: string
       }
       email_queue_dispatch: { Args: never; Returns: undefined }
+      ensure_my_client: { Args: never; Returns: Json }
       enqueue_email: {
         Args: { payload: Json; queue_name: string }
         Returns: number
@@ -983,7 +1036,7 @@ export type Database = {
       booking_status: "confirmed" | "pending" | "completed" | "cancelled" | "no_show"
       booking_type: "discovery" | "strategy" | "onboarding" | "support" | "other"
       change_status: "new" | "in_review" | "shipped"
-      client_status: "active" | "onboarding" | "paused" | "churned"
+      client_status: "active" | "onboarding" | "paused" | "churned" | "prospect"
       health_level: "healthy" | "watch" | "at_risk"
       invoice_status:
         | "paid"
@@ -1135,7 +1188,7 @@ export const Constants = {
       booking_status: ["confirmed", "pending", "completed", "cancelled", "no_show"],
       booking_type: ["discovery", "strategy", "onboarding", "support", "other"],
       change_status: ["new", "in_review", "shipped"],
-      client_status: ["active", "onboarding", "paused", "churned"],
+      client_status: ["active", "onboarding", "paused", "churned", "prospect"],
       health_level: ["healthy", "watch", "at_risk"],
       invoice_status: [
         "paid",

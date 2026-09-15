@@ -57,20 +57,20 @@
        Each combines a soft ambient drop, a tighter contact shadow,
        and a 1px inset top highlight to simulate light from above. */
     --shadow-elev-1:
+      0 2px 4px hsl(230 40% 0% / 0.7),
       0 1px 2px hsl(230 40% 0% / 0.5),
-      0 1px 1px hsl(230 40% 0% / 0.35),
       inset 0 1px 0 hsl(210 40% 98% / 0.04);
     --shadow-elev-2:
-      0 4px 12px hsl(230 40% 0% / 0.45),
-      0 2px 4px hsl(230 40% 0% / 0.35),
+      0 6px 18px hsl(230 40% 0% / 0.65),
+      0 3px 6px hsl(230 40% 0% / 0.5),
       inset 0 1px 0 hsl(210 40% 98% / 0.05);
     --shadow-elev-3:
-      0 12px 28px hsl(230 40% 0% / 0.5),
-      0 4px 10px hsl(230 40% 0% / 0.35),
+      0 16px 36px hsl(230 40% 0% / 0.7),
+      0 6px 14px hsl(230 40% 0% / 0.5),
       inset 0 1px 0 hsl(210 40% 98% / 0.06);
     --shadow-elev-4:
-      0 24px 48px hsl(230 40% 0% / 0.55),
-      0 8px 16px hsl(230 40% 0% / 0.4),
+      0 32px 64px hsl(230 40% 0% / 0.75),
+      0 12px 24px hsl(230 40% 0% / 0.55),
       inset 0 1px 0 hsl(210 40% 98% / 0.07);
 
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -164,20 +164,36 @@
      transform), and forcing a permanent compositor layer on every glass
      element was spawning dozens of GPU layers per page and janking mobile. */
   .glass {
-    @apply backdrop-blur-2xl bg-white/[0.04] border border-white/[0.10];
+    @apply backdrop-blur-2xl bg-white/[0.05] border border-white/[0.18];
     box-shadow:
       var(--shadow-elev-2),
-      inset 0 1px 0 hsl(0 0% 100% / 0.08),
+      inset 0 1px 0 hsl(0 0% 100% / 0.12),
       inset 0 -1px 0 hsl(0 0% 0% / 0.35);
   }
 
   .glass-strong {
-    @apply backdrop-blur-[28px] bg-white/[0.06] border border-white/[0.14];
+    @apply backdrop-blur-[28px] bg-white/[0.07] border border-white/[0.22];
     box-shadow:
       var(--shadow-elev-3),
-      inset 0 1px 0 hsl(0 0% 100% / 0.10),
+      inset 0 1px 0 hsl(0 0% 100% / 0.14),
       inset 0 -1px 0 hsl(0 0% 0% / 0.4),
-      inset 0 0 0 1px hsl(0 0% 100% / 0.02);
+      inset 0 0 0 1px hsl(0 0% 100% / 0.04);
+  }
+
+  /* Glass language for floating panels (dropdowns, popovers). Unlike .glass,
+     the base is opaque — these sit over arbitrary page content, where a
+     translucent fill makes the text underneath bleed through and read as
+     broken rather than layered. */
+  .glass-solid {
+    @apply border border-white/[0.22];
+    background:
+      linear-gradient(hsl(0 0% 100% / 0.07), hsl(0 0% 100% / 0.07)),
+      hsl(230 22% 9%);
+    box-shadow:
+      var(--shadow-elev-4),
+      inset 0 1px 0 hsl(0 0% 100% / 0.14),
+      inset 0 -1px 0 hsl(0 0% 0% / 0.4),
+      inset 0 0 0 1px hsl(0 0% 100% / 0.04);
   }
 
   /* Backdrop-blur is one of the most expensive things a mobile GPU does, and
@@ -209,6 +225,29 @@
     .sparkle-anim { animation: none; opacity: 0; }
   }
 
+  /* Dashes travelling along the process-step connectors. CSS rather than a
+     framer-motion loop so useInViewPause's .anim-paused can freeze it while
+     it's scrolled out of view. The offset is a multiple of the 15px dash
+     period (8 + 7), which is what makes the loop seamless. */
+  @keyframes dash-flow {
+    to { stroke-dashoffset: -150; }
+  }
+  .dash-flow {
+    stroke-dasharray: 8 7;
+    stroke-dashoffset: 0;
+    animation: dash-flow 3s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dash-flow { animation: none; }
+  }
+
+  /* FloatCard applies its drift as an inline animation, so there's no class to
+     target — match the inline style instead. Covers the hero panels and the
+     process-page step visuals. */
+  @media (prefers-reduced-motion: reduce) {
+    [style*="float-orbit"] { animation: none !important; }
+  }
+
   /* iOS-style gradient hero button — vibrant gradient with subtle glass sheen,
      clipped highlights, and crisp press states. */
   .btn-hero-glass {
@@ -222,12 +261,12 @@
     background: var(--gradient-primary);
     background-clip: padding-box;
     border: 1px solid hsl(0 0% 100% / 0.22);
-    text-shadow: 0 1px 1px hsl(230 40% 0% / 0.25);
+    text-shadow: 0 1px 2px hsl(230 40% 0% / 0.4);
     box-shadow:
       0 1px 0 hsl(0 0% 100% / 0.35) inset,
       0 -1px 0 hsl(230 40% 0% / 0.3) inset,
-      0 4px 12px hsl(230 40% 0% / 0.45),
-      0 2px 4px hsl(230 40% 0% / 0.35);
+      0 6px 18px hsl(230 40% 0% / 0.65),
+      0 3px 6px hsl(230 40% 0% / 0.5);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -287,8 +326,8 @@
     box-shadow:
       0 1px 0 hsl(0 0% 100% / 0.4) inset,
       0 -1px 0 hsl(230 40% 0% / 0.3) inset,
-      0 6px 16px hsl(230 40% 0% / 0.5),
-      0 2px 6px hsl(230 40% 0% / 0.4);
+      0 8px 24px hsl(230 40% 0% / 0.7),
+      0 3px 8px hsl(230 40% 0% / 0.55);
   }
   .btn-hero-glass:focus-visible {
     outline: none;
@@ -297,8 +336,8 @@
       0 -1px 0 hsl(230 40% 0% / 0.3) inset,
       inset 0 0 0 2px hsl(var(--primary) / 0.65),
       inset 0 0 0 3px hsl(0 0% 100% / 0.18),
-      0 6px 16px hsl(230 40% 0% / 0.5),
-      0 2px 6px hsl(230 40% 0% / 0.4);
+      0 8px 24px hsl(230 40% 0% / 0.7),
+      0 3px 8px hsl(230 40% 0% / 0.55);
   }
   .btn-hero-glass:active {
     transform: translateY(1px) scale(0.99);
@@ -307,7 +346,7 @@
     box-shadow:
       0 1px 0 hsl(0 0% 100% / 0.2) inset,
       0 -1px 0 hsl(230 40% 0% / 0.45) inset,
-      0 2px 6px hsl(230 40% 0% / 0.45);
+      0 3px 8px hsl(230 40% 0% / 0.6);
   }
 
   /* Headline depth — mirrors the glass/button depth language with a subtle
@@ -316,9 +355,9 @@
   .text-depth {
     text-shadow:
       0 1px 0 hsl(0 0% 100% / 0.08),
-      0 1px 2px hsl(230 40% 0% / 0.55),
-      0 3px 6px hsl(230 40% 0% / 0.45),
-      0 8px 24px hsl(230 40% 0% / 0.35);
+      0 2px 4px hsl(230 40% 0% / 0.7),
+      0 4px 10px hsl(230 40% 0% / 0.6),
+      0 10px 30px hsl(230 40% 0% / 0.5);
   }
 
   /* Glass icon tile — small square/round container with the same depth
@@ -338,8 +377,8 @@
     box-shadow:
       0 1px 0 hsl(0 0% 100% / 0.12) inset,
       0 -1px 0 hsl(230 40% 0% / 0.35) inset,
-      0 4px 12px hsl(230 40% 0% / 0.4),
-      0 2px 4px hsl(230 40% 0% / 0.3);
+      0 6px 18px hsl(230 40% 0% / 0.6),
+      0 3px 6px hsl(230 40% 0% / 0.45);
   }
   .glass-icon::before {
     content: "";
@@ -466,10 +505,13 @@
     /* Parent .text-depth applies text-shadow which bleeds through transparent
        gradient glyphs and looks like a dark inner glow. Reset it here. */
     text-shadow: none;
-    /* drop-shadow works on gradient-clipped text (text-shadow does not). */
+    /* drop-shadow mirrors .text-depth visually (text-shadow can't render
+       through transparent gradient glyphs). Opacities are lower than
+       .text-depth because filter drop-shadows compound multiplicatively. */
     filter:
-      drop-shadow(0 1px 1px hsl(230 40% 0% / 0.25))
-      drop-shadow(0 4px 12px hsl(230 40% 0% / 0.2));
+      drop-shadow(0 2px 4px hsl(230 40% 0% / 0.35))
+      drop-shadow(0 4px 10px hsl(230 40% 0% / 0.25))
+      drop-shadow(0 10px 30px hsl(230 40% 0% / 0.2));
   }
 
   .text-gradient-danger {
@@ -479,8 +521,9 @@
     color: transparent;
     text-shadow: none;
     filter:
-      drop-shadow(0 1px 1px hsl(0 60% 10% / 0.3))
-      drop-shadow(0 4px 14px hsl(0 80% 40% / 0.25));
+      drop-shadow(0 2px 4px hsl(230 40% 0% / 0.35))
+      drop-shadow(0 4px 10px hsl(230 40% 0% / 0.25))
+      drop-shadow(0 10px 30px hsl(230 40% 0% / 0.2));
   }
 
   .text-gradient-success {
@@ -490,15 +533,18 @@
     color: transparent;
     text-shadow: none;
     filter:
-      drop-shadow(0 1px 1px hsl(145 50% 10% / 0.3))
-      drop-shadow(0 4px 14px hsl(145 60% 35% / 0.25));
+      drop-shadow(0 2px 4px hsl(230 40% 0% / 0.35))
+      drop-shadow(0 4px 10px hsl(230 40% 0% / 0.25))
+      drop-shadow(0 10px 30px hsl(230 40% 0% / 0.2));
   }
 
   .grid-bg {
     background-image:
       linear-gradient(hsl(var(--border) / 0.2) 1px, transparent 1px),
       linear-gradient(90deg, hsl(var(--border) / 0.2) 1px, transparent 1px);
-    background-size: 60px 60px;
+    /* --grid-cell is published by useGridFit so a whole number of columns spans
+       the viewport; the 60px fallback covers first paint and no-JS. */
+    background-size: var(--grid-cell, 60px) var(--grid-cell, 60px);
     mask-image:
       radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 80%),
       linear-gradient(to bottom, black 60%, transparent 100%);
@@ -513,7 +559,7 @@
     background-image:
       linear-gradient(hsl(var(--border) / 0.2) 1px, transparent 1px),
       linear-gradient(90deg, hsl(var(--border) / 0.2) 1px, transparent 1px);
-    background-size: 60px 60px;
+    background-size: var(--grid-cell, 60px) var(--grid-cell, 60px);
   }
 
   .grid-bg-section {
@@ -609,4 +655,64 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   .animate-float-y {
     animation: floatY 3s ease-in-out infinite;
   }
+}
+
+/* ── Print ────────────────────────────────────────────────────────────────
+   Mostly for blog posts and legal pages. Chrome that only makes sense on
+   screen carries Tailwind's print:hidden; this block turns the dark glass
+   theme into plain black on white and keeps content readable on paper. */
+@media print {
+  @page { margin: 18mm 16mm; }
+
+  html, body, #root, main, .bg-background {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  *, *::before, *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Scroll-triggered reveals that never ran would print invisible. */
+  [style*="opacity"] { opacity: 1 !important; }
+  [style*="transform"] { transform: none !important; }
+  [style*="blur"] { filter: none !important; }
+
+  /* Glass cards become plain blocks. */
+  .glass, .glass-strong, .glass-solid {
+    background: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+  }
+  .border-gradient::before { display: none !important; }
+
+  /* Gradient text is transparent text with a background, which prints blank. */
+  .text-gradient, .text-gradient-danger, .text-gradient-success {
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    color: #111 !important;
+    filter: none !important;
+  }
+
+  .text-muted-foreground, [class*="text-muted-foreground"] { color: #444 !important; }
+  .text-primary { color: #0b5d8a !important; }
+  h1, h2, h3 { color: #000 !important; break-after: avoid; }
+  p, li { orphans: 3; widows: 3; }
+  figure, table, blockquote, pre { break-inside: avoid; }
+
+  /* The printed page can't be clicked, so show where links go. */
+  main a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #555;
+    word-break: break-all;
+  }
+
+  /* Fixed and sticky layers would repeat or overlap on every page. */
+  .sticky, .fixed { position: static !important; }
 }

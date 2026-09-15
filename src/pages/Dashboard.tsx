@@ -23,6 +23,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { SparkleField } from "@/components/ui/sparkles-text";
 import { useCurrentClient } from "@/hooks/useCurrentClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -44,7 +45,7 @@ const TypewriterOnce = ({ text, speed = 90 }: { text: string; speed?: number }) 
   }, [text, speed]);
   return (
     <span className="inline-flex items-baseline leading-[1.15] pb-[0.1em] min-h-[1.15em]">
-      <span className="text-gradient">{shown}{"\u200B"}</span>
+      <span className="text-gradient relative">{shown}{"\u200B"}<SparkleField /></span>
       <span className="ml-1 inline-block w-[3px] h-[0.9em] bg-primary animate-blink shadow-glow-blue" />
     </span>
   );
@@ -424,7 +425,7 @@ const Dashboard = () => {
                     // Get started
                   </p>
                   <h2 className="text-lg md:text-xl font-semibold tracking-tight mb-1">
-                    Your workspace is ready.
+                    Your workspace is ready
                   </h2>
                   <p className="text-sm text-muted-foreground max-w-2xl">
                     Once your first automation package is provisioned, live metrics, packages,

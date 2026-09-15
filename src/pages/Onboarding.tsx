@@ -86,7 +86,7 @@ const Onboarding = () => {
         })
         .eq("id", user.id);
       if (error) throw error;
-      toast.success("All set — welcome.");
+      toast.success("You're all set. Welcome.");
       navigate(redirectTo, { replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not save");

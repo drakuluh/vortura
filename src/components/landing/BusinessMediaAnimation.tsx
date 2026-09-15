@@ -12,7 +12,7 @@ export const BusinessMediaAnimation = ({ className }: { className?: string }) =>
       ref={ref}
       className={cn("bm-anim", className)}
       role="img"
-      aria-label="A design being built — shapes and colors are selected, then exported as a print-ready PDF."
+      aria-label="A design being built as shapes and colors are chosen, then exported as a print-ready PDF."
     >
       <div className="bm-device">
         <MacbookPro className="bm-mac text-[#0b1220]" />

@@ -97,10 +97,14 @@ export default function AdminMessages() {
   const send = useMutation({
     mutationFn: async () => {
       if (!activeId || !draft.trim()) return;
-      const { error } = await supabase.from("messages").insert({
+      const { data, error } = await supabase.from("messages").insert({
         thread_id: activeId, sender_user_id: user!.id, sender_side: "admin", body: draft.trim(),
-      });
+      }).select("id").single();
       if (error) throw error;
+      // Emails the client (first message of a burst only; the function throttles).
+      supabase.functions
+        .invoke("notify-event", { body: { kind: "new_message_from_team", entity_id: data.id } })
+        .catch(() => {});
     },
     onSuccess: () => {
       setDraft("");

@@ -5,7 +5,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "../_shared/stripe.ts";
 import { notifyTeam } from "../_shared/notify.ts";
-import { adminUrl } from "../_shared/site.ts";
+import { adminUrl, siteUrl } from "../_shared/site.ts";
 import {
   changeRequestTemplate,
   changeRequestCommentTemplate,
@@ -19,7 +19,12 @@ type Kind =
   | "new_change_request_comment"
   | "new_client"
   | "new_message_from_client"
+  | "new_message_from_team"
   | "new_thread_from_client";
+
+// A team member often sends several messages in a row. Email the client
+// about the first one only, not every message in a burst.
+const TEAM_REPLY_EMAIL_GAP_MS = 15 * 60 * 1000;
 
 interface Body {
   kind: Kind;
@@ -87,6 +92,7 @@ Deno.serve(async (req) => {
         subject: tpl.subject,
         body: `Client: ${clientName}\nPriority: ${cr.priority}\nTitle: ${cr.title}`,
         blocks: tpl.blocks,
+        url: adminUrl("/admin/change-requests", { id: body.entity_id }),
         category: "change_requests",
       });
     } else if (body.kind === "new_client") {
@@ -108,6 +114,7 @@ Deno.serve(async (req) => {
         subject: tpl.subject,
         body: `Plan: ${c.plan ?? "—"}\nContact: ${c.contact_name ?? "—"}${c.email ? ` <${c.email}>` : ""}`,
         blocks: tpl.blocks,
+        url: adminUrl("/admin/clients", { id: body.entity_id }),
         category: "clients",
       });
     } else if (body.kind === "new_message_from_client") {
@@ -132,8 +139,68 @@ Deno.serve(async (req) => {
         subject: tpl.subject,
         body: `Thread: ${thread?.subject ?? "—"}\n\n${snippet}`,
         blocks: tpl.blocks,
+        url: adminUrl("/admin/messages", { thread: (m as any).thread_id }),
         category: "messages",
       });
+    } else if (body.kind === "new_message_from_team") {
+      // Only the team can trigger client emails.
+      const { data: roles } = await db
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", claims.claims.sub)
+        .in("role", ["admin", "support"]);
+      if (!roles?.length) return json({ error: "Forbidden" }, 403);
+
+      const { data: m } = await db
+        .from("messages")
+        .select("id, body, sender_side, thread_id, created_at, message_threads(client_id, clients(name, contact_name, email, user_id))")
+        .eq("id", body.entity_id)
+        .maybeSingle();
+      if (!m) return json({ error: "Message not found" }, 404);
+      if (m.sender_side !== "admin") return json({ skipped: "not from team" });
+
+      const since = new Date(new Date(m.created_at).getTime() - TEAM_REPLY_EMAIL_GAP_MS).toISOString();
+      const { count: recent } = await db
+        .from("messages")
+        .select("id", { count: "exact", head: true })
+        .eq("thread_id", m.thread_id)
+        .eq("sender_side", "admin")
+        .neq("id", m.id)
+        .gte("created_at", since)
+        .lte("created_at", m.created_at);
+      if ((recent ?? 0) > 0) return json({ skipped: "client already emailed for this burst" });
+
+      const client = (m as any).message_threads?.clients;
+      let to: string | null = client?.email ?? null;
+      if (!to && client?.user_id) {
+        const { data: u } = await db.auth.admin.getUserById(client.user_id);
+        to = u?.user?.email ?? null;
+      }
+      if (!to) return json({ skipped: "client has no email" });
+
+      const firstName = (client?.contact_name ?? "").split(" ")[0] || undefined;
+      const res = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+        },
+        body: JSON.stringify({
+          templateName: "team-reply",
+          recipientEmail: to,
+          idempotencyKey: `team-reply-${m.id}`,
+          templateData: {
+            name: firstName,
+            snippet: (m.body ?? "").slice(0, 400),
+            url: `${siteUrl()}/contact`,
+            siteUrl: siteUrl(),
+          },
+        }),
+      });
+      if (!res.ok) {
+        console.error("team-reply email failed:", res.status, await res.text());
+        return json({ error: "Email failed" }, 502);
+      }
     } else if (body.kind === "new_thread_from_client") {
       const { data: t } = await db
         .from("message_threads")
@@ -152,6 +219,7 @@ Deno.serve(async (req) => {
         subject: tpl.subject,
         body: `Subject: ${t.subject}`,
         blocks: tpl.blocks,
+        url: adminUrl("/admin/messages", { thread: body.entity_id }),
         category: "messages",
       });
     } else if (body.kind === "new_change_request_comment") {
@@ -180,6 +248,7 @@ Deno.serve(async (req) => {
         subject: tpl.subject,
         body: `Change request: ${cr?.title ?? "—"}\n\n${((c as any).body ?? "").slice(0, 240)}`,
         blocks: tpl.blocks,
+        url: adminUrl("/admin/change-requests", { id: (c as any).change_request_id }),
         category: "change_requests",
       });
     } else {

@@ -8,11 +8,11 @@ export type Faq = { q: string; a: string };
 export const FAQS: Faq[] = [
   {
     q: "How fast can we launch?",
-    a: "Most websites go live in about two weeks from the kickoff call. Smaller add-ons move faster — NFC review cards are usually programmed and installed within a few days, and automations like review requests or database reactivation can be live in about a week.",
+    a: "Most websites go live about two weeks after the kickoff call. Smaller projects are quicker. NFC review cards are usually programmed and installed within a few days, and automations like review requests or database reactivation can be live in about a week.",
   },
   {
     q: "How do we get started?",
-    a: "It starts with a free discovery call. We learn about your business and goals, recommend the right build, and give you a fixed price before you commit to anything. Once you're in, most projects kick off within a few days.",
+    a: "We start with a free discovery call. We learn about your business and goals, recommend what to build, and give you a fixed price before you commit to anything. Once you sign on, most projects start within a few days.",
   },
   {
     q: "What does it cost?",
@@ -20,18 +20,18 @@ export const FAQS: Faq[] = [
   },
   {
     q: "Do I need to be technical to use any of this?",
-    a: "No. Everything is set up, configured, and handed over working. You never have to touch code or a developer — when something needs changing, you message us and we handle it.",
+    a: "No. We set everything up and hand it over working. You never have to touch code or hire a developer. When something needs changing, send us a message and we'll take care of it.",
   },
   {
     q: "What happens after launch?",
-    a: "Every project includes hands-on onboarding, ongoing technical support, and a direct line to a real person for updates and changes. Website plans also include hosting, backups, and monthly edits.",
+    a: "We walk you through everything at the start, and you can reach a real person on our team for support, updates, and changes afterward. Website plans also include hosting, backups, and monthly edits.",
   },
   {
     q: "How does the AI call answering actually work?",
-    a: "We train a natural-sounding voice agent on your business, then set up a phone number and call routing. It answers calls day or night, handles common questions, and books appointments straight into your calendar — and you get a text and transcript for every call.",
+    a: "We train a voice agent that sounds like a person on your business, then set up a phone number and call routing. It answers calls day or night, handles common questions, and books appointments straight into your calendar. You get a text and a transcript after every call.",
   },
   {
     q: "Am I locked into a contract?",
-    a: "No. Monthly services are cancel-anytime — there's no long-term lock-in. One-time builds like a website or NFC cards are simply yours once delivered.",
+    a: "No. You can cancel monthly services at any time. One-time projects like a website or NFC cards are yours once they're delivered.",
   },
 ];

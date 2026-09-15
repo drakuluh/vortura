@@ -4,10 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vortura Agency | AI Automation & Websites for Local Businesses</title>
-    <meta name="description" content="Vortura Agency builds AI-powered websites and automation tools for local businesses. Recover missed calls, book more appointments, and grow — 24/7.">
+    <meta name="description" content="Vortura Agency builds websites and AI automation tools for local businesses that answer missed calls and book appointments 24/7.">
     <meta name="author" content="VORTURA" />
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="canonical" href="https://vortura.ai/" />
+    <!-- Prerendered pages carry static markup for crawlers. Visitors with
+         JavaScript get the live app instead, so keep the static copy hidden
+         until main.tsx swaps it out; it would otherwise flash, vanish, and
+         animate back in. Without JavaScript the rule never applies. -->
+    <script>document.documentElement.setAttribute("data-js", "")</script>
+    <style>[data-js] #root[data-prerendered] { visibility: hidden; }</style>
     <meta name="google-site-verification" content="nycjx_6wYEgHv0KjcYP8cH5xpgovff4y9WXQ570T6Bw" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,16 +39,17 @@
     </noscript>
 
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e002d447-2faa-44c6-ae3e-55217efe8dc4/id-preview-9c647130--8d528547-130d-431b-8bf5-62b16565f98b.lovable.app-1776830193613.png">
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image" content="https://vortura.ai/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Lovable" />
-    <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e002d447-2faa-44c6-ae3e-55217efe8dc4/id-preview-9c647130--8d528547-130d-431b-8bf5-62b16565f98b.lovable.app-1776830193613.png">
+    <meta name="twitter:image" content="https://vortura.ai/og-image.png">
   
     <meta property="og:title" content="Vortura Agency | AI Automation & Websites for Local Businesses">
     <meta name="twitter:title" content="Vortura Agency | AI Automation & Websites for Local Businesses">
-    <meta property="og:description" content="Vortura Agency builds AI-powered websites and automation tools for local businesses. Recover missed calls, book more appointments, and grow — 24/7.">
-    <meta name="twitter:description" content="Vortura Agency builds AI-powered websites and automation tools for local businesses. Recover missed calls, book more appointments, and grow — 24/7.">
+    <meta property="og:description" content="Vortura Agency builds websites and AI automation tools for local businesses that answer missed calls and book appointments 24/7.">
+    <meta name="twitter:description" content="Vortura Agency builds websites and AI automation tools for local businesses that answer missed calls and book appointments 24/7.">
 
     <script type="application/ld+json">
     {
@@ -54,15 +61,26 @@
           "name": "Vortura Agency",
           "alternateName": "VORTURA.ai",
           "url": "https://vortura.ai/",
-          "logo": "https://vortura.ai/vortura-icon.png",
-          "description": "Vortura Agency builds AI-powered websites and automation tools for local businesses. Recover missed calls, book more appointments, and grow — 24/7.",
-          "email": "hello@vortura.ai"
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://vortura.ai/vortura-icon.png"
+          },
+          "description": "Vortura Agency builds websites and AI automation tools for local businesses that answer missed calls and book appointments 24/7.",
+          "email": "support@vortura.ai",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "email": "support@vortura.ai",
+            "availableLanguage": "English"
+          },
+          "sameAs": ["https://instagram.com/vortura.ai"]
         },
         {
           "@type": "WebSite",
           "@id": "https://vortura.ai/#website",
           "url": "https://vortura.ai/",
           "name": "Vortura Agency",
+          "inLanguage": "en",
           "publisher": { "@id": "https://vortura.ai/#organization" }
         },
         {
@@ -71,15 +89,25 @@
           "name": "Vortura Agency",
           "image": "https://vortura.ai/vortura-icon.png",
           "url": "https://vortura.ai/",
-          "email": "hello@vortura.ai",
-          "description": "Websites and AI automations for local service businesses — fast mobile-first sites, missed-call text-back, AI voice agents, and review automation.",
-          "areaServed": "United States",
+          "email": "support@vortura.ai",
+          "sameAs": ["https://instagram.com/vortura.ai"],
+          "description": "Websites and AI automations for local service businesses, including fast mobile-first sites, missed-call text-back, AI voice agents, and review automation.",
+          "areaServed": [
+            { "@type": "City", "name": "Mississauga" },
+            { "@type": "City", "name": "Toronto" },
+            { "@type": "City", "name": "Brampton" },
+            { "@type": "City", "name": "Hamilton" },
+            { "@type": "AdministrativeArea", "name": "Greater Toronto Area" },
+            { "@type": "Country", "name": "Canada" },
+            { "@type": "Country", "name": "United States" }
+          ],
           "serviceType": [
             "Website design and development",
-            "AI voice agents",
-            "Missed-call text-back automation",
-            "Review automation",
-            "CRM setup and lead routing"
+            "24/7 AI call answering",
+            "NFC Google review cards",
+            "QR code menus",
+            "Automated email newsletters",
+            "Print and digital design"
           ],
           "parentOrganization": { "@id": "https://vortura.ai/#organization" }
         }

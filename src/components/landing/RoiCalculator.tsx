@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useHeaderAnim } from "@/hooks/use-anim";
 import { Counter } from "@/components/effects/Counter";
-import { SparklesText } from "@/components/ui/sparkles-text";
 
 // Industry-typical close rate on returned missed calls for service businesses.
 // Tweak this single number to adjust the calculator's revenue assumption.
@@ -35,7 +34,7 @@ export const RoiCalculator = ({ headerAnim: headerAnimOverride }: { headerAnim?:
       <div className="container relative z-10">
         <motion.div className="max-w-2xl mx-auto text-center mb-5 md:mb-6 lg:mb-7" {...headerAnim}>
           <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2">
-            Missed calls, <SparklesText text="recovered." className="text-gradient" />
+            Missed calls, recovered
           </h2>
           <p className="text-xs md:text-sm text-muted-foreground sm:whitespace-nowrap">
             Most local businesses miss 1 in 4 calls. Drag to see what recovering them is worth.
@@ -99,7 +98,7 @@ export const RoiCalculator = ({ headerAnim: headerAnimOverride }: { headerAnim?:
               </div>
 
               <p className="mt-3 md:mt-4 text-[11px] font-mono uppercase tracking-widest text-muted-foreground/80 text-center">
-                Based on a 30% close rate on returned missed calls — typical for service businesses.
+                Based on a 30% close rate on returned missed calls, which is typical for service businesses.
               </p>
             </div>
           </motion.div>

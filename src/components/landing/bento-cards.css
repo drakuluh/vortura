@@ -31,3 +31,16 @@
 @media (prefers-reduced-motion: reduce) {
   .cf-sheen::before { animation: none; opacity: 0; }
 }
+
+/* Card width:height for the services deck. Card width scales with the
+   viewport but the copy under the 4:3 demo doesn't, so one ratio can't fit
+   every width — below 1280px the cards need to be relatively taller. Values
+   are measured from the tallest card plus a little headroom. */
+#services {
+  --bento-aspect: 0.53;
+}
+@media (min-width: 1280px) {
+  #services {
+    --bento-aspect: 0.6;
+  }
+}

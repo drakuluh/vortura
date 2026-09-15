@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -16,7 +17,7 @@ import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
-import { useAuth } from "@/hooks/useAuth";
+import { ensureAuthListener, useAuth } from "@/hooks/useAuth";
 
 const emailSchema = z.string().trim().email({ message: "Enter a valid email address" }).max(255);
 const passwordSchema = z
@@ -47,6 +48,9 @@ const Auth = () => {
   const [accountType, setAccountType] = useState<"individual" | "business">("individual");
   const [businessName, setBusinessName] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  // Signing in here must update the shared auth state (navbar, route gates).
+  useEffect(ensureAuthListener, []);
 
   useEffect(() => {
     if (!authLoading && user) navigate(redirectTo, { replace: true });
@@ -122,7 +126,7 @@ const Auth = () => {
           },
         });
         if (error) throw error;
-        toast.success("Account created — welcome aboard.");
+        toast.success("Account created. Welcome aboard.");
         navigate(redirectTo, { replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -317,9 +321,8 @@ const Auth = () => {
                           <Label htmlFor="password" className={labelClass}>
                             Password
                           </Label>
-                          <Input
+                          <PasswordInput
                             id="password"
-                            type="password"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}

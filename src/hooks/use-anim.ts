@@ -31,7 +31,7 @@ export const useCardAnim = (yOffset = 20, delay = 0.15) => {
 
 export const useRevealAnim = (yOffset = 16, delayStep = 0.05) => {
   const isMobile = useIsMobile();
-  return (i = 0) =>
+  return (i = 0, _isMobileOverride?: boolean) =>
     isMobile
       ? { initial: false as const, animate: { opacity: 1, y: 0 } }
       : {
@@ -39,6 +39,19 @@ export const useRevealAnim = (yOffset = 16, delayStep = 0.05) => {
           whileInView: { opacity: 1, y: 0 },
           viewport: { once: true, margin: "-60px" as const },
           transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const, delay: delayStep * i },
+        };
+};
+
+export const useScaleRevealAnim = () => {
+  const isMobile = useIsMobile();
+  return (i = 0, delayStep = 0.08) =>
+    isMobile
+      ? { initial: false as const, animate: { opacity: 1, scale: 1 } }
+      : {
+          initial: { opacity: 0, scale: 0.95 },
+          whileInView: { opacity: 1, scale: 1 },
+          viewport: { once: true, margin: "-60px" as const },
+          transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const, delay: delayStep * i },
         };
 };
 

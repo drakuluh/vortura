@@ -95,7 +95,7 @@ export const ServiceCard = ({
             {!comingSoon && (
               <div className="mt-auto pt-3 flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-widest text-muted-foreground/50">
                 <RotateCw className="w-3 h-3" />
-                <span>Tap to flip</span>
+                <span>Flip for details</span>
               </div>
             )}
           </div>
@@ -126,7 +126,7 @@ export const ServiceCard = ({
               <Link
                 to={`/services/${s.slug}`}
                 onClick={(e) => e.stopPropagation()}
-                className="btn-hero-glass inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold"
+                className="btn-hero-glass inline-flex items-center justify-center gap-1.5 px-3.5 py-3 sm:py-1.5 rounded-lg text-xs font-semibold"
               >
                 Learn more
                 <ArrowRight className="w-3.5 h-3.5" />

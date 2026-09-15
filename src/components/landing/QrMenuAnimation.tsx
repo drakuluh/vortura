@@ -46,7 +46,7 @@ export const QrMenuAnimation = ({ className }: { className?: string }) => {
         </div>
 
         {/* Menu on the screen — cropped menu, clipped to the phone's display */}
-        <img className="qr-menu-screen" src="/call/qr-menu-screen.png" alt="" draggable={false} />
+        <img className="qr-menu-screen" src="/call/qr-menu-screen.webp" alt="" draggable={false} />
       </div>
     </div>
   </div>

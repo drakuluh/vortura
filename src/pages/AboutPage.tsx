@@ -4,29 +4,28 @@ import { motion } from "framer-motion";
 import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { Seo } from "@/components/Seo";
-import { SparklesText } from "@/components/ui/sparkles-text";
 import { useHeaderAnim, useRevealAnim } from "@/hooks/use-anim";
 
 const VALUES = [
   {
     icon: Zap,
     title: "Speed over perfection",
-    body: "Most agencies spend weeks on proposals. We ship a working blueprint in 7 days. Iteration beats deliberation — your business can't wait for a committee.",
+    body: "Most agencies spend weeks on proposals. We deliver a working blueprint in 7 days, because your business can't wait on a committee.",
   },
   {
     icon: Target,
     title: "Outcomes, not deliverables",
-    body: "We don't sell hours or page counts. Every automation is measured by what it does for your bottom line — more calls answered, more reviews collected, more revenue.",
+    body: "We don't sell hours or page counts. We measure every automation by what it does for your business: more calls answered, more reviews collected, and more revenue.",
   },
   {
     icon: Shield,
     title: "No lock-in, ever",
-    body: "You own everything we build. No proprietary platforms, no hostage pricing, no 12-month contracts. If we stop being useful, you should be free to leave.",
+    body: "You own everything we build. We don't use proprietary platforms, raise your price once you're locked in, or ask for 12-month contracts. If we stop being useful, you should be free to leave.",
   },
   {
     icon: Lightbulb,
     title: "Built for small teams",
-    body: "Enterprise tools are built for enterprises. We build systems sized for businesses with 1–50 people — powerful enough to compete, simple enough to actually use.",
+    body: "Enterprise tools are built for enterprises. We build systems for businesses with 1 to 50 people, capable enough to compete with bigger companies and simple enough to use every day.",
   },
 ];
 
@@ -38,7 +37,7 @@ const AboutPage = () => {
     <PageLayout>
       <Seo
         title="About Vortura"
-        description="Vortura is a one-person AI automation studio based in Mississauga, building websites and intelligent systems for local businesses across the GTA and beyond."
+        description="Vortura is a one-person AI automation studio in Mississauga that builds websites and automated systems for local businesses across the GTA and beyond."
       />
       <div className="relative overflow-hidden">
         <PageHeroBg />
@@ -52,12 +51,12 @@ const AboutPage = () => {
               </p>
               <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-4 leading-tight">
                 One person. Every automation{" "}
-                <SparklesText text="built from scratch." className="text-gradient" />
+                <span className="text-gradient">built from scratch.</span>
               </h1>
               <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
-                Vortura isn't a big agency with layers of account managers. It's
-                one person who builds every system, answers every call, and
-                stands behind every line of code.
+                Vortura doesn't have layers of account managers. One person
+                builds every system, answers every call, and stands behind the
+                code.
               </p>
             </motion.div>
           </div>
@@ -78,32 +77,30 @@ const AboutPage = () => {
               </h2>
               <div className="space-y-4 text-sm md:text-[15px] text-muted-foreground leading-relaxed">
                 <p>
-                  I started Vortura after watching local businesses — restaurants,
-                  trades contractors, clinics — lose customers to problems that
-                  already have solutions. Missed calls going to voicemail. Review
-                  pages sitting empty. Websites that look like they were built in
-                  2014. Follow-ups that never happen.
+                  We started Vortura after watching restaurants, trades
+                  contractors, and clinics lose customers to problems that
+                  already have solutions: calls going to voicemail, empty review
+                  pages, websites that look like they were built in 2014, and
+                  follow-ups that never happen.
                 </p>
                 <p>
-                  The technology to fix all of this exists right now. AI can
-                  answer a phone call, book an appointment, and send a follow-up
-                  text — all before the business owner finishes their morning
-                  coffee. NFC cards can turn every happy customer into a Google
-                  review with one tap. A well-built website can rank on Google
-                  and bring in calls every week.
+                  The technology to fix this is already here. AI can answer a
+                  call, book the appointment, and send a follow-up text before
+                  the owner has finished their morning coffee. An NFC card lets a
+                  happy customer leave a Google review with one tap, and a
+                  well-built website can rank on Google and bring in calls every
+                  week.
                 </p>
                 <p>
-                  But most local businesses don't have the time, budget, or
-                  technical knowledge to wire all of this together. That's where
-                  Vortura comes in. I build the systems, handle the setup, and
-                  make sure everything runs — so business owners can focus on
-                  what they're actually good at.
+                  Most local businesses don't have the time, budget, or technical
+                  knowledge to connect all of it. We build the systems, handle
+                  the setup, and keep everything running, so owners can get on
+                  with the work they're good at.
                 </p>
                 <p>
-                  Every automation is custom-built, not a reskinned template.
-                  Every client gets a direct line to the person who built their
-                  system. And every project is measured by one thing: did it move
-                  the needle?
+                  We build each automation from scratch, and clients talk
+                  directly to the person who built their system. We judge every
+                  project by whether it made a real difference to the business.
                 </p>
               </div>
             </motion.div>
@@ -115,11 +112,10 @@ const AboutPage = () => {
           <div className="container max-w-4xl">
             <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...header}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                What I{" "}
-                <SparklesText text="believe." className="text-gradient" />
+                What we believe
               </h2>
               <p className="text-sm text-muted-foreground">
-                These aren't slogans — they're the rules every project is built on.
+                We follow these on every project.
               </p>
             </motion.div>
 
@@ -159,10 +155,10 @@ const AboutPage = () => {
                 Local roots, global reach
               </h2>
               <p className="text-sm text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                Vortura is based in Mississauga, Ontario and works with local
-                businesses across the GTA — Brampton, Toronto, Hamilton, and
-                beyond. Remote clients welcome — everything is built, delivered,
-                and supported online.
+                Vortura is based in Mississauga, Ontario, and works with local
+                businesses across the GTA and beyond, including Brampton,
+                Toronto, and Hamilton. We also work with clients remotely, since
+                everything is built, delivered, and supported online.
               </p>
             </motion.div>
           </div>
@@ -173,12 +169,11 @@ const AboutPage = () => {
           <div className="container max-w-4xl">
             <motion.div className="max-w-2xl mx-auto text-center" {...header}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-4 leading-tight">
-                Ready to{" "}
-                <SparklesText text="automate?" className="text-gradient" />
+                Want to work together?
               </h2>
               <p className="text-sm text-muted-foreground mb-8">
-                Book a free discovery call and I'll map out what automation can
-                do for your business — no pitch deck, no pressure.
+                Book a free discovery call and we'll talk through what
+                automation could do for your business, with no sales pressure.
               </p>
               <Link
                 to="/contact"

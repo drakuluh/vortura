@@ -4,17 +4,20 @@ import { motion } from "framer-motion";
 import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { Seo } from "@/components/Seo";
-import { SparklesText } from "@/components/ui/sparkles-text";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 import { Counter } from "@/components/effects/Counter";
-import { useHeaderAnim, useRevealAnim } from "@/hooks/use-anim";
+import { useHeaderAnim, useRevealAnim, useScaleRevealAnim } from "@/hooks/use-anim";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { INDUSTRIES } from "@/data/industries";
+import { RelatedPosts } from "@/components/landing/RelatedPosts";
+import { postsForIndustry } from "@/data/blog-links";
 
 const IndustryPage = () => {
   const { slug } = useParams();
   const industry = INDUSTRIES.find((ind) => ind.slug === slug);
   const header = useHeaderAnim();
   const reveal = useRevealAnim();
+  const scaleReveal = useScaleRevealAnim();
   const isMobile = useIsMobile();
 
   if (!industry) return <Navigate to="/services" replace />;
@@ -26,6 +29,10 @@ const IndustryPage = () => {
       <Seo
         title={`AI Automation for ${industry.name}`}
         description={industry.subtext}
+        jsonLd={breadcrumbJsonLd([
+          { name: "Services", path: "/services" },
+          { name: industry.name, path: `/industries/${industry.slug}` },
+        ])}
       />
       <div className="relative overflow-hidden">
         <PageHeroBg />
@@ -33,14 +40,14 @@ const IndustryPage = () => {
         {/* ── Back link ────────────────────────────────────── */}
         <div className="relative z-10 pt-12 md:pt-14 lg:pt-24">
           <div className="container max-w-5xl">
-            <div className="flex justify-center mt-12 md:mt-10 lg:mt-8">
+            <nav aria-label="Breadcrumb" className="flex justify-center mt-12 md:mt-10 lg:mt-8">
               <Link
                 to="/services"
-                className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors py-2 px-3 -ml-3 rounded-lg hover:bg-white/[0.05]"
+                className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-white/[0.05]"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> All services
               </Link>
-            </div>
+            </nav>
           </div>
         </div>
 
@@ -55,7 +62,7 @@ const IndustryPage = () => {
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-depth leading-[1.08] mb-4">
                 {industry.headline}{" "}
-                <SparklesText text={industry.accentWord} className="text-gradient" />
+                <span className="text-gradient">{industry.accentWord}</span>
               </h1>
               <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
                 {industry.subtext}
@@ -71,7 +78,7 @@ const IndustryPage = () => {
         </section>
 
         {/* ═══ PROBLEM / APPROACH ═════════════════════════ */}
-        <section className="relative z-10 py-10 md:py-14 lg:py-20 border-t border-white/[0.04]">
+        <section className="relative z-10 py-10 md:py-14 lg:py-20">
           <div className="container max-w-5xl">
             <motion.div
               className="grid md:grid-cols-2 gap-4 md:gap-6 items-end mb-6 md:mb-8"
@@ -83,10 +90,10 @@ const IndustryPage = () => {
               })}
             >
               <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
-                The <SparklesText text="problem." className="text-gradient-danger" colors={{ first: "#FF4444", second: "#FF8C00" }} sparklesCount={6} />
+                The <span className="text-gradient-danger">problem</span>
               </h2>
               <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
-                Our <SparklesText text="approach." className="text-gradient-success" colors={{ first: "#2ECC71", second: "#27AE60" }} sparklesCount={6} />
+                Our <span className="text-gradient-success">approach</span>
               </h2>
             </motion.div>
 
@@ -135,12 +142,12 @@ const IndustryPage = () => {
         </section>
 
         {/* ═══ SERVICES FOR THIS INDUSTRY ═════════════════ */}
-        <section className="relative z-10 py-10 md:py-14 lg:py-20 border-t border-white/[0.04]">
+        <section className="relative z-10 py-10 md:py-14 lg:py-20">
           <div className="container max-w-5xl">
             <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...header}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
                 Built for{" "}
-                <SparklesText text={`${industry.name.toLowerCase()}.`} className="text-gradient" />
+                {industry.name.toLowerCase()}
               </h2>
               <p className="text-sm text-muted-foreground">
                 The services that move the needle most for your industry.
@@ -182,7 +189,7 @@ const IndustryPage = () => {
                       </p>
                       <Link
                         to={`/services/${svc.slug}`}
-                        className="btn-hero-glass inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
                       >
                         Learn more <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
@@ -195,12 +202,12 @@ const IndustryPage = () => {
         </section>
 
         {/* ═══ STATS ═════════════════════════════════════ */}
-        <section className="relative z-10 py-10 md:py-14 lg:py-20 border-t border-white/[0.04]">
+        <section className="relative z-10 py-10 md:py-14 lg:py-20">
           <div className="container max-w-5xl">
             <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...header}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
                 The{" "}
-                <SparklesText text="numbers." className="text-gradient" />
+                numbers
               </h2>
               <p className="text-sm text-muted-foreground">
                 Based on general industry research for local businesses.
@@ -211,13 +218,8 @@ const IndustryPage = () => {
               {industry.stats.map((stat, i) => (
                 <motion.div
                   key={i}
-                  className="glass-strong rounded-2xl p-5 md:p-6 text-center flex flex-col items-center justify-between aspect-square"
-                  {...(isMobile ? { initial: false, animate: { opacity: 1, y: 0 } } : {
-                    initial: { opacity: 0, y: 20 },
-                    whileInView: { opacity: 1, y: 0 },
-                    viewport: { once: true, margin: "-80px" },
-                    transition: { duration: 0.7, ease: "easeOut", delay: i * 0.1 },
-                  })}
+                  className="glass-strong rounded-2xl p-5 md:p-6 text-center flex flex-col items-center justify-between aspect-auto md:aspect-square"
+                  {...scaleReveal(i, 0.12)}
                 >
                   <div />
                   <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient">
@@ -234,8 +236,15 @@ const IndustryPage = () => {
           </div>
         </section>
 
+        {/* ═══ FROM THE BLOG ═════════════════════════════ */}
+        <section className="relative z-10 py-10 md:py-12 lg:py-16">
+          <div className="container max-w-5xl">
+            <RelatedPosts heading="From the blog" posts={postsForIndustry(industry.slug)} />
+          </div>
+        </section>
+
         {/* ═══ FINAL CTA ═════════════════════════════════ */}
-        <section className="relative z-10 py-10 md:py-14 lg:py-20 border-t border-white/[0.04]">
+        <section className="relative z-10 py-10 md:py-14 lg:py-20">
           <div className="container max-w-5xl">
             <motion.div
               className="glass-strong border-gradient rounded-3xl p-8 md:p-12 lg:p-16 text-center max-w-3xl mx-auto"
@@ -243,7 +252,7 @@ const IndustryPage = () => {
             >
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-4 leading-tight">
                 {industry.ctaHeadline}{" "}
-                <SparklesText text={industry.ctaAccent} className="text-gradient" />
+                {industry.ctaAccent}
               </h2>
               <p className="text-sm text-muted-foreground mb-8">
                 Book a free discovery call and we'll build a custom automation

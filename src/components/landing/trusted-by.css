@@ -14,9 +14,13 @@
   animation-play-state: paused;
 }
 
+/* Runs rightward, opposite the Partners marquee below it — the two bands sit
+   close together on the home page and moving in lockstep made them read as one
+   repeating element. Starting at -50% and ending at 0 is what reverses it; the
+   loop stays seamless because the track renders the logo list twice. */
 @keyframes tb-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {

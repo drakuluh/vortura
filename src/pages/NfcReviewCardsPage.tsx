@@ -21,7 +21,9 @@ import { motion } from "framer-motion";
 import { PageLayout } from "@/components/landing/PageLayout";
 import { PageHeroBg } from "@/components/landing/PageHeroBg";
 import { Seo } from "@/components/Seo";
-import { SparklesText } from "@/components/ui/sparkles-text";
+import { RelatedPosts } from "@/components/landing/RelatedPosts";
+import { postsForService } from "@/data/blog-links";
+import { ORGANIZATION_REF, SITE_ORIGIN, breadcrumbJsonLd } from "@/lib/structured-data";
 import { Counter } from "@/components/effects/Counter";
 import { services } from "@/data/services";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -67,19 +69,19 @@ const STEPS = [
   {
     num: "01",
     title: "Customer finishes their visit",
-    desc: "A great meal, a clean cut, a finished repair — the moment a customer is happiest with your service.",
+    desc: "A great meal, a clean haircut, or a finished repair. This is when a customer is happiest with your service.",
     icon: Users,
   },
   {
     num: "02",
     title: "They tap the card",
-    desc: "The card sits on the counter, table, or checkout area. One tap with any modern iPhone or Android — no app needed.",
+    desc: "The card sits on the counter, table, or checkout area. Customers tap it with any modern iPhone or Android phone, without needing an app.",
     icon: Smartphone,
   },
   {
     num: "03",
     title: "Google review page opens instantly",
-    desc: "Your Google Business Profile review form loads in their browser, ready to go. No searching, no typing your business name.",
+    desc: "Your Google Business Profile review form opens in their browser, so they don't have to search for or type your business name.",
     icon: Zap,
   },
   {
@@ -99,8 +101,8 @@ const IMPACT_STATS = [
 
 const INCLUDED = [
   { icon: CreditCard, text: "Durable NFC cards, custom-branded to your business" },
-  { icon: Nfc, text: "Pre-programmed to your Google Business Profile — ready out of the box" },
-  { icon: Smartphone, text: "Works on modern iPhone (7+) and Android (NFC-enabled) — no app needed" },
+  { icon: Nfc, text: "Programmed to your Google Business Profile and ready to use when they arrive" },
+  { icon: Smartphone, text: "Works on modern iPhones (7 and up) and NFC-enabled Android phones, with no app needed" },
   { icon: QrCode, text: "Printed QR code fallback for older phones" },
   { icon: Shield, text: "Branded counter stand for front desk or checkout placement" },
   { icon: Users, text: "On-site setup and a quick staff walkthrough" },
@@ -109,23 +111,23 @@ const INCLUDED = [
 const FAQS = [
   {
     q: "Does it work on all phones?",
-    a: "NFC works on iPhone 7 and newer (iOS 13+) and most Android phones made after 2018. That covers the vast majority of smartphones in use today. For older phones, every card comes with a printed QR code fallback that opens the same review page.",
+    a: "NFC works on iPhone 7 and newer (iOS 13+) and most Android phones made after 2018, which covers most smartphones in use today. For older phones, every card has a printed QR code that opens the same review page.",
   },
   {
     q: "What if a customer's phone doesn't support NFC?",
-    a: "Every card includes a QR code on the back. The customer scans it with their camera and lands on the same Google review page. Between NFC and QR, virtually every smartphone is covered.",
+    a: "Every card has a QR code on the back. The customer scans it with their camera and gets the same Google review page, so almost any smartphone can use the card one way or the other.",
   },
   {
     q: "Can I use this for multiple locations?",
-    a: "Yes. Each card is programmed to a specific Google Business Profile, so you can order separate cards for each location. Each set points to the right review page for that location.",
+    a: "Yes. Each card is programmed to one Google Business Profile, so you order a separate set for each location and each set opens that location's review page.",
   },
   {
     q: "Is there a subscription, or is it a one-time purchase?",
-    a: "The cards are a one-time purchase — no monthly fees. You buy the cards, we program and brand them, and they're yours. If you need replacements or want to order more later, you can do that anytime.",
+    a: "The cards are a one-time purchase with no monthly fees. You buy the cards, we brand and program them, and they're yours. You can order replacements or more cards at any time.",
   },
   {
     q: "How long do the cards last?",
-    a: "NFC cards use passive NTAG215 chips with no battery. They don't wear out with normal use and are designed to last for years. The cards themselves are durable PVC — the same material as a credit card.",
+    a: "NFC cards use passive NTAG215 chips with no battery. They don't wear out with normal use and are designed to last for years. The cards are made of durable PVC, the same material as a credit card.",
   },
 ];
 
@@ -137,21 +139,28 @@ const NfcReviewCardsPage = () => {
   const reveal = useRevealAnim();
   const nfcService = services.find((s) => s.slug === "nfc-review-cards")!;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    name: "NFC Google Review Cards",
-    description:
-      "Tap-to-review NFC cards that turn happy customers into 5-star Google reviews in one tap. From $49.",
-    provider: { "@type": "Organization", name: "Vortura Agency" },
-    offers: { "@type": "Offer", price: "49", priceCurrency: "USD" },
-  };
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: "NFC Google Review Cards",
+      description:
+        "NFC cards customers tap with their phone to leave a 5-star Google review. From $49.",
+      url: `${SITE_ORIGIN}/services/nfc-review-cards`,
+      provider: ORGANIZATION_REF,
+      offers: { "@type": "Offer", price: "49", priceCurrency: "CAD" },
+    },
+    breadcrumbJsonLd([
+      { name: "Services", path: "/services" },
+      { name: "NFC Google Review Cards", path: "/services/nfc-review-cards" },
+    ]),
+  ];
 
   return (
     <PageLayout>
       <Seo
         title="NFC Google Review Cards"
-        description="Tap-to-review NFC cards that turn happy customers into 5-star Google reviews. One tap, no app, no friction. From $49."
+        description="NFC cards customers tap with their phone to leave a 5-star Google review, without downloading an app. From $49."
         jsonLd={jsonLd}
       />
       <div className="relative overflow-hidden">
@@ -159,14 +168,14 @@ const NfcReviewCardsPage = () => {
 
         {/* ── Back link ──────────────────────────────────── */}
         <div className="relative z-10 container max-w-5xl">
-          <div className="pt-12 md:pt-14 lg:pt-24 mt-12 md:mt-10 lg:mt-8">
+          <nav aria-label="Breadcrumb" className="pt-12 md:pt-14 lg:pt-24 mt-12 md:mt-10 lg:mt-8 flex justify-center">
             <Link
               to="/services"
-              className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors py-2 px-3 -ml-3 rounded-lg hover:bg-white/[0.05]"
+              className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-white/[0.05]"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> All services
             </Link>
-          </div>
+          </nav>
         </div>
 
         {/* ── Hero ──────────────────────────────────────────── */}
@@ -184,7 +193,7 @@ const NfcReviewCardsPage = () => {
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-depth leading-[1.08] lg:whitespace-nowrap">
                 Turn happy customers into{" "}
-                <SparklesText text="5-star reviews." className="text-gradient" />
+                <span className="text-gradient">5-star reviews.</span>
               </h1>
             </motion.div>
 
@@ -192,11 +201,11 @@ const NfcReviewCardsPage = () => {
               <motion.div className="mb-8 lg:mb-0 flex flex-col" {...reveal(1)}>
                 <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8 max-w-xl mx-auto text-center lg:text-left lg:mx-0">
                   Customers don't leave reviews because it's awkward to ask and
-                  too many steps to follow through. NFC cards fix both — one
-                  tap on a card at your counter or table and their phone opens
-                  your Google review page instantly. No app, no QR scanning, no
-                  searching for your business name. The whole process takes under
-                  30 seconds, right when satisfaction is highest.
+                  there are too many steps. NFC cards solve both. A customer taps
+                  the card at your counter or table and their phone opens your
+                  Google review page, without an app, a QR scan, or a search for
+                  your business name. It takes under 30 seconds, while they're
+                  still happy with the visit.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link
@@ -227,13 +236,13 @@ const NfcReviewCardsPage = () => {
           <div className="container max-w-5xl">
             <motion.div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-end mb-6 md:mb-8" {...reveal(0)}>
               <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
-                The <SparklesText text="problem." className="text-gradient-danger" colors={{ first: "#FF4444", second: "#FF8C00" }} sparklesCount={6} />
+                The <span className="text-gradient-danger">problem</span>
               </h2>
               <span className="hidden md:block text-base md:text-lg font-semibold text-muted-foreground px-4 pb-1">
                 Vs.
               </span>
               <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-depth text-center">
-                Our <SparklesText text="approach." className="text-gradient-success" colors={{ first: "#2ECC71", second: "#27AE60" }} sparklesCount={6} />
+                Our <span className="text-gradient-success">approach</span>
               </h2>
             </motion.div>
 
@@ -241,9 +250,9 @@ const NfcReviewCardsPage = () => {
               <motion.div className="glass rounded-2xl p-6 md:p-8 border-gradient-danger" {...reveal(1)}>
                 <ul className="space-y-4">
                   {[
-                    "Happy customers rarely leave reviews — too many steps",
+                    "Happy customers rarely leave reviews because it takes too many steps",
                     "They forget, get distracted, or can't find your listing",
-                    "One unhappy customer always finds the time",
+                    "An unhappy customer always finds the time",
                     "Your star rating stays flat while competitors climb",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-3">
@@ -260,9 +269,9 @@ const NfcReviewCardsPage = () => {
                 <ul className="space-y-4">
                   {[
                     "One tap on an NFC card opens your Google review page",
-                    "No searching, no app, no QR scanning required",
-                    "The moment of delight becomes a 5-star review",
-                    "Reviews stack up week after week, automatically",
+                    "Customers don't have to search, download an app, or scan anything",
+                    "They leave a 5-star review while they're still pleased with the visit",
+                    "New reviews keep coming in every week",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-3">
                       <span className="mt-0.5 w-5 h-5 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
@@ -283,7 +292,7 @@ const NfcReviewCardsPage = () => {
             <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...header}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
                 Why NFC{" "}
-                <SparklesText text="wins." className="text-gradient" />
+                wins
               </h2>
               <p className="text-sm text-muted-foreground">
                 Less friction means more reviews. Here's how the methods compare.
@@ -389,7 +398,7 @@ const NfcReviewCardsPage = () => {
           <div className="container max-w-5xl">
             <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...reveal(0)}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                How it <SparklesText text="works." className="text-gradient" />
+                How it works
               </h2>
               <p className="text-sm text-muted-foreground">
                 A clear, proven process from start to finish.
@@ -440,7 +449,7 @@ const NfcReviewCardsPage = () => {
           <div className="container max-w-5xl">
             <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...reveal(0)}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                Results you can <SparklesText text="expect." className="text-gradient" />
+                Results you can expect
               </h2>
               <p className="text-sm text-muted-foreground">
                 What our clients typically see after setup.
@@ -473,10 +482,10 @@ const NfcReviewCardsPage = () => {
           <div className="container max-w-5xl">
             <motion.div className="max-w-2xl mx-auto text-center mb-8 md:mb-12" {...reveal(0)}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-depth mb-2.5 leading-tight">
-                Everything <SparklesText text="included." className="text-gradient" />
+                Everything included
               </h2>
               <p className="text-sm text-muted-foreground">
-                Cards, stand, setup, and training — ready to collect reviews from day one.
+                Cards, a stand, setup, and training, so you can collect reviews from the first day.
               </p>
             </motion.div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
@@ -501,28 +510,35 @@ const NfcReviewCardsPage = () => {
           <div className="container max-w-2xl">
             <motion.div className="text-center mb-6 md:mb-8" {...reveal(0)}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth mb-2.5">
-                Common <SparklesText text="questions." className="text-gradient" />
+                Common questions
               </h2>
               <p className="text-sm md:text-[15px] text-muted-foreground">
                 Everything you need to know before getting started.
               </p>
             </motion.div>
-            <Accordion type="single" collapsible className="space-y-3">
+            <Accordion type="single" collapsible className="space-y-3.5">
               {FAQS.map((item, i) => (
                 <AccordionItem
                   key={item.q}
                   value={`faq-${i}`}
-                  className="glass rounded-2xl border border-white/10 px-5 md:px-6 overflow-hidden"
+                  className="glass rounded-2xl border border-white/10 px-5 md:px-6 overflow-hidden transition-colors hover:bg-white/[0.03]"
                 >
-                  <AccordionTrigger className="py-4 md:py-5 text-left text-[15px] md:text-base font-semibold tracking-tight hover:no-underline">
+                  <AccordionTrigger className="py-5 md:py-6 text-left text-[15px] md:text-base font-semibold tracking-tight hover:no-underline">
                     {item.q}
                   </AccordionTrigger>
-                  <AccordionContent className="pb-5 text-sm md:text-[15px] leading-relaxed text-muted-foreground">
+                  <AccordionContent className="pb-6 text-sm md:text-[15px] leading-relaxed text-muted-foreground">
                     {item.a}
                   </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
+          </div>
+        </section>
+
+        {/* ── From the blog ─────────────────────────────────── */}
+        <section className="relative z-10 py-10 md:py-12 lg:py-16">
+          <div className="container max-w-5xl">
+            <RelatedPosts heading="From the blog" posts={postsForService("nfc-review-cards")} />
           </div>
         </section>
 
@@ -534,7 +550,7 @@ const NfcReviewCardsPage = () => {
               {...reveal(0)}
             >
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight text-depth mb-3">
-                Ready to get <SparklesText text="started?" className="text-gradient" />
+                Start collecting reviews this week
               </h2>
               <p className="text-sm md:text-base text-muted-foreground mb-8 max-w-md mx-auto">
                 Order now and we'll have everything set up within days.

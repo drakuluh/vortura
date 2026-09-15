@@ -45,6 +45,16 @@ The dev server runs at **http://localhost:8080**.
 | `npm run test` | Run the test suite once |
 | `npm run test:watch` | Run tests in watch mode |
 
+## SEO build output
+
+`vite build` also prerenders every public page (home, services, industries, blog posts, legal) to static HTML via `scripts/prerender-plugin.ts`, and writes `sitemap.xml` and `llms.txt` from the data files. Crawlers and link previews get real content and per-page tags; visitors still get the normal app. If prerendering fails, the build continues and ships the plain SPA.
+
+When you add a blog post:
+
+1. Add it to `src/data/blog-posts.ts` (it is prerendered and added to the sitemap automatically).
+2. Add its related services to `src/data/blog-links.ts`.
+3. Run `python scripts/og-images.py` to create its share image in `public/og/blog/`.
+
 ## Environment variables
 
 Copy the values into a local `.env` (all are `VITE_`-prefixed and safe to expose to the browser — they are public keys, not secrets):

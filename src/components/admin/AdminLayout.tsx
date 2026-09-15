@@ -9,6 +9,7 @@ import {
   ClipboardList,
   CreditCard,
   ExternalLink,
+  Inbox,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -37,7 +38,7 @@ interface NavItem {
   to: string;
   label: string;
   icon: LucideIcon;
-  badgeKey?: "overdue_invoices" | "new_change_requests" | "unread_messages";
+  badgeKey?: "overdue_invoices" | "new_change_requests" | "unread_messages" | "new_inquiries";
 }
 
 const NAV: NavItem[] = [
@@ -48,6 +49,7 @@ const NAV: NavItem[] = [
   { to: "/admin/invoices", label: "Invoices", icon: CreditCard, badgeKey: "overdue_invoices" },
   { to: "/admin/tasks", label: "Tasks", icon: ClipboardList },
   { to: "/admin/messages", label: "Messages", icon: MessageSquare, badgeKey: "unread_messages" },
+  { to: "/admin/inquiries", label: "Inquiries", icon: Inbox, badgeKey: "new_inquiries" },
   { to: "/admin/change-requests", label: "Change requests", icon: Wand2, badgeKey: "new_change_requests" },
   { to: "/admin/admins", label: "Team", icon: ShieldCheck },
   { to: "/admin/settings", label: "Settings", icon: Settings },
@@ -57,7 +59,7 @@ const useNavCounts = () =>
   useQuery({
     queryKey: ["admin", "nav-counts"],
     queryFn: async () => {
-      const [invoices, changes, unreadMessages] = await Promise.all([
+      const [invoices, changes, unreadMessages, inquiries] = await Promise.all([
         supabase.from("invoices").select("id", { count: "exact", head: true }).in("status", ["sent", "due", "overdue"]),
         supabase.from("change_requests").select("id", { count: "exact", head: true }).eq("status", "new"),
         supabase
@@ -65,11 +67,13 @@ const useNavCounts = () =>
           .select("id", { count: "exact", head: true })
           .eq("sender_side", "client")
           .is("read_at", null),
+        supabase.from("contact_submissions").select("id", { count: "exact", head: true }).eq("status", "new"),
       ]);
       return {
         overdue_invoices: invoices.count ?? 0,
         new_change_requests: changes.count ?? 0,
         unread_messages: unreadMessages.count ?? 0,
+        new_inquiries: inquiries.count ?? 0,
       };
     },
     refetchInterval: 30000,
@@ -206,7 +210,7 @@ interface SidebarInnerProps {
   onToggle?: () => void;
   onClose?: () => void;
   mobile?: boolean;
-  counts?: { overdue_invoices: number; new_change_requests: number; unread_messages: number };
+  counts?: { overdue_invoices: number; new_change_requests: number; unread_messages: number; new_inquiries: number };
   userEmail: string;
   role: string;
   onSignOut: () => void;
